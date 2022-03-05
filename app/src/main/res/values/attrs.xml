@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Keyboard">
+        <attr name="backgroundColor" format="color" />
+    </declare-styleable>
+    <declare-styleable name="Keyboard.Key">
+        <attr name="marginHorizontal" format="dimension" />
+        <attr name="marginVertical" format="dimension" />
+        <attr name="background" format="reference" />
+        <attr name="iconTint" format="color" />
+    </declare-styleable>
+</resources>
