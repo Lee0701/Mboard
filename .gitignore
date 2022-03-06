@@ -1,3 +1,5 @@
+dict/
+
 *.iml
 .gradle
 /local.properties
