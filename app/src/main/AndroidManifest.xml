@@ -11,7 +11,7 @@
         android:theme="@style/Theme.Mboard">
 
         <service
-            android:name="io.github.lee0701.mboard.MboardIME"
+            android:name="io.github.lee0701.mboard.ime.MboardIME"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">

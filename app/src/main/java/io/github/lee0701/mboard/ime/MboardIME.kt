@@ -1,9 +1,11 @@
-package io.github.lee0701.mboard
+package io.github.lee0701.mboard.ime
 
 import android.inputmethodservice.InputMethodService
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
+import io.github.lee0701.mboard.KeyboardListener
+import io.github.lee0701.mboard.Layout
 
 class MboardIME: InputMethodService(), KeyboardListener {
 
