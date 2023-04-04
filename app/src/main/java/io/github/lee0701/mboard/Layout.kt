@@ -48,6 +48,6 @@ object Layout {
             Key(KeyEvent.KEYCODE_PERIOD, "."),
             Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f),
         ))
-    ), 240f)
+    ), 220f)
 
 }
