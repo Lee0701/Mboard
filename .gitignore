@@ -1,6 +1,7 @@
 dict/
 
 app/lint-baseline.xml
+app-*.aab
 *.iml
 .gradle
 /local.properties
