@@ -9,8 +9,9 @@ import android.widget.FrameLayout
 import io.github.lee0701.mboard.keyboard.KeyboardListener
 import io.github.lee0701.mboard.layout.Layout
 import io.github.lee0701.mboard.keyboard.Keyboard
+import io.github.lee0701.mboard.layout.HangulLayout
 
-class MboardIME: InputMethodService(), KeyboardListener {
+class MboardIME: InputMethodService(), KeyboardListener, HangulInputSequence.Listener {
 
     private val doubleTapGap: Int = 500
 
@@ -18,6 +19,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
     private var keyboardView: Keyboard.ViewWrapper? = null
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+    private val inputSequence = HangulInputSequence(HangulLayout.SEBEOL_390, HangulLayout.COMB_SEBEOL_390, this)
     private var keyboardState: KeyboardState = KeyboardState()
 
     override fun onCreate() {
@@ -53,43 +55,63 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 keyboardState = newState
             }
             KeyEvent.KEYCODE_DEL -> {
-                deleteText(1, 0)
+                inputSequence.onDelete()
+//                onDeleteText(1, 0)
             }
             KeyEvent.KEYCODE_SPACE -> {
-                commitText(' ')
+                resetInput()
+                onCommitText(" ")
+                autoUnlockShift()
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                resetInput()
+                autoUnlockShift()
                 if(!sendDefaultEditorAction(true)) return sendDownUpKeyEvents(code)
             }
             else -> {
-                val charCode = keyCharacterMap.get(code, keyboardState.asMetaState())
-                if(charCode > 0) {
-                    val ch = charCode.toChar().let { if(lastState.shiftState.pressed) it.uppercaseChar() else it }
-                    commitText(ch)
-                }
-                if(!lastState.shiftState.locked) keyboardState = lastState.copy(shiftState = ModifierState())
+                onPrintingKey(code)
+                autoUnlockShift()
             }
         }
         updateView()
     }
 
-    private fun commitText(char: Char) {
-        val inputConnection = currentInputConnection ?: return
-        inputConnection.commitText(char.toString(), 1)
+    private fun onPrintingKey(code: Int) {
+        inputSequence.onKey(code, keyboardState)
+//        val charCode = keyCharacterMap.get(code, keyboardState.asMetaState())
+//        if(charCode > 0) {
+//            val ch = charCode.toChar().let { if(keyboardState.shiftState.pressed) it.uppercaseChar() else it }
+//            onCommitText(ch.toString())
+//        }
     }
 
-    private fun commitText(charSequence: CharSequence) {
+    override fun onComposingText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
-        inputConnection.commitText(charSequence, 1)
+        inputConnection.setComposingText(text, 1)
     }
 
-    private fun deleteText(beforeLength: Int, afterLength: Int) {
+    override fun onFinishComposing() {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.finishComposingText()
+    }
+
+    override fun onCommitText(text: CharSequence) {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.commitText(text, 1)
+    }
+
+    override fun onDeleteText(beforeLength: Int, afterLength: Int) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.deleteSurroundingText(beforeLength, afterLength)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun resetInput() {
+        inputSequence.reset()
+    }
+
+    private fun autoUnlockShift() {
+        val lastState = keyboardState
+        if(!lastState.shiftState.locked) keyboardState = lastState.copy(shiftState = ModifierState())
     }
 
     private fun updateView() {
@@ -121,6 +143,10 @@ class MboardIME: InputMethodService(), KeyboardListener {
             outInsets.visibleTopInsets = visibleTopY
             outInsets.contentTopInsets = visibleTopY
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 }
