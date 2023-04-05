@@ -7,12 +7,18 @@ class HangulCombiner(
 ) {
     fun combine(state: State, input: Int): Pair<CharSequence, State> {
         var newState = state
-        var composed: String = ""
+        var composed = ""
         if(Hangul.isCho(input)) {
             if(newState.cho != null) {
                 val combination = jamoCombinationMap[newState.cho to input]
-                if(combination != null) newState = newState.copy(cho = combination)
-                else {
+                if(combination != null) {
+                    if(state.last != null && !Hangul.isCho(state.last)) {
+                        composed += newState.composed
+                        newState = State(cho = input)
+                    } else {
+                        newState = newState.copy(cho = combination)
+                    }
+                } else {
                     composed += newState.composed
                     newState = State(cho = input)
                 }
@@ -40,7 +46,7 @@ class HangulCombiner(
             composed += input.toChar()
             newState = State()
         }
-        return composed to newState
+        return composed to newState.copy(last = input)
     }
 
     data class State(
