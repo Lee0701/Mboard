@@ -48,7 +48,7 @@ data class Keyboard(
                 when(event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        if(key.key.type == Key.Type.Alphanumeric) {
+                        if(key.key.type == Key.Type.Alphanumeric || key.key.type == Key.Type.AlphanumericAlt) {
                             keyPopup?.apply {
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
                                 val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2

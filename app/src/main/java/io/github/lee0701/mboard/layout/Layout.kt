@@ -43,10 +43,10 @@ object Layout {
         )),
         Row(listOf(
             Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-            Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.Modifier),
-            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language),
-            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f),
-            Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.AlphanumericAlt),
+            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
+            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
+            Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.AlphanumericAlt),
             Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
         ))
     ), 220f)
