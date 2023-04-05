@@ -38,7 +38,7 @@ object Layout {
             Key(KeyEvent.KEYCODE_B, "B"),
             Key(KeyEvent.KEYCODE_N, "N"),
             Key(KeyEvent.KEYCODE_M, "M"),
-            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, repeatable = true, type = Key.Type.Modifier),
         )),
         Row(listOf(
             Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),

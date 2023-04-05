@@ -2,6 +2,8 @@ package io.github.lee0701.mboard.keyboard
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,8 +20,15 @@ data class Key(
     val label: String? = output,
     val icon: Int? = null,
     val width: Float = 1f,
+    val repeatable: Boolean = false,
     val type: Type = Type.Alphanumeric,
 ) {
+    val handler = Handler(Looper.getMainLooper())
+
+    // TODO: Read these values from preference
+    private val repeatStartDelay = 500L
+    private val repeatDelay = 50L
+
     @SuppressLint("ClickableViewAccessibility")
     fun initView(context: Context, listener: KeyboardListener): ViewWrapper {
         val wrappedContext = ContextThemeWrapper(context, type.styleId)
@@ -33,8 +42,20 @@ data class Key(
                 weight = key.width
             }
             root.setOnTouchListener { v, event ->
-                if(event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                when(event.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> {
+                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        fun repeater() {
+                            listener.onKey(key.code, key.output)
+                            handler.postDelayed({ repeater() }, repeatDelay)
+                        }
+                        handler.postDelayed({
+                            repeater()
+                        }, repeatStartDelay)
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        handler.removeCallbacksAndMessages(null)
+                    }
                 }
                 false
             }
