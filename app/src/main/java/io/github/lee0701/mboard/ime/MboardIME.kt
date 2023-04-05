@@ -16,8 +16,6 @@ class MboardIME: InputMethodService(), KeyboardListener {
     private var keyboardView: Keyboard.ViewWrapper? = null
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
-
-    private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
     private var keyboardState: KeyboardState = KeyboardState()
 
     override fun onCreate() {
@@ -30,6 +28,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
         inputView.addView(keyboardView.binding.root)
         this.inputView = inputView
         this.keyboardView = keyboardView
+        updateView()
         return inputView
     }
 
@@ -61,6 +60,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 }
             }
         }
+        updateView()
     }
 
     private fun commitText(char: Char) {
@@ -80,6 +80,25 @@ class MboardIME: InputMethodService(), KeyboardListener {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    private fun updateView() {
+        updateShiftedLabels()
+    }
+
+    private fun updateShiftedLabels() {
+        val range = KeyEvent.KEYCODE_A .. KeyEvent.KEYCODE_Z
+        val labels = range
+            .associateWith { code -> keyCharacterMap.get(code, keyboardState.asMetaState()).toChar().toString() }
+        updateLabels(labels)
+    }
+
+    private fun updateLabels(labels: Map<Int, CharSequence>) {
+        val keys = keyboardView?.keys ?: return
+        keys.map { key ->
+            val label = labels[key.key.code]
+            if(label != null) key.binding.label.text = label
+        }
     }
 
     override fun onComputeInsets(outInsets: Insets?) {
