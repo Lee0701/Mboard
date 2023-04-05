@@ -10,7 +10,7 @@ data class Row(
     val keys: List<Key>,
     val padding: Float = 0f,
 ) {
-    fun initView(context: Context, listener: KeyboardListener): ViewWrapper {
+    fun initView(context: Context): ViewWrapper {
         val keyViewWrappers = mutableListOf<Key.ViewWrapper>()
         val view = KeyboardRowBinding.inflate(LayoutInflater.from(context)).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
@@ -26,7 +26,7 @@ data class Row(
                 }
             })
             keys.forEach { key ->
-                val keyViewWrapper = key.initView(context, listener)
+                val keyViewWrapper = key.initView(context)
                 keyViewWrappers += keyViewWrapper
                 root.addView(keyViewWrapper.binding.root)
             }

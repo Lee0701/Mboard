@@ -4,4 +4,10 @@
     <dimen name="key_text_size">24sp</dimen>
     <dimen name="key_margin_vertical">6dp</dimen>
     <dimen name="key_margin_horizontal">3dp</dimen>
+
+    <dimen name="key_popup_radius">12dp</dimen>
+    <dimen name="key_popup_elevation">4dp</dimen>
+    <dimen name="key_popup_text_size">28sp</dimen>
+    <dimen name="key_popup_width">18dp</dimen>
+    <dimen name="key_popup_height">22dp</dimen>
 </resources>

@@ -38,7 +38,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
         super.onStartInput(attribute, restarting)
     }
 
-    override fun onKey(code: Int, output: String?) {
+    override fun onKeyPressed(code: Int, output: String?) {
         val lastState = keyboardState
         val currentTime = System.currentTimeMillis()
         when(code) {
