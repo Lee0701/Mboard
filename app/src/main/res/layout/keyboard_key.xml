@@ -8,7 +8,6 @@
     android:layout_weight="1"
     tools:layout_width="24dp"
     tools:layout_height="32dp"
-    android:theme="@style/Theme.Mboard.Keyboard.Key"
     android:clipToPadding="false">
 
     <androidx.appcompat.widget.AppCompatImageView

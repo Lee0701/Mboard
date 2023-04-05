@@ -30,7 +30,7 @@ object Layout {
             Key(KeyEvent.KEYCODE_L, "L"),
         ), padding = 0.5f),
         Row(listOf(
-            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, width = 1.5f),
+            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, width = 1.5f, type = Key.Type.Modifier),
             Key(KeyEvent.KEYCODE_Z, "Z"),
             Key(KeyEvent.KEYCODE_X, "X"),
             Key(KeyEvent.KEYCODE_C, "C"),
@@ -38,15 +38,15 @@ object Layout {
             Key(KeyEvent.KEYCODE_B, "B"),
             Key(KeyEvent.KEYCODE_N, "N"),
             Key(KeyEvent.KEYCODE_M, "M"),
-            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f),
+            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, type = Key.Type.Modifier),
         )),
         Row(listOf(
-            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f),
-            Key(KeyEvent.KEYCODE_COMMA, ","),
+            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.Modifier),
             Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language),
             Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f),
-            Key(KeyEvent.KEYCODE_PERIOD, "."),
-            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f),
+            Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
         ))
     ), 220f)
 

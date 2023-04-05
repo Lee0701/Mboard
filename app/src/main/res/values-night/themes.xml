@@ -29,4 +29,13 @@
         <item name="iconTint">@color/key_fg_dark</item>
     </style>
 
+    <style name="Theme.Mboard.Keyboard.Key.Mod" parent="Theme.Mboard.Keyboard.Key">
+        <item name="backgroundTint">@color/key_bg_dark_mod</item>
+    </style>
+
+    <style name="Theme.Mboard.Keyboard.Key.Return" parent="Theme.Mboard.Keyboard.Key">
+        <item name="backgroundTint">@color/key_bg_dark_return</item>
+        <item name="iconTint">@color/key_fg_dark_return</item>
+    </style>
+
 </resources>
