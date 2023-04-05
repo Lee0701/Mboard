@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "io.github.lee0701.maxboard"
+        applicationId "io.github.lee0701.mboard"
         minSdk 14
         targetSdk 33
         versionCode 1
