@@ -12,6 +12,8 @@ import io.github.lee0701.mboard.keyboard.Keyboard
 
 class MboardIME: InputMethodService(), KeyboardListener {
 
+    private val doubleTapGap: Int = 500
+
     private var inputView: FrameLayout? = null
     private var keyboardView: Keyboard.ViewWrapper? = null
 
@@ -44,7 +46,8 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 val timeDiff = currentTime - lastState.time
                 val shiftState = lastState.shiftState
                 val newShiftState =
-                    if(shiftState.pressed && timeDiff < 500) shiftState.copy(pressed = true, locked = true)
+                    if(shiftState.locked) shiftState.copy(pressed = false, locked = false)
+                    else if(shiftState.pressed && timeDiff < doubleTapGap) shiftState.copy(pressed = true, locked = true)
                     else shiftState.copy(pressed = !shiftState.pressed, locked = false)
                 val newState = lastState.copy(shiftState = newShiftState)
                 keyboardState = newState
@@ -56,7 +59,6 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 commitText(' ')
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                val editorInfo = currentInputEditorInfo ?: return sendDownUpKeyEvents(code)
                 if(!sendDefaultEditorAction(true)) return sendDownUpKeyEvents(code)
             }
             else -> {
