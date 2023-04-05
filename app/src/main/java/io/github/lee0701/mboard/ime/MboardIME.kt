@@ -44,7 +44,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 val timeDiff = currentTime - lastState.time
                 val shiftState = lastState.shiftState
                 val newShiftState =
-                    if(shiftState.pressed && timeDiff < 100) shiftState.copy(pressed = true, locked = true)
+                    if(shiftState.pressed && timeDiff < 500) shiftState.copy(pressed = true, locked = true)
                     else shiftState.copy(pressed = !shiftState.pressed, locked = false)
                 val newState = lastState.copy(shiftState = newShiftState)
                 keyboardState = newState
@@ -58,6 +58,7 @@ class MboardIME: InputMethodService(), KeyboardListener {
                     val ch = charCode.toChar().let { if(lastState.shiftState.pressed) it.uppercaseChar() else it }
                     commitText(ch)
                 }
+                if(!lastState.shiftState.locked) keyboardState = lastState.copy(shiftState = ModifierState())
             }
         }
         updateView()
