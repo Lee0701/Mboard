@@ -17,6 +17,9 @@ class MboardIME: InputMethodService(), KeyboardListener {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
 
+    private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+    private var keyboardState: KeyboardState = KeyboardState()
+
     override fun onCreate() {
         super.onCreate()
     }
@@ -35,7 +38,44 @@ class MboardIME: InputMethodService(), KeyboardListener {
     }
 
     override fun onKey(code: Int, output: String?) {
-        sendDownUpKeyEvents(code)
+        val lastState = keyboardState
+        val currentTime = System.currentTimeMillis()
+        when(code) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
+                val timeDiff = currentTime - lastState.time
+                val shiftState = lastState.shiftState
+                val newShiftState =
+                    if(shiftState.pressed && timeDiff < 100) shiftState.copy(pressed = true, locked = true)
+                    else shiftState.copy(pressed = !shiftState.pressed, locked = false)
+                val newState = lastState.copy(shiftState = newShiftState)
+                keyboardState = newState
+            }
+            KeyEvent.KEYCODE_DEL -> {
+                deleteText(1, 0)
+            }
+            else -> {
+                val charCode = keyCharacterMap.get(code, keyboardState.asMetaState())
+                if(charCode > 0) {
+                    val ch = charCode.toChar().let { if(lastState.shiftState.pressed) it.uppercaseChar() else it }
+                    commitText(ch)
+                }
+            }
+        }
+    }
+
+    private fun commitText(char: Char) {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.commitText(char.toString(), 1)
+    }
+
+    private fun commitText(charSequence: CharSequence) {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.commitText(charSequence, 1)
+    }
+
+    private fun deleteText(beforeLength: Int, afterLength: Int) {
+        val inputConnection = currentInputConnection ?: return
+        inputConnection.deleteSurroundingText(beforeLength, afterLength)
     }
 
     override fun onDestroy() {
