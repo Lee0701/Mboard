@@ -38,4 +38,12 @@
         <item name="iconTint">@color/key_fg_light_return</item>
     </style>
 
+    <style name="Theme.Mboard.Keyboard.KeyPopup">
+        <item name="android:textSize">@dimen/key_popup_text_size</item>
+        <item name="android:textColor">@color/key_fg_light</item>
+        <item name="background">@drawable/key_popup_bg</item>
+        <item name="backgroundTint">@color/key_bg_light</item>
+        <item name="iconTint">@color/key_fg_light</item>
+    </style>
+
 </resources>
