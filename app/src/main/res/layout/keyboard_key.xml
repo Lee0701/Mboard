@@ -14,9 +14,10 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="?attr/marginHorizontal"
-        android:layout_marginVertical="?attr/marginVertical"
-        android:src="?attr/background" />
+        android:layout_marginHorizontal="?marginHorizontal"
+        android:layout_marginVertical="?marginVertical"
+        android:src="?background"
+        android:tint="?backgroundTint" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label"
@@ -30,6 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:tint="?attr/iconTint" />
+        android:tint="?iconTint" />
 
 </FrameLayout>

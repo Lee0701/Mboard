@@ -16,6 +16,7 @@
 
     <style name="Theme.Mboard.Keyboard">
         <item name="background">@drawable/keyboard_bg_dark</item>
+<!--        <item name="backgroundTint">@color/keyboard_bg_dark</item>-->
     </style>
 
     <style name="Theme.Mboard.Keyboard.Key">
@@ -23,7 +24,8 @@
         <item name="android:textColor">@color/key_fg_dark</item>
         <item name="marginHorizontal">@dimen/key_margin_horizontal</item>
         <item name="marginVertical">@dimen/key_margin_vertical</item>
-        <item name="background">@drawable/key_bg_dark</item>
+        <item name="background">@drawable/key_bg</item>
+        <item name="backgroundTint">@color/key_bg_dark</item>
         <item name="iconTint">@color/key_fg_dark</item>
     </style>
 

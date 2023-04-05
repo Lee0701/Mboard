@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:theme="@style/Theme.Mboard.Keyboard"
-    android:background="?attr/background">
+    android:background="?background"
+    app:backgroundTint="?backgroundTint">
 
 </androidx.appcompat.widget.LinearLayoutCompat>

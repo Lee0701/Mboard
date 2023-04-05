@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="background" format="reference" />
+    <attr name="backgroundTint" format="color" />
+
     <declare-styleable name="Keyboard">
-        <attr name="backgroundColor" format="color" />
+        <attr name="background" />
+        <attr name="backgroundTint" />
     </declare-styleable>
+
     <declare-styleable name="Keyboard.Key">
         <attr name="marginHorizontal" format="dimension" />
         <attr name="marginVertical" format="dimension" />
-        <attr name="background" format="reference" />
+        <attr name="background" />
+        <attr name="backgroundTint" />
         <attr name="iconTint" format="color" />
     </declare-styleable>
 </resources>
