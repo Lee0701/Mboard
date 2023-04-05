@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import io.github.lee0701.mboard.KeyboardListener
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 
 data class Keyboard(

@@ -10,7 +10,6 @@ import android.view.MotionEvent
 import androidx.annotation.StyleRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
-import io.github.lee0701.mboard.KeyboardListener
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 

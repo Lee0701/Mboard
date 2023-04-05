@@ -1,6 +1,7 @@
-package io.github.lee0701.mboard
+package io.github.lee0701.mboard.layout
 
 import android.view.KeyEvent
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.keyboard.*
 
 object Layout {

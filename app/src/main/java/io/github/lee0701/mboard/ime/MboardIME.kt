@@ -6,8 +6,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
-import io.github.lee0701.mboard.KeyboardListener
-import io.github.lee0701.mboard.Layout
+import io.github.lee0701.mboard.keyboard.KeyboardListener
+import io.github.lee0701.mboard.layout.Layout
 import io.github.lee0701.mboard.keyboard.Keyboard
 
 class MboardIME: InputMethodService(), KeyboardListener {

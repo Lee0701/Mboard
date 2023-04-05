@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
-import io.github.lee0701.mboard.KeyboardListener
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
 
 data class Row(
