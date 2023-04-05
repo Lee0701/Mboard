@@ -36,7 +36,10 @@ data class Key(
         @StyleRes val styleId: Int,
     ) {
         Alphanumeric(R.style.Theme_Mboard_Keyboard_Key),
+        AlphanumericAlt(R.style.Theme_Mboard_Keyboard_Key_Mod),
         Modifier(R.style.Theme_Mboard_Keyboard_Key_Mod),
+        ModifierAlt(R.style.Theme_Mboard_Keyboard_Key),
+        Space(R.style.Theme_Mboard_Keyboard_Key),
         Return(R.style.Theme_Mboard_Keyboard_Key_Return),
     }
 
