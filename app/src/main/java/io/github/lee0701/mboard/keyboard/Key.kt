@@ -1,7 +1,10 @@
 package io.github.lee0701.mboard.keyboard
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
@@ -19,6 +22,7 @@ data class Key(
     val width: Float = 1f,
     val type: Type = Type.Alphanumeric,
 ) {
+    @SuppressLint("ClickableViewAccessibility")
     fun initView(context: Context, listener: KeyboardListener): View {
         val wrappedContext = ContextThemeWrapper(context, type.styleId)
         return KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext)).apply {
@@ -29,6 +33,12 @@ data class Key(
                 0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
             ).apply {
                 weight = key.width
+            }
+            root.setOnTouchListener { v, event ->
+                if(event.actionMasked == MotionEvent.ACTION_DOWN) {
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                }
+                false
             }
             root.setOnClickListener {
                 listener.onKey(key.code, key.output)
