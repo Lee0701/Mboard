@@ -11,14 +11,15 @@ data class Row(
     val keys: List<Key>,
     val padding: Float = 0f,
 ) {
-    fun initView(context: Context, listener: KeyboardListener): View {
-        return KeyboardRowBinding.inflate(LayoutInflater.from(context)).root.apply {
-            layoutParams = LinearLayoutCompat.LayoutParams(
+    fun initView(context: Context, listener: KeyboardListener): ViewWrapper {
+        val keyViewWrappers = mutableListOf<Key.ViewWrapper>()
+        val view = KeyboardRowBinding.inflate(LayoutInflater.from(context)).apply {
+            root.layoutParams = LinearLayoutCompat.LayoutParams(
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT, 0
             ).apply {
                 weight = 1f
             }
-            if(padding > 0) addView(View(context, null).apply {
+            if(padding > 0) root.addView(View(context, null).apply {
                 layoutParams = LinearLayoutCompat.LayoutParams(
                     0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
                 ).apply {
@@ -26,9 +27,11 @@ data class Row(
                 }
             })
             keys.forEach { key ->
-                addView(key.initView(context, listener))
+                val keyViewWrapper = key.initView(context, listener)
+                keyViewWrappers += keyViewWrapper
+                root.addView(keyViewWrapper.binding.root)
             }
-            if(padding > 0) addView(View(context, null).apply {
+            if(padding > 0) root.addView(View(context, null).apply {
                 layoutParams = LinearLayoutCompat.LayoutParams(
                     0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
                 ).apply {
@@ -36,5 +39,11 @@ data class Row(
                 }
             })
         }
+        return ViewWrapper(this, view, keyViewWrappers)
     }
+    data class ViewWrapper(
+        val row: Row,
+        val binding: KeyboardRowBinding,
+        val keys: List<Key.ViewWrapper>,
+    )
 }

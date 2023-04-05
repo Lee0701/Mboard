@@ -5,8 +5,6 @@ import android.content.Context
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
-import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -23,9 +21,9 @@ data class Key(
     val type: Type = Type.Alphanumeric,
 ) {
     @SuppressLint("ClickableViewAccessibility")
-    fun initView(context: Context, listener: KeyboardListener): View {
+    fun initView(context: Context, listener: KeyboardListener): ViewWrapper {
         val wrappedContext = ContextThemeWrapper(context, type.styleId)
-        return KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext)).apply {
+        val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext)).apply {
             val key = this@Key
             if(key.label != null) label.text = key.label
             if(key.icon != null) icon.setImageResource(key.icon)
@@ -43,7 +41,8 @@ data class Key(
             root.setOnClickListener {
                 listener.onKey(key.code, key.output)
             }
-        }.root
+        }
+        return ViewWrapper(this, binding)
     }
 
     enum class Type(
@@ -53,4 +52,9 @@ data class Key(
         Modifier(R.style.Theme_Mboard_Keyboard_Key_Mod),
         Return(R.style.Theme_Mboard_Keyboard_Key_Return),
     }
+
+    data class ViewWrapper(
+        val key: Key,
+        val binding: KeyboardKeyBinding,
+    )
 }
