@@ -40,17 +40,22 @@ data class Keyboard(
                 root.addView(rowViewWrapper.binding.root)
             }
         }
+
+        keyPopup = KeyPopup(context)
+
         val keyViewWrappers = rowViewWrappers.flatMap { it.keys }
         keyViewWrappers.forEach { key ->
             key.binding.root.setOnTouchListener { v, event ->
                 when(event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        keyPopup = KeyPopup(context).apply {
-                            val row = rowViewWrappers.find { key in it.keys } ?: return@apply
-                            val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2
-                            val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
-                            show(binding.root, key, x, y)
+                        if(key.key.type == Key.Type.Alphanumeric) {
+                            keyPopup?.apply {
+                                val row = rowViewWrappers.find { key in it.keys } ?: return@apply
+                                val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2
+                                val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
+                                show(binding.root, key, x, y)
+                            }
                         }
                         fun repeater() {
                             listener.onKeyPressed(key.key.code, key.key.output)
@@ -63,7 +68,6 @@ data class Keyboard(
                     MotionEvent.ACTION_UP -> {
                         handler.removeCallbacksAndMessages(null)
                         keyPopup?.hide()
-                        keyPopup = null
                     }
                 }
                 false
