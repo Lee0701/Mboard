@@ -52,6 +52,13 @@ class MboardIME: InputMethodService(), KeyboardListener {
             KeyEvent.KEYCODE_DEL -> {
                 deleteText(1, 0)
             }
+            KeyEvent.KEYCODE_SPACE -> {
+                commitText(' ')
+            }
+            KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                val editorInfo = currentInputEditorInfo ?: return sendDownUpKeyEvents(code)
+                if(!sendDefaultEditorAction(true)) return sendDownUpKeyEvents(code)
+            }
             else -> {
                 val charCode = keyCharacterMap.get(code, keyboardState.asMetaState())
                 if(charCode > 0) {
