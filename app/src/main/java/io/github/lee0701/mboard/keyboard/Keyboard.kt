@@ -56,6 +56,8 @@ data class Keyboard(
                                 val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
                                 show(binding.root, key, x, y)
                             }
+                        } else {
+                            keyPopup?.cancel()
                         }
                         fun repeater() {
                             listener.onKeyPressed(key.key.code, key.key.output)

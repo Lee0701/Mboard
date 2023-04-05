@@ -1,5 +1,8 @@
 package io.github.lee0701.mboard.keyboard
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Build
 import android.util.TypedValue
@@ -17,6 +20,21 @@ import kotlin.math.roundToInt
 class KeyPopup(
     context: Context,
 ) {
+    private val animator: Animator = ValueAnimator.ofFloat(1f, 0f).apply {
+        addUpdateListener {
+            val value = animatedValue as Float
+            popupWindow.background.alpha = (value * 256).toInt()
+            binding.root.alpha = value
+        }
+        addListener(object: AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                popupWindow.dismiss()
+                popupWindow.background.alpha = 255
+                binding.root.alpha = 1f
+            }
+        })
+    }
+
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_Mboard_Keyboard_KeyPopup)
     private val binding = KeyPopupBinding.inflate(LayoutInflater.from(wrappedContext), null, false)
     private val popupWindow = PopupWindow(wrappedContext, null).apply {
@@ -48,10 +66,15 @@ class KeyPopup(
         else binding.icon.setImageDrawable(null)
         if(key.key.label != null) binding.label.text = key.key.label
         else binding.label.text = ""
+        if(animator.isRunning) animator.cancel()
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
 
     fun hide() {
-        popupWindow.dismiss()
+        animator.start()
+    }
+
+    fun cancel() {
+        animator.cancel()
     }
 }
