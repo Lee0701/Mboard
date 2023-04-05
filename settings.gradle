@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Mboard"
+rootProject.name = "mBoard"
 include ':app'

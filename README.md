@@ -1,2 +1,2 @@
-# Mboard
-Mboard — Modern, Minimal, Modular.
+# mBoard
+mBoard — Modern, Minimal, Modular.
