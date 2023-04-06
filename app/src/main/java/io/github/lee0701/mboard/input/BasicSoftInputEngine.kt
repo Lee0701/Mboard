@@ -4,7 +4,9 @@ import android.content.Context
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.keyboard.Keyboard
@@ -52,11 +54,11 @@ class BasicSoftInputEngine(
         val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
         this.softKeyboardWrapper = softKeyboardWrapper
         updateView()
-        return softKeyboardWrapper.binding.root
+        return softKeyboardWrapper.view
     }
 
     override fun getView(): View {
-        return softKeyboardWrapper!!.binding.root
+        return softKeyboardWrapper!!.view
     }
 
     private fun updateView() {
@@ -74,7 +76,7 @@ class BasicSoftInputEngine(
         val keys = softKeyboardWrapper?.keys ?: return
         keys.map { key ->
             val label = labels[key.key.code]
-            if(label != null) key.binding.label.text = label
+            if(label != null) key.view.findViewById<AppCompatTextView>(R.id.label).text = label
         }
     }
 
@@ -171,7 +173,7 @@ class BasicSoftInputEngine(
     override fun onComputeInsets(inputView: View, outInsets: InputMethodService.Insets?) {
         if(outInsets != null) {
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_VISIBLE
-            val visibleTopY = inputView.height - (softKeyboardWrapper?.binding?.root?.height ?: return)
+            val visibleTopY = inputView.height - (softKeyboardWrapper?.view?.height ?: return)
             outInsets.visibleTopInsets = visibleTopY
             outInsets.contentTopInsets = visibleTopY
         }

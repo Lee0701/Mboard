@@ -2,12 +2,12 @@ package io.github.lee0701.mboard.keyboard
 
 import android.content.Context
 import android.view.LayoutInflater
-import androidx.annotation.StyleRes
-import androidx.appcompat.view.ContextThemeWrapper
+import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 
 data class Key(
     val code: Int,
@@ -20,11 +20,11 @@ data class Key(
 ) {
     fun initView(context: Context, theme: Theme): ViewWrapper {
         val wrappedContext = theme.key[type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
-        val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
+        val binding = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard_key, null, false).apply {
             val key = this@Key
-            if(key.label != null) label.text = key.label
-            if(key.icon != null) icon.setImageResource(key.icon)
-            root.layoutParams = LinearLayoutCompat.LayoutParams(
+            if(key.label != null) findViewById<AppCompatTextView>(R.id.label).text = key.label
+            if(key.icon != null) findViewById<AppCompatImageView>(R.id.icon).setImageResource(key.icon)
+            layoutParams = LinearLayoutCompat.LayoutParams(
                 0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
             ).apply {
                 weight = key.width
@@ -44,6 +44,6 @@ data class Key(
 
     data class ViewWrapper(
         val key: Key,
-        val binding: KeyboardKeyBinding,
+        val view: View,
     )
 }
