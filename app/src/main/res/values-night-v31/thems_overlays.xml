@@ -6,8 +6,8 @@
 
     <style name="Theme.MBoard.Keyboard.Key.Overlay" parent="ThemeOverlay.Material3.DynamicColors.Dark">
         <item name="android:textSize">@dimen/key_text_size</item>
-        <item name="android:textColor">@android:color/system_accent1_50</item>
-        <item name="iconTint">@android:color/system_accent1_50</item>
+        <item name="android:textColor">@android:color/system_accent1_10</item>
+        <item name="iconTint">@android:color/system_accent1_10</item>
         <item name="marginHorizontal">@dimen/key_margin_horizontal</item>
         <item name="marginVertical">@dimen/key_margin_vertical</item>
         <item name="background">@drawable/key_bg</item>
@@ -20,7 +20,7 @@
 
     <style name="Theme.MBoard.Keyboard.Key.Return.Overlay" parent="Theme.MBoard.Keyboard.Key.Overlay">
         <item name="backgroundTint">@color/key_bg_dynamic_dark_return</item>
-        <item name="iconTint">@android:color/system_accent1_100</item>
+        <item name="iconTint">@android:color/system_accent1_50</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.KeyPopup.Overlay">
