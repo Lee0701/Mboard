@@ -19,7 +19,7 @@
     <color name="key_bg_light_return_unpressed">#76d1ff</color>
     <color name="key_bg_light_return_pressed">#00668b</color>
     <color name="key_fg_light">#191c1e</color>
-    <color name="key_fg_light_return">#f0f0f3</color>
+    <color name="key_fg_light_return">#191c1e</color>
 
     <color name="keyboard_bg_dark">#191c1e</color>
     <color name="key_bg_dark_unpressed">#2e3133</color>

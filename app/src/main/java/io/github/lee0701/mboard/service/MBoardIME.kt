@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.service
 
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.util.TypedValue
@@ -51,11 +52,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
             intArrayOf(1, 2),
         )
         val switcher = InputEngineSwitcher(engines, table)
-        switcher.initViews(this)
         this.inputEngineSwitcher = switcher
     }
 
     override fun onCreateInputView(): View {
+        inputEngineSwitcher?.initViews(this)
         val inputView = FrameLayout(this, null)
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
         val keyboardView =
