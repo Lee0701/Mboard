@@ -19,6 +19,9 @@ class MboardIME: InputMethodService(), KeyboardListener {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
     private var keyboardState: KeyboardState = KeyboardState()
+    private var shiftClickedTime: Long = 0
+    private var shiftPressing: Boolean = false
+    private var inputWhileShiftPressed: Boolean = false
 
     override fun onCreate() {
         super.onCreate()
@@ -38,19 +41,51 @@ class MboardIME: InputMethodService(), KeyboardListener {
         super.onStartInput(attribute, restarting)
     }
 
-    override fun onKeyPressed(code: Int, output: String?) {
+    override fun onKeyDown(code: Int, output: String?) {
         val lastState = keyboardState
-        val currentTime = System.currentTimeMillis()
         when(code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                val timeDiff = currentTime - lastState.time
-                val shiftState = lastState.shiftState
-                val newShiftState =
-                    if(shiftState.locked) shiftState.copy(pressed = false, locked = false)
-                    else if(shiftState.pressed && timeDiff < doubleTapGap) shiftState.copy(pressed = true, locked = true)
-                    else shiftState.copy(pressed = !shiftState.pressed, locked = false)
-                val newState = lastState.copy(shiftState = newShiftState)
-                keyboardState = newState
+                keyboardState = lastState.copy(shiftState = lastState.shiftState.copy(pressed = true))
+                shiftPressing = true
+                inputWhileShiftPressed = false
+                updateView()
+            }
+        }
+    }
+
+    override fun onKeyUp(code: Int, output: String?) {
+        val lastState = keyboardState
+        val shiftState = lastState.shiftState
+        val currentTime = System.currentTimeMillis()
+        val timeDiff = currentTime - shiftClickedTime
+        println("$timeDiff $inputWhileShiftPressed")
+        when(code) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
+                if(shiftState.locked) {
+                    keyboardState = lastState.copy(shiftState = ModifierState())
+                } else if(shiftState.pressed) {
+                    if(timeDiff < doubleTapGap) {
+                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = true, locked = true))
+                    } else if(inputWhileShiftPressed) {
+                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = false))
+                    } else {
+                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = true))
+                    }
+                } else {
+                    keyboardState = lastState.copy(shiftState = ModifierState(pressed = true))
+                }
+                shiftClickedTime = currentTime
+                inputWhileShiftPressed = false
+                shiftPressing = false
+                updateView()
+            }
+        }
+    }
+
+    override fun onKeyClick(code: Int, output: String?) {
+        val lastState = keyboardState
+        when(code) {
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
             }
             KeyEvent.KEYCODE_DEL -> {
                 deleteText(1, 0)
@@ -66,8 +101,11 @@ class MboardIME: InputMethodService(), KeyboardListener {
                 if(charCode > 0) {
                     val ch = charCode.toChar().let { if(lastState.shiftState.pressed) it.uppercaseChar() else it }
                     commitText(ch)
+                    if(lastState.shiftState.pressed) inputWhileShiftPressed = true
+                    if(!lastState.shiftState.locked && !shiftPressing) {
+                        keyboardState = lastState.copy(shiftState = ModifierState())
+                    }
                 }
-                if(!lastState.shiftState.locked) keyboardState = lastState.copy(shiftState = ModifierState())
             }
         }
         updateView()

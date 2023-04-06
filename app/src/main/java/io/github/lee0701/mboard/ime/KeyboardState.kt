@@ -8,7 +8,6 @@ data class KeyboardState(
     val controlState: ModifierState = ModifierState(),
     val metaState: ModifierState = ModifierState(),
 ) {
-    val time: Long = System.currentTimeMillis()
     fun asMetaState(): Int {
         var result = 0
         result = result or if(shiftState.pressed) KeyEvent.META_SHIFT_ON else 0
