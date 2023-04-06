@@ -59,22 +59,24 @@ data class Keyboard(
                             keyPopup?.cancel()
                         }
                         fun repeater() {
-                            listener.onKeyPressed(key.key.code, key.key.output)
+                            listener.onKeyClick(key.key.code, key.key.output)
                             handler.postDelayed({ repeater() }, repeatDelay)
                         }
                         handler.postDelayed({
                             if(key.key.repeatable) repeater()
                         }, repeatStartDelay)
+                        listener.onKeyDown(key.key.code, key.key.output)
                     }
                     MotionEvent.ACTION_UP -> {
                         handler.removeCallbacksAndMessages(null)
                         keyPopup?.hide()
+                        listener.onKeyUp(key.key.code, key.key.output)
                     }
                 }
                 false
             }
             key.binding.root.setOnClickListener {
-                listener.onKeyPressed(key.key.code, key.key.output)
+                listener.onKeyClick(key.key.code, key.key.output)
             }
         }
         return ViewWrapper(this, binding, rowViewWrappers, keyViewWrappers)
