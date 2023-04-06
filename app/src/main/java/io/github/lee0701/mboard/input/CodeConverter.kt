@@ -21,6 +21,14 @@ class CodeConverter(
         val alt: Int = base,
         val altShift: Int = shift,
     ) {
+        constructor(
+            base: Char,
+            shift: Char = base,
+            capsLocked: Char = shift,
+            alt: Char = base,
+            altShift: Char = shift,
+        ): this(base.code, shift.code, capsLocked.code, alt.code, altShift.code)
+
         fun withKeyboardState(keyboardState: KeyboardState): CharSequence {
             val label = if(keyboardState.shiftState.locked) this.capsLocked
             else if(keyboardState.shiftState.pressed && keyboardState.altState.pressed) this.altShift

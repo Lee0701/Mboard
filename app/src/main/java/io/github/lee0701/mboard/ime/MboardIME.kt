@@ -5,13 +5,15 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
+import io.github.lee0701.mboard.input.CodeConverterInputEngine
 import io.github.lee0701.mboard.input.DirectInputEngine
 import io.github.lee0701.mboard.input.HangulInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.keyboard.KeyboardListener
-import io.github.lee0701.mboard.layout.Layout
+import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.keyboard.Keyboard
 import io.github.lee0701.mboard.layout.HangulLayout
+import io.github.lee0701.mboard.layout.SymbolLayout
 
 class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
 
@@ -20,14 +22,18 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
     private var inputView: FrameLayout? = null
     private var keyboardView: Keyboard.ViewWrapper? = null
 
-    private val layout = Layout.LAYOUT_QWERTY_MOBILE
+    private val layout = SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE
     private val engines: List<InputEngine> by lazy { listOf(
         DirectInputEngine(this),
-        HangulInputEngine(HangulLayout.DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, this),
+        HangulInputEngine(HangulLayout.LAYOUT_HANGUL_DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, this),
+        CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, this)
     ) }
-    private val languages: List<Int> = listOf(0, 1)
-    private var currentLanguage = 0
-    private val currentInputEngine: InputEngine get() = engines[languages[currentLanguage]]
+    private val languageTable: List<Int> = listOf(0, 1)
+    private val extraTable: List<Int?> = listOf(null, 2)
+    private var currentLanguageIndex = 0
+    private var currentExtraIndex = 0
+    private val currentInputEngine: InputEngine get() =
+        engines[extraTable.getOrNull(currentExtraIndex) ?: languageTable[currentLanguageIndex]]
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
     private var shiftPressing: Boolean = false
@@ -111,8 +117,12 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
                 if(!sendDefaultEditorAction(true)) return sendDownUpKeyEvents(code)
             }
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                currentLanguage += 1
-                if(currentLanguage >= languages.size) currentLanguage = 0
+                currentLanguageIndex += 1
+                if(currentLanguageIndex >= languageTable.size) currentLanguageIndex = 0
+            }
+            KeyEvent.KEYCODE_SYM -> {
+                currentExtraIndex += 1
+                if(currentExtraIndex >= extraTable.size) currentExtraIndex = 0
             }
             else -> {
                 onPrintingKey(code)
