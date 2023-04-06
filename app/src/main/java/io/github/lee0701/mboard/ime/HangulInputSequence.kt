@@ -5,9 +5,9 @@ import io.github.lee0701.mboard.input.CodeConverter
 import io.github.lee0701.mboard.input.HangulCombiner
 
 class HangulInputSequence(
-    val codeTable: Map<Int, CodeConverter.Entry>,
-    val jamoCombinationTable: Map<Pair<Int, Int>, Int>,
-    val listener: Listener,
+    private val codeTable: Map<Int, CodeConverter.Entry>,
+    private val jamoCombinationTable: Map<Pair<Int, Int>, Int>,
+    private val listener: Listener,
 ) {
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
     private val codeConverter = CodeConverter(codeTable)
@@ -23,11 +23,11 @@ class HangulInputSequence(
             reset()
             listener.onCommitText(char.toString())
         } else {
-            val (text, hangulState) = hangulCombiner.combine(hangulState, converted)
+            val (text, hangulStates) = hangulCombiner.combine(hangulState, converted)
             if(text.isNotEmpty()) this.stateStack.clear()
-            this.stateStack += hangulState
+            this.stateStack += hangulStates
             listener.onCommitText(text)
-            listener.onComposingText(hangulState.composed)
+            listener.onComposingText(hangulStates.lastOrNull()?.composed ?: "")
         }
     }
 

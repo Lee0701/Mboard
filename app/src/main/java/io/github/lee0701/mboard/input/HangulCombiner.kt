@@ -5,102 +5,104 @@ import io.github.lee0701.mboard.charset.Hangul
 class HangulCombiner(
     val jamoCombinationMap: Map<Pair<Int, Int>, Int> = mapOf(),
 ) {
-    fun combine(state: State, input: Int): Pair<CharSequence, State> {
-        var newState = state
+    fun combine(state: State, input: Int): Pair<CharSequence, List<State>> {
+        val newStates = mutableListOf<State>()
         var composed = ""
         if(Hangul.isCho(input)) {
-            if(newState.cho != null) {
-                val combination = jamoCombinationMap[newState.cho to input]
+            if(state.cho != null) {
+                val combination = jamoCombinationMap[state.cho to input]
                 if(combination != null) {
                     if(state.last != null && !Hangul.isCho(state.last)) {
-                        composed += newState.composed
-                        newState = State(cho = input)
+                        composed += state.composed
+                        newStates += State(cho = input)
                     } else {
-                        newState = newState.copy(cho = combination)
+                        newStates += state.copy(cho = combination)
                     }
                 } else {
-                    composed += newState.composed
-                    newState = State(cho = input)
+                    composed += state.composed
+                    newStates += State(cho = input)
                 }
-            } else newState = newState.copy(cho = input)
+            } else newStates += state.copy(cho = input)
         } else if(Hangul.isJung(input)) {
-            if(newState.jung != null) {
-                val combination = jamoCombinationMap[newState.jung to input]
-                if(combination != null) newState = newState.copy(jung = combination)
+            if(state.jung != null) {
+                val combination = jamoCombinationMap[state.jung to input]
+                if(combination != null) newStates += state.copy(jung = combination)
                 else {
-                    composed += newState.composed
-                    newState = State(jung = input)
+                    composed += state.composed
+                    newStates += State(jung = input)
                 }
-            } else newState = newState.copy(jung = input)
+            } else newStates += state.copy(jung = input)
         } else if(Hangul.isJong(input)) {
-            val newStateJong = newState.jong
+            val newStateJong = state.jong
             if(newStateJong != null) {
                 val combination = jamoCombinationMap[newStateJong to input]
-                if(combination != null) newState = newState.copy(jong = combination, jongCombination = newStateJong to input)
+                if(combination != null) newStates += state.copy(jong = combination, jongCombination = newStateJong to input)
                 else {
-                    composed += newState.composed
-                    newState = State(jong = input)
+                    composed += state.composed
+                    newStates += State(jong = input)
                 }
-            } else newState = newState.copy(jong = input)
+            } else newStates += state.copy(jong = input)
         } else if(Hangul.isConsonant(input)) {
             val cho = Hangul.consonantToCho(input and 0xffff)
             val jong = Hangul.consonantToJong(input and 0xffff)
-            if(newState.cho != null && newState.jung != null) {
+            if(state.cho != null && state.jung != null) {
                 if(state.jong != null) {
                     val combination = jamoCombinationMap[state.jong to jong]
-                    if(combination != null) newState = newState.copy(jong = combination, jongCombination = state.jong to jong)
+                    if(combination != null) newStates += state.copy(jong = combination, jongCombination = state.jong to jong)
                     else {
-                        composed += newState.composed
-                        newState = State(cho = cho)
+                        composed += state.composed
+                        newStates += State(cho = cho)
                     }
                 } else {
-                    newState = newState.copy(jong = jong)
+                    newStates += state.copy(jong = jong)
                 }
-            } else if(newState.cho != null) {
+            } else if(state.cho != null) {
                 if(state.last != null && !Hangul.isConsonant(state.last)) {
-                    composed += newState.composed
-                    newState = State(cho = cho)
+                    composed += state.composed
+                    newStates += State(cho = cho)
                 } else {
-                    val combination = jamoCombinationMap[newState.cho to cho]
-                    if(combination != null) newState = newState.copy(cho = cho)
+                    val combination = jamoCombinationMap[state.cho to cho]
+                    if(combination != null) newStates += state.copy(cho = cho)
                     else {
-                        composed += newState.composed
-                        newState = State(cho = cho)
+                        composed += state.composed
+                        newStates += State(cho = cho)
                     }
                 }
             } else {
-                newState = newState.copy(cho = cho)
+                newStates += state.copy(cho = cho)
             }
         } else if(Hangul.isVowel(input)) {
             val jung = Hangul.vowelToJung(input and 0xffff)
-            val newStateJong = newState.jong
-            val jongCombination = newState.jongCombination
+            val newStateJong = state.jong
+            val jongCombination = state.jongCombination
             if(newStateJong != null) {
                 if(jongCombination != null) {
                     val promotedCho = Hangul.ghostLight(jongCombination.second)
-                    composed += newState.copy(jong = jongCombination.first).composed
-                    newState = State(cho = promotedCho, jung = jung)
+                    composed += state.copy(jong = jongCombination.first).composed
+                    newStates += State(cho = promotedCho)
+                    newStates += State(cho = promotedCho, jung = jung)
                 } else {
                     val promotedCho = Hangul.ghostLight(newStateJong)
-                    composed += newState.copy(jong = null).composed
-                    newState = State(cho = promotedCho, jung = jung)
+                    composed += state.copy(jong = null).composed
+                    newStates += State(cho = promotedCho)
+                    newStates += State(cho = promotedCho, jung = jung)
                 }
-            } else if(newState.jung != null) {
-                val combination = jamoCombinationMap[newState.jung to jung]
-                if(combination != null) newState = newState.copy(jung = combination)
+            } else if(state.jung != null) {
+                val combination = jamoCombinationMap[state.jung to jung]
+                if(combination != null) newStates += state.copy(jung = combination)
                 else {
-                    composed += newState.composed
-                    newState = State(jung = jung)
+                    composed += state.composed
+                    newStates += State(jung = jung)
                 }
             } else {
-                newState = newState.copy(jung = jung)
+                newStates += state.copy(jung = jung)
             }
         } else {
-            composed += newState.composed
+            composed += state.composed
             composed += input.toChar()
-            newState = State()
+            newStates += State()
         }
-        return composed to newState.copy(last = input)
+        return composed to newStates
     }
 
     data class State(
