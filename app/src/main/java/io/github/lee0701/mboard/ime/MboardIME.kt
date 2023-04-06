@@ -18,8 +18,10 @@ class MboardIME: InputMethodService(), KeyboardListener, HangulInputSequence.Lis
     private var inputView: FrameLayout? = null
     private var keyboardView: Keyboard.ViewWrapper? = null
 
+    private val layout = Layout.LAYOUT_QWERTY_MOBILE
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
-    private val inputSequence = HangulInputSequence(HangulLayout.SEBEOL_390, HangulLayout.COMB_SEBEOL_390, this)
+//    private val inputSequence = HangulInputSequence(HangulLayout.SEBEOL_390, HangulLayout.COMB_SEBEOL_390, this)
+    private val inputSequence = HangulInputSequence(HangulLayout.DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, this)
     private var keyboardState: KeyboardState = KeyboardState()
 
     override fun onCreate() {
@@ -28,7 +30,7 @@ class MboardIME: InputMethodService(), KeyboardListener, HangulInputSequence.Lis
 
     override fun onCreateInputView(): View {
         val inputView = FrameLayout(this, null)
-        val keyboardView = Layout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE.initView(this, this)
+        val keyboardView = layout.initView(this, this)
         inputView.addView(keyboardView.binding.root)
         this.inputView = inputView
         this.keyboardView = keyboardView

@@ -17,9 +17,13 @@ object Hangul {
     fun jungToCompatVowel(char: Char): Char = (char - 0x1161 + 0x314f)
     fun jongToCompatConsonant(char: Char): Char = (CONVERT_JONG.indexOf(char) + 0x3131).toChar()
 
-    fun consonantToCho(char: Char): Char = CONVERT_CHO[(char - 0x3131).code]
-    fun vowelToJung(char: Char): Char = (char - 0x3131 + 0x1161)
-    fun consonantToJong(char: Char): Char = CONVERT_JONG[(char - 0x3131).code]
+    fun consonantToCho(code: Int): Int = CONVERT_CHO[code - 0x3131].code
+    fun vowelToJung(code: Int): Int = (code - 0x314f + 0x1161)
+    fun consonantToJong(code: Int): Int = CONVERT_JONG[code - 0x3131].code
+
+    fun ghostLight(jong: Int): Int {
+        return consonantToCho(jongToCompatConsonant(jong.toChar()).code)
+    }
 
     fun combineNFC(cho: Int, jung: Int, jong: Int?): Char {
         return (0xac00 + 21*28*cho + 28*jung + (jong?:0)).toChar()
