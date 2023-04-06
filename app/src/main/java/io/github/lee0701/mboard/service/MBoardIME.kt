@@ -3,14 +3,13 @@ package io.github.lee0701.mboard.service
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
-import io.github.lee0701.mboard.input.*
-import io.github.lee0701.mboard.layout.SoftKeyboardLayout
-import io.github.lee0701.mboard.layout.HangulLayout
-import io.github.lee0701.mboard.layout.SymbolLayout
+import io.github.lee0701.mboard.input.DirectInputEngine
+import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.input.InputEnginePresets
+import io.github.lee0701.mboard.input.SoftInputEngine
 
 class MBoardIME: InputMethodService(), InputEngine.Listener {
 
