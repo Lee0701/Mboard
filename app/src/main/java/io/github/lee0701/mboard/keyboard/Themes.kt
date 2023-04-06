@@ -31,7 +31,7 @@ object Themes {
     )
 
     val map: Map<String, Theme> = mapOf(
-        "static" to Static,
-        "dynamic" to Dynamic,
+        "theme_static" to Static,
+        "theme_dynamic" to Dynamic,
     )
 }

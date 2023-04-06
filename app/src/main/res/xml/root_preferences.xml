@@ -4,23 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="@string/pref_header_behaviour_title">
+        app:title="@string/pref_header_appearance_title">
 
-        <SwitchPreferenceCompat
-            app:key="behaviour_show_popups"
-            app:defaultValue="true"
-            app:title="@string/pref_behaviour_show_popups_title" />
-
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
-            app:key="behaviour_longpress_duration"
-            app:defaultValue="1000"
-            app:title="@string/pref_behaviour_longpress_duration_title"
-            app:useSimpleSummaryProvider="true" />
-
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
-            app:key="behaviour_repeat_interval"
-            app:defaultValue="50"
-            app:title="@string/pref_behaviour_repeat_interval_title"
+        <ListPreference
+            app:key="appearance_theme"
+            app:defaultValue="theme_dynamic"
+            app:entries="@array/appearance_themes"
+            app:entryValues="@array/appearance_theme_values"
+            app:title="@string/pref_appearance_theme_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
@@ -42,6 +33,28 @@
             app:entries="@array/layout_latin_presets"
             app:entryValues="@array/layout_latin_preset_values"
             app:title="@string/pref_layout_latin_preset_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/pref_header_behaviour_title">
+
+        <SwitchPreferenceCompat
+            app:key="behaviour_show_popups"
+            app:defaultValue="true"
+            app:title="@string/pref_behaviour_show_popups_title" />
+
+        <io.github.lee0701.mboard.settings.IntEditTextPreference
+            app:key="behaviour_longpress_duration"
+            app:defaultValue="1000"
+            app:title="@string/pref_behaviour_longpress_duration_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.IntEditTextPreference
+            app:key="behaviour_repeat_interval"
+            app:defaultValue="50"
+            app:title="@string/pref_behaviour_repeat_interval_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
