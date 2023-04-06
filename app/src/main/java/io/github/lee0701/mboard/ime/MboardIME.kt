@@ -28,6 +28,11 @@ class MboardIME: InputMethodService(), InputEngine.Listener {
                 { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_SEBEOL_390, HangulLayout.COMB_SEBEOL_390, it) },
                 this
             ),
+//            BasicSoftInputEngine(
+//                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
+//                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, it) },
+//                this
+//            ),
             BasicSoftInputEngine(
                 { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
                 { CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, it) },
