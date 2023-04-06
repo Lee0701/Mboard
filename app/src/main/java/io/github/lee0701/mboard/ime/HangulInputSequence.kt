@@ -46,6 +46,10 @@ class HangulInputSequence(
         listener.onFinishComposing()
     }
 
+    fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
+        return codeTable.mapValues { (_, entry) -> entry.withKeyboardState(state) }
+    }
+
     interface Listener {
         fun onComposingText(text: CharSequence)
         fun onFinishComposing()

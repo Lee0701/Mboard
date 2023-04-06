@@ -28,7 +28,7 @@ class MboardIME: InputMethodService(), KeyboardListener, HangulInputSequence.Lis
 
     override fun onCreateInputView(): View {
         val inputView = FrameLayout(this, null)
-        val keyboardView = Layout.LAYOUT.initView(this, this)
+        val keyboardView = Layout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE.initView(this, this)
         inputView.addView(keyboardView.binding.root)
         this.inputView = inputView
         this.keyboardView = keyboardView
@@ -115,14 +115,14 @@ class MboardIME: InputMethodService(), KeyboardListener, HangulInputSequence.Lis
     }
 
     private fun updateView() {
-        updateShiftedLabels()
+        updateLabels(getShiftedLabels() + inputSequence.getLabels(keyboardState))
     }
 
-    private fun updateShiftedLabels() {
+    private fun getShiftedLabels(): Map<Int, CharSequence> {
         val range = KeyEvent.KEYCODE_A .. KeyEvent.KEYCODE_Z
-        val labels = range
-            .associateWith { code -> keyCharacterMap.get(code, keyboardState.asMetaState()).toChar().toString() }
-        updateLabels(labels)
+        return range.associateWith { code ->
+            keyCharacterMap.get(code, keyboardState.asMetaState()).toChar().toString()
+        }
     }
 
     private fun updateLabels(labels: Map<Int, CharSequence>) {
