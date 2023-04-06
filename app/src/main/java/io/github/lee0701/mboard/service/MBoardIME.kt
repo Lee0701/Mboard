@@ -1,11 +1,17 @@
 package io.github.lee0701.mboard.service
 
 import android.inputmethodservice.InputMethodService
+import android.os.Build
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
 import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.layout.HangulLayout
@@ -58,6 +64,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         if(keyboardView != null) {
             inputView.removeAllViews()
             inputView.addView(keyboardView)
+            val typedValue = TypedValue()
+            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
+            val color = ContextCompat.getColor(this, typedValue.resourceId)
+            setNavBarColor(color)
         }
         this.inputView = inputView
         return inputView
@@ -117,6 +127,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         val currentEngine = inputEngineSwitcher?.getCurrentEngine()
         if(currentEngine is SoftInputEngine) currentEngine.onComputeInsets(inputView, outInsets)
         else return super.onComputeInsets(outInsets)
+    }
+
+    private fun setNavBarColor(@ColorInt color: Int) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.window?.navigationBarColor = color
+        }
     }
 
     private fun updateView() {
