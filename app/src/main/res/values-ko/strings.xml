@@ -8,6 +8,6 @@
     <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
     <string name="layout_2set_ks5002">두벌식 KS 표준</string>
     <string name="layout_3set_390">세벌식 3–90</string>
-    <string name="layout_qwerty">QWERTY</string>
+    <string name="layout_latin_qwerty">QWERTY</string>
 
 </resources>

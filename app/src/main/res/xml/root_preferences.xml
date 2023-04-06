@@ -38,7 +38,7 @@
 
         <ListPreference
             app:key="layout_latin_preset"
-            app:defaultValue="layout_qwerty"
+            app:defaultValue="layout_latin_qwerty"
             app:entries="@array/layout_latin_presets"
             app:entryValues="@array/layout_latin_preset_values"
             app:title="@string/pref_layout_latin_preset_title"

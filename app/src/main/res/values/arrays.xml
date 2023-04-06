@@ -12,7 +12,7 @@
     </string-array>
 
     <string-array name="layout_latin_presets">
-        <item>@string/layout_qwerty</item>
+        <item>@string/layout_latin_qwerty</item>
     </string-array>
 
     <string-array name="layout_latin_preset_values">
