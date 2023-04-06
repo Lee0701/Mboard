@@ -7,6 +7,7 @@ import android.view.View
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.keyboard.Keyboard
+import io.github.lee0701.mboard.keyboard.Themes
 
 class BasicSoftInputEngine(
     initSoftKeyboard: () -> Keyboard,
@@ -44,7 +45,9 @@ class BasicSoftInputEngine(
     }
 
     override fun initView(context: Context): View {
-        val softKeyboardWrapper = softKeyboard.initView(context, this)
+        val name = "dynamic"
+        val theme = Themes.map[name] ?: Themes.Static
+        val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
         this.softKeyboardWrapper = softKeyboardWrapper
         updateView()
         return softKeyboardWrapper.binding.root

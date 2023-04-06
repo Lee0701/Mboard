@@ -9,6 +9,8 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
+import com.google.android.material.color.DynamicColors
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import kotlin.math.roundToInt
 
@@ -26,15 +28,16 @@ data class Keyboard(
     private var keyPopup: KeyPopup? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    fun initView(context: Context, listener: Listener): ViewWrapper {
+    fun initView(context: Context, theme: Theme, listener: Listener): ViewWrapper {
+        val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboard)
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
-        val binding = KeyboardBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, context.resources.displayMetrics).toInt()
+        val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, wrappedContext.resources.displayMetrics).toInt()
             root.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, height
             )
             rows.forEach { row ->
-                val rowViewWrapper = row.initView(context)
+                val rowViewWrapper = row.initView(context, theme)
                 rowViewWrappers += rowViewWrapper
                 root.addView(rowViewWrapper.binding.root)
             }

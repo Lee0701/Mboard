@@ -25,16 +25,16 @@
         <item name="marginHorizontal">@dimen/key_margin_horizontal</item>
         <item name="marginVertical">@dimen/key_margin_vertical</item>
         <item name="background">@drawable/key_bg</item>
-        <item name="backgroundTint">@color/key_bg_dark</item>
+        <item name="backgroundTint">@color/key_bg_static_dark</item>
         <item name="iconTint">@color/key_fg_dark</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.Key.Mod" parent="Theme.MBoard.Keyboard.Key">
-        <item name="backgroundTint">@color/key_bg_dark_mod</item>
+        <item name="backgroundTint">@color/key_bg_static_dark_mod</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.Key.Return" parent="Theme.MBoard.Keyboard.Key">
-        <item name="backgroundTint">@color/key_bg_dark_return</item>
+        <item name="backgroundTint">@color/key_bg_static_dark_return</item>
         <item name="iconTint">@color/key_fg_dark_return</item>
     </style>
 
@@ -42,7 +42,7 @@
         <item name="android:textSize">@dimen/key_popup_text_size</item>
         <item name="android:textColor">@color/key_fg_dark</item>
         <item name="background">@drawable/key_popup_bg</item>
-        <item name="backgroundTint">@color/key_bg_dark</item>
+        <item name="backgroundTint">@color/key_bg_static_dark</item>
         <item name="iconTint">@color/key_fg_dark</item>
     </style>
 
