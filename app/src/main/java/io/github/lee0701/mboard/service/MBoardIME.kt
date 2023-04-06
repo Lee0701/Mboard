@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
+import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.input.*
 import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.layout.HangulLayout
@@ -18,28 +19,16 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
 
     override fun onCreate() {
         super.onCreate()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
+        val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
+
         val engines = listOf(
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
-                { DirectInputEngine(it) },
-                this
-            ),
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE },
-                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_SEBEOL_390, HangulLayout.COMB_SEBEOL_390, it) },
-                this
-            ),
-//            BasicSoftInputEngine(
-//                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
-//                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, it) },
-//                this
-//            ),
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
-                { CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, it) },
-                this
-            ),
+            InputEnginePresets.of(latinPresetKey, this) ?: DirectInputEngine(this),
+            InputEnginePresets.of(hangulPresetKey, this) ?: DirectInputEngine(this),
+            InputEnginePresets.of("layout_symbols_g", this) ?: DirectInputEngine(this),
         )
+
         val table = arrayOf(
             intArrayOf(0, 2),
             intArrayOf(1, 2),

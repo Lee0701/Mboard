@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/pref_header_layout_title">
+
+        <ListPreference
+            app:key="layout_hangul_preset"
+            app:defaultValue="layout_3set_390"
+            app:entries="@array/layout_hangul_presets"
+            app:entryValues="@array/layout_hangul_preset_values"
+            app:title="@string/pref_layout_hangul_preset_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="layout_latin_preset"
+            app:defaultValue="layout_qwerty"
+            app:entries="@array/layout_latin_presets"
+            app:entryValues="@array/layout_latin_preset_values"
+            app:title="@string/pref_layout_latin_preset_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

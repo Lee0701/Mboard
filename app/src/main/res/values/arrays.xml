@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="layout_hangul_presets">
+        <item>@string/layout_2set_ks5002</item>
+        <item>@string/layout_3set_390</item>
+    </string-array>
+
+    <string-array name="layout_hangul_preset_values">
+        <item>layout_2set_ks5002</item>
+        <item>layout_3set_390</item>
+    </string-array>
+
+    <string-array name="layout_latin_presets">
+        <item>@string/layout_qwerty</item>
+    </string-array>
+
+    <string-array name="layout_latin_preset_values">
+        <item>layout_latin_qwerty</item>
+    </string-array>
+
+</resources>
