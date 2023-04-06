@@ -4,6 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        app:title="@string/pref_header_method_title">
+
+        <io.github.lee0701.mboard.settings.EnableInputMethodPreference
+            app:title="@string/pref_method_enable_title"
+            app:summary="@string/pref_method_enable_summary" />
+
+        <io.github.lee0701.mboard.settings.ChooseInputMethodPreference
+            app:title="@string/pref_method_choose_title"
+            app:summary="@string/pref_method_choose_summary" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:title="@string/pref_header_appearance_title">
 
         <ListPreference
