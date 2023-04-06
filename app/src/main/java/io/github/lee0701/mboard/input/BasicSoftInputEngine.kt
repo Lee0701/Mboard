@@ -34,6 +34,7 @@ class BasicSoftInputEngine(
     }
 
     override fun onReset() {
+        keyboardState = KeyboardState()
         inputEngine.onReset()
         updateView()
     }

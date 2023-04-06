@@ -56,6 +56,7 @@ class MboardIME: InputMethodService(), InputEngine.Listener {
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
+        inputEngineSwitcher?.getCurrentEngine()?.onReset()
     }
 
     override fun onSystemKey(code: Int): Boolean {
