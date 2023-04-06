@@ -46,6 +46,7 @@ class BasicSoftInputEngine(
     override fun initView(context: Context): View {
         val softKeyboardWrapper = softKeyboard.initView(context, this)
         this.softKeyboardWrapper = softKeyboardWrapper
+        updateView()
         return softKeyboardWrapper.binding.root
     }
 

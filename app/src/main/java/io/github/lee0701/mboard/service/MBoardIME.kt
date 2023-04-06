@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.service
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import io.github.lee0701.mboard.input.*
@@ -52,9 +53,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         val inputView = FrameLayout(this, null)
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
         val keyboardView =
-            if(currentInputEngine is SoftInputEngine) currentInputEngine.getView()
+            if(currentInputEngine is SoftInputEngine) currentInputEngine.initView(this)
             else null
-        if(keyboardView != null) inputView.addView(keyboardView)
+        if(keyboardView != null) {
+            inputView.removeAllViews()
+            inputView.addView(keyboardView)
+        }
         this.inputView = inputView
         return inputView
     }

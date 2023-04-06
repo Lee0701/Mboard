@@ -28,7 +28,7 @@ data class Keyboard(
     @SuppressLint("ClickableViewAccessibility")
     fun initView(context: Context, listener: Listener): ViewWrapper {
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
-        val binding = KeyboardBinding.inflate(LayoutInflater.from(context)).apply {
+        val binding = KeyboardBinding.inflate(LayoutInflater.from(context), null, false).apply {
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, context.resources.displayMetrics).toInt()
             root.layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, height

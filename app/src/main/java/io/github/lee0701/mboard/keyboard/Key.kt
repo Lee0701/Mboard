@@ -19,7 +19,7 @@ data class Key(
 ) {
     fun initView(context: Context): ViewWrapper {
         val wrappedContext = ContextThemeWrapper(context, type.styleId)
-        val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext)).apply {
+        val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
             val key = this@Key
             if(key.label != null) label.text = key.label
             if(key.icon != null) icon.setImageResource(key.icon)

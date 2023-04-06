@@ -12,7 +12,7 @@ data class Row(
 ) {
     fun initView(context: Context): ViewWrapper {
         val keyViewWrappers = mutableListOf<Key.ViewWrapper>()
-        val view = KeyboardRowBinding.inflate(LayoutInflater.from(context)).apply {
+        val view = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT, 0
             ).apply {
