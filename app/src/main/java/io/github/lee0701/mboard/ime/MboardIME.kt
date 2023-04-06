@@ -67,7 +67,7 @@ class MboardIME: InputMethodService(), InputEngine.Listener {
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
-                inputEngineSwitcher?.nextLanguage()
+                inputEngineSwitcher?.nextExtra()
                 updateView()
                 true
             }

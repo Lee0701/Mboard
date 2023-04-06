@@ -67,7 +67,7 @@ object SoftKeyboardLayout {
     ), 220f)
 
     val LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON = LAYOUT_QWERTY_MOBILE.let { layout ->
-        val row2 = layout.rows[1].copy(keys = layout.rows[2].keys + listOf(Key(KeyEvent.KEYCODE_SEMICOLON, ";")))
+        val row2 = layout.rows[1].copy(padding = 0f, keys = layout.rows[1].keys + listOf(Key(KeyEvent.KEYCODE_SEMICOLON, ";")))
         layout.copy(rows = layout.rows.take(1) + listOf(row2) + layout.rows.takeLast(2))
     }
 
