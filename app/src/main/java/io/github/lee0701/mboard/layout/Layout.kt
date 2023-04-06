@@ -86,7 +86,7 @@ object Layout {
         val row3 = Row(keys = additionalKeys3Left + layout.rows[3].keys.drop(1).dropLast(4) + additionalKeys3Right)
         val bottomRow = Row(listOf(
             Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-            Key(KeyEvent.KEYCODE_PERIOD, ",", type = Key.Type.AlphanumericAlt),
+            Key(CustomKeycode.KEYCODE_COMMA_PERIOD, ",", type = Key.Type.AlphanumericAlt),
             Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
             Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
             Key(KeyEvent.KEYCODE_SLASH, "/", type = Key.Type.AlphanumericAlt),

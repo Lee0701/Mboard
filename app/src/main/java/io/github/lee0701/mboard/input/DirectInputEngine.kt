@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.input
 
 import android.view.KeyCharacterMap
+import android.view.KeyEvent
 import io.github.lee0701.mboard.ime.KeyboardState
 
 class DirectInputEngine(
@@ -23,6 +24,9 @@ class DirectInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        return mapOf()
+        val range = 0 .. 304
+        return range.map { keyCode -> keyCode to keyCharacterMap.get(keyCode, state.asMetaState()) }
+            .mapNotNull { (keyCode, label) -> (if(label == 0) null else label)?.let { keyCode to it } }.toMap()
+            .mapValues { (_, label) -> label.toChar().toString() }
     }
 }
