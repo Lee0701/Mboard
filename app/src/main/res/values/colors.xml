@@ -11,23 +11,24 @@
     <color name="gray_200">#FFCCCCCC</color>
     <color name="gray_300">#FFAAAAAA</color>
 
-    <color name="keyboard_bg_light">#eff3fa</color>
+    <color name="keyboard_bg_light">#f0f0f3</color>
     <color name="key_bg_light_unpressed">#ffffff</color>
-    <color name="key_bg_light_pressed">#eff3fa</color>
-    <color name="key_bg_light_mod_unpressed">#e1e3e1</color>
-    <color name="key_bg_light_mod_pressed">#747775</color>
-    <color name="key_bg_light_return_unpressed">#0b57d0</color>
-    <color name="key_bg_light_return_pressed">#041e49</color>
-    <color name="key_fg_light">#1f1f1f</color>
-    <color name="key_fg_light_return">#ffffff</color>
+    <color name="key_bg_light_pressed">#f0f0f3</color>
+    <color name="key_bg_light_mod_unpressed">#d1e5f4</color>
+    <color name="key_bg_light_mod_pressed">#b5cad7</color>
+    <color name="key_bg_light_return_unpressed">#76d1ff</color>
+    <color name="key_bg_light_return_pressed">#00668b</color>
+    <color name="key_fg_light">#191c1e</color>
+    <color name="key_fg_light_return">#191c1e</color>
 
-    <color name="keyboard_bg_dark">#1f1f1f</color>
-    <color name="key_bg_dark_unpressed">#37393d</color>
-    <color name="key_bg_dark_pressed">#1f1f1f</color>
-    <color name="key_bg_dark_mod_unpressed">#444746</color>
-    <color name="key_bg_dark_mod_pressed">#8e918f</color>
-    <color name="key_bg_dark_return_unpressed">#a8c7fa</color>
-    <color name="key_bg_dark_return_pressed">#d3e3fd</color>
-    <color name="key_fg_dark">#e3e3e3</color>
-    <color name="key_fg_dark_return">#062e6f</color>
+    <color name="keyboard_bg_dark">#191c1e</color>
+    <color name="key_bg_dark_unpressed">#2e3133</color>
+    <color name="key_bg_dark_pressed">#191c1e</color>
+    <color name="key_bg_dark_mod_unpressed">#454749</color>
+    <color name="key_bg_dark_mod_pressed">#9aaebb</color>
+    <color name="key_bg_dark_return_unpressed">#c1e8ff</color>
+    <color name="key_bg_dark_return_pressed">#4bb6e8</color>
+    <color name="key_fg_dark">#f0f0f3</color>
+    <color name="key_fg_dark_return">#191c1e</color>
+
 </resources>

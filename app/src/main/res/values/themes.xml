@@ -15,8 +15,7 @@
     </style>
 
     <style name="Theme.MBoard.Keyboard">
-        <item name="background">@drawable/keyboard_bg_light</item>
-<!--        <item name="backgroundTint">@color/keyboard_bg_light</item>-->
+        <item name="background">@color/keyboard_bg_light</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.Key">
@@ -25,16 +24,16 @@
         <item name="marginHorizontal">@dimen/key_margin_horizontal</item>
         <item name="marginVertical">@dimen/key_margin_vertical</item>
         <item name="background">@drawable/key_bg</item>
-        <item name="backgroundTint">@color/key_bg_light</item>
+        <item name="backgroundTint">@color/key_bg_static_light</item>
         <item name="iconTint">@color/key_fg_light</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.Key.Mod" parent="Theme.MBoard.Keyboard.Key">
-        <item name="backgroundTint">@color/key_bg_light_mod</item>
+        <item name="backgroundTint">@color/key_bg_static_light_mod</item>
     </style>
 
     <style name="Theme.MBoard.Keyboard.Key.Return" parent="Theme.MBoard.Keyboard.Key">
-        <item name="backgroundTint">@color/key_bg_light_return</item>
+        <item name="backgroundTint">@color/key_bg_static_light_return</item>
         <item name="iconTint">@color/key_fg_light_return</item>
     </style>
 
@@ -42,7 +41,7 @@
         <item name="android:textSize">@dimen/key_popup_text_size</item>
         <item name="android:textColor">@color/key_fg_light</item>
         <item name="background">@drawable/key_popup_bg</item>
-        <item name="backgroundTint">@color/key_bg_light</item>
+        <item name="backgroundTint">@color/key_bg_static_light</item>
         <item name="iconTint">@color/key_fg_light</item>
     </style>
 

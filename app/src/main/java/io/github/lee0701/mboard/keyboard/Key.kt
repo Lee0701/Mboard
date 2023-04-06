@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import androidx.annotation.StyleRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
+import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 
@@ -17,8 +18,8 @@ data class Key(
     val repeatable: Boolean = false,
     val type: Type = Type.Alphanumeric,
 ) {
-    fun initView(context: Context): ViewWrapper {
-        val wrappedContext = ContextThemeWrapper(context, type.styleId)
+    fun initView(context: Context, theme: Theme): ViewWrapper {
+        val wrappedContext = theme.key[type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
         val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
             val key = this@Key
             if(key.label != null) label.text = key.label
@@ -32,15 +33,13 @@ data class Key(
         return ViewWrapper(this, binding)
     }
 
-    enum class Type(
-        @StyleRes val styleId: Int,
-    ) {
-        Alphanumeric(R.style.Theme_MBoard_Keyboard_Key),
-        AlphanumericAlt(R.style.Theme_MBoard_Keyboard_Key_Mod),
-        Modifier(R.style.Theme_MBoard_Keyboard_Key_Mod),
-        ModifierAlt(R.style.Theme_MBoard_Keyboard_Key),
-        Space(R.style.Theme_MBoard_Keyboard_Key),
-        Return(R.style.Theme_MBoard_Keyboard_Key_Return),
+    enum class Type {
+        Alphanumeric,
+        AlphanumericAlt,
+        Modifier,
+        ModifierAlt,
+        Space,
+        Return,
     }
 
     data class ViewWrapper(

@@ -1,15 +1,20 @@
 package io.github.lee0701.mboard.service
 
 import android.inputmethodservice.InputMethodService
+import android.os.Build
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
-import io.github.lee0701.mboard.input.*
-import io.github.lee0701.mboard.layout.SoftKeyboardLayout
-import io.github.lee0701.mboard.layout.HangulLayout
-import io.github.lee0701.mboard.layout.SymbolLayout
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.input.DirectInputEngine
+import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.input.InputEnginePresets
+import io.github.lee0701.mboard.input.SoftInputEngine
 
 class MBoardIME: InputMethodService(), InputEngine.Listener {
 
@@ -18,38 +23,26 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
 
     override fun onCreate() {
         super.onCreate()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
+        val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
+
         val engines = listOf(
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
-                { DirectInputEngine(it) },
-                this
-            ),
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE },
-                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_SEBEOL_390, HangulLayout.COMB_SEBEOL_390, it) },
-                this
-            ),
-//            BasicSoftInputEngine(
-//                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
-//                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, it) },
-//                this
-//            ),
-            BasicSoftInputEngine(
-                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
-                { CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, it) },
-                this
-            ),
+            InputEnginePresets.of(latinPresetKey, this) ?: DirectInputEngine(this),
+            InputEnginePresets.of(hangulPresetKey, this) ?: DirectInputEngine(this),
+            InputEnginePresets.of("layout_symbols_g", this) ?: DirectInputEngine(this),
         )
+
         val table = arrayOf(
             intArrayOf(0, 2),
             intArrayOf(1, 2),
         )
         val switcher = InputEngineSwitcher(engines, table)
-        switcher.initViews(this)
         this.inputEngineSwitcher = switcher
     }
 
     override fun onCreateInputView(): View {
+        inputEngineSwitcher?.initViews(this)
         val inputView = FrameLayout(this, null)
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
         val keyboardView =
@@ -58,6 +51,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         if(keyboardView != null) {
             inputView.removeAllViews()
             inputView.addView(keyboardView)
+            val typedValue = TypedValue()
+            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
+            val color = ContextCompat.getColor(this, typedValue.resourceId)
+            setNavBarColor(color)
         }
         this.inputView = inputView
         return inputView
@@ -117,6 +114,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         val currentEngine = inputEngineSwitcher?.getCurrentEngine()
         if(currentEngine is SoftInputEngine) currentEngine.onComputeInsets(inputView, outInsets)
         else return super.onComputeInsets(outInsets)
+    }
+
+    private fun setNavBarColor(@ColorInt color: Int) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.window?.navigationBarColor = color
+        }
     }
 
     private fun updateView() {
