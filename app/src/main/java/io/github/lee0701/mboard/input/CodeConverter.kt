@@ -7,11 +7,7 @@ class CodeConverter(
 ) {
     fun convert(input: Int, state: KeyboardState): Int? {
         val entry = map[input] ?: return null
-        return if(state.altState.pressed && state.shiftState.pressed) entry.altShift
-        else if(state.altState.pressed) entry.alt
-        else if(state.shiftState.locked) entry.capsLocked
-        else if(state.shiftState.pressed) entry.shift
-        else entry.base
+        return entry.withKeyboardState(state)
     }
 
     data class Entry(
@@ -29,13 +25,14 @@ class CodeConverter(
             altShift: Char = shift,
         ): this(base.code, shift.code, capsLocked.code, alt.code, altShift.code)
 
-        fun withKeyboardState(keyboardState: KeyboardState): CharSequence {
-            val label = if(keyboardState.shiftState.locked) this.capsLocked
-            else if(keyboardState.shiftState.pressed && keyboardState.altState.pressed) this.altShift
-            else if(keyboardState.shiftState.pressed) this.shift
-            else if(keyboardState.altState.pressed) this.alt
-            else this.base
-            return label.toChar().toString()
+        fun withKeyboardState(keyboardState: KeyboardState): Int {
+            val shiftPressed = keyboardState.shiftState.pressed || keyboardState.shiftState.pressing
+            val altPressed = keyboardState.altState.pressed || keyboardState.altState.pressing
+            return if(keyboardState.shiftState.locked) capsLocked
+            else if(shiftPressed && altPressed) altShift
+            else if(shiftPressed) shift
+            else if(altPressed) alt
+            else base
         }
     }
 }

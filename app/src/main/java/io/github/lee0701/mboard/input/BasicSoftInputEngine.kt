@@ -14,16 +14,16 @@ class BasicSoftInputEngine(
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
 
+    private val doubleTapGap: Int = 500
+
     private val softKeyboard = initSoftKeyboard()
     private val inputEngine = initInputEngine(listener)
-
-    private val doubleTapGap: Int = 500
 
     private var softKeyboardWrapper: Keyboard.ViewWrapper? = null
 
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
-    private var inputWhileShiftPressed: Boolean = false
+    private var inputHappened: Boolean = false
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
@@ -90,7 +90,7 @@ class BasicSoftInputEngine(
         val newShiftState = currentShiftState.copy()
 
         keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = true))
-        inputWhileShiftPressed = false
+        inputHappened = false
         updateView()
     }
 
@@ -110,7 +110,7 @@ class BasicSoftInputEngine(
             } else {
                 ModifierState()
             }
-        } else if(inputWhileShiftPressed) {
+        } else if(inputHappened) {
             ModifierState()
         } else {
             ModifierState(pressed = true)
@@ -118,7 +118,7 @@ class BasicSoftInputEngine(
 
         keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = false))
         shiftClickedTime = currentTime
-        inputWhileShiftPressed = false
+        inputHappened = false
         updateView()
     }
 
@@ -150,6 +150,7 @@ class BasicSoftInputEngine(
 
     private fun onPrintingKey(code: Int) {
         inputEngine.onKey(code, keyboardState)
+        inputHappened = true
     }
 
     private fun autoUnlockShift() {

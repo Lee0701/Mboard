@@ -30,6 +30,6 @@ class CodeConverterInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        return codeTable.mapValues { (_, entry) -> entry.withKeyboardState(state) }
+        return codeTable.mapValues { (_, entry) -> entry.withKeyboardState(state).toChar().toString() }
     }
 }
