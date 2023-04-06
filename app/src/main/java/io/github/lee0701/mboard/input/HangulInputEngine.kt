@@ -40,9 +40,8 @@ class HangulInputEngine(
     }
 
     override fun onReset() {
-        stateStack.clear()
-        listener.onComposingText("")
         listener.onFinishComposing()
+        stateStack.clear()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

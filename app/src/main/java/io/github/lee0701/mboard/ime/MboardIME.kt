@@ -64,6 +64,10 @@ class MboardIME: InputMethodService(), InputEngine.Listener {
         inputEngineSwitcher?.getCurrentEngine()?.onReset()
     }
 
+    override fun onFinishInput() {
+        super.onFinishInput()
+    }
+
     override fun onSystemKey(code: Int): Boolean {
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
