@@ -1,5 +1,7 @@
 package io.github.lee0701.mboard.service
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.util.TypedValue
@@ -16,7 +18,7 @@ import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.InputEnginePresets
 import io.github.lee0701.mboard.input.SoftInputEngine
 
-class MBoardIME: InputMethodService(), InputEngine.Listener {
+class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceChangeListener {
 
     private var inputView: FrameLayout? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null
@@ -24,6 +26,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
     override fun onCreate() {
         super.onCreate()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
+        reload(sharedPreferences)
+    }
+
+    private fun reload(sharedPreferences: SharedPreferences, force: Boolean = false) {
         val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
 
@@ -39,6 +47,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
         )
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
+
+        if(force) setInputView(onCreateInputView())
     }
 
     override fun onCreateInputView(): View {
@@ -133,7 +143,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener {
     }
 
     override fun onDestroy() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         super.onDestroy()
     }
 
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if(sharedPreferences != null) reload(sharedPreferences, true)
+    }
 }
