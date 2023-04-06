@@ -5,44 +5,52 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
-import io.github.lee0701.mboard.input.DirectInputEngine
-import io.github.lee0701.mboard.input.HangulInputEngine
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.keyboard.KeyboardListener
-import io.github.lee0701.mboard.layout.Layout
-import io.github.lee0701.mboard.keyboard.Keyboard
+import io.github.lee0701.mboard.input.*
+import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.layout.HangulLayout
+import io.github.lee0701.mboard.layout.SymbolLayout
 
-class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
-
-    private val doubleTapGap: Int = 500
+class MboardIME: InputMethodService(), InputEngine.Listener {
 
     private var inputView: FrameLayout? = null
-    private var keyboardView: Keyboard.ViewWrapper? = null
-
-    private val layout = Layout.LAYOUT_QWERTY_MOBILE
-    private val engines: List<InputEngine> by lazy { listOf(
-        DirectInputEngine(this),
-        HangulInputEngine(HangulLayout.DUBEOL_STANDARD, HangulLayout.COMB_DUBEOL_STANDARD, this),
-    ) }
-    private val languages: List<Int> = listOf(0, 1)
-    private var currentLanguage = 0
-    private val currentInputEngine: InputEngine get() = engines[languages[currentLanguage]]
-    private var keyboardState: KeyboardState = KeyboardState()
-    private var shiftClickedTime: Long = 0
-    private var inputWhileShiftPressed: Boolean = false
+    private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
         super.onCreate()
+        val engines = listOf(
+            BasicSoftInputEngine(
+                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
+                { DirectInputEngine(it) },
+                this
+            ),
+            BasicSoftInputEngine(
+                { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE },
+                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_SEBEOL_390, HangulLayout.COMB_SEBEOL_390, it) },
+                this
+            ),
+            BasicSoftInputEngine(
+                { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
+                { CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, it) },
+                this
+            ),
+        )
+        val table = arrayOf(
+            intArrayOf(0, 2),
+            intArrayOf(1, 2),
+        )
+        val switcher = InputEngineSwitcher(engines, table)
+        switcher.initViews(this)
+        this.inputEngineSwitcher = switcher
     }
 
     override fun onCreateInputView(): View {
         val inputView = FrameLayout(this, null)
-        val keyboardView = layout.initView(this, this)
-        inputView.addView(keyboardView.binding.root)
+        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
+        val keyboardView =
+            if(currentInputEngine is SoftInputEngine) currentInputEngine.getView()
+            else null
+        if(keyboardView != null) inputView.addView(keyboardView)
         this.inputView = inputView
-        this.keyboardView = keyboardView
-        updateView()
         return inputView
     }
 
@@ -50,90 +58,24 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
         super.onStartInput(attribute, restarting)
     }
 
-    override fun onKeyDown(code: Int, output: String?) {
-        when(code) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyDown()
-        }
-    }
-
-    override fun onKeyUp(code: Int, output: String?) {
-        when(code) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyUp()
-        }
-    }
-
-    override fun onKeyClick(code: Int, output: String?) {
-        val lastState = keyboardState
-        when(code) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-            }
-            KeyEvent.KEYCODE_DEL -> {
-                currentInputEngine.onDelete()
-            }
-            KeyEvent.KEYCODE_SPACE -> {
-                resetInput()
-                onCommitText(" ")
-                autoUnlockShift()
-            }
-            KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                resetInput()
-                autoUnlockShift()
-                if(!sendDefaultEditorAction(true)) return sendDownUpKeyEvents(code)
-            }
+    override fun onSystemKey(code: Int): Boolean {
+        return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                currentLanguage += 1
-                if(currentLanguage >= languages.size) currentLanguage = 0
+                inputEngineSwitcher?.nextLanguage()
+                updateView()
+                true
             }
-            else -> {
-                onPrintingKey(code)
-                autoUnlockShift()
+            KeyEvent.KEYCODE_SYM -> {
+                inputEngineSwitcher?.nextLanguage()
+                updateView()
+                true
             }
+            else -> false
         }
-        updateView()
     }
 
-    private fun onShiftKeyDown() {
-        val lastState = keyboardState
-        val lastShiftState = lastState.shiftState
-        val currentShiftState = lastShiftState.copy()
-        val newShiftState = currentShiftState.copy()
-
-        keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = true))
-        inputWhileShiftPressed = false
-        updateView()
-    }
-
-    private fun onShiftKeyUp() {
-        val lastState = keyboardState
-        val lastShiftState = lastState.shiftState
-        val currentShiftState = lastShiftState.copy(pressing = false)
-
-        val currentTime = System.currentTimeMillis()
-        val timeDiff = currentTime - shiftClickedTime
-
-        val newShiftState = if(currentShiftState.locked) {
-            ModifierState()
-        } else if(currentShiftState.pressed) {
-            if(timeDiff < doubleTapGap) {
-                ModifierState(pressed = true, locked = true)
-            } else {
-                ModifierState()
-            }
-        } else if(inputWhileShiftPressed) {
-            ModifierState()
-        } else {
-            ModifierState(pressed = true)
-        }
-
-        keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = false))
-        shiftClickedTime = currentTime
-        inputWhileShiftPressed = false
-        updateView()
-    }
-
-    private fun onPrintingKey(code: Int) {
-        currentInputEngine.onKey(code, keyboardState)
-        if(keyboardState.shiftState.pressing) inputWhileShiftPressed = true
+    override fun onEditorAction(code: Int) {
+        if(!sendDefaultEditorAction(true)) sendDownUpKeyEvents(code)
     }
 
     override fun onComposingText(text: CharSequence) {
@@ -156,46 +98,20 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
         inputConnection.deleteSurroundingText(beforeLength, afterLength)
     }
 
-    private fun resetInput() {
-        currentInputEngine.onReset()
-    }
-
-    private fun autoUnlockShift() {
-        val lastState = keyboardState
-        val lastShiftState = lastState.shiftState
-        if(!lastShiftState.locked && !lastShiftState.pressing) {
-            keyboardState = lastState.copy(shiftState = ModifierState())
-        }
+    override fun onComputeInsets(outInsets: Insets?) {
+        val inputView = this.inputView ?: return
+        val currentEngine = inputEngineSwitcher?.getCurrentEngine()
+        if(currentEngine is SoftInputEngine) currentEngine.onComputeInsets(inputView, outInsets)
+        else return super.onComputeInsets(outInsets)
     }
 
     private fun updateView() {
-        updateLabels(getShiftedLabels() + currentInputEngine.getLabels(keyboardState))
-    }
-
-    private fun getShiftedLabels(): Map<Int, CharSequence> {
-        fun label(label: String) =
-            if(keyboardState.shiftState.pressed || keyboardState.shiftState.locked) label.uppercase()
-            else label.lowercase()
-        return keyboardView?.keys?.associate { it.key.code to label(it.key.label.orEmpty()) }.orEmpty()
-    }
-
-    private fun updateLabels(labels: Map<Int, CharSequence>) {
-        val keys = keyboardView?.keys ?: return
-        keys.map { key ->
-            val label = labels[key.key.code]
-            if(label != null) key.binding.label.text = label
-        }
-    }
-
-    override fun onComputeInsets(outInsets: Insets?) {
-        super.onComputeInsets(outInsets)
-        val inputView = this.inputView ?: return
-        val keyboardView = this.keyboardView ?: return
-        if(outInsets != null) {
-            outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_VISIBLE
-            val visibleTopY = inputView.height - keyboardView.binding.root.height
-            outInsets.visibleTopInsets = visibleTopY
-            outInsets.contentTopInsets = visibleTopY
+        val inputView = inputView ?: return
+        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
+        inputView.removeAllViews()
+        if(inputEngine is SoftInputEngine) {
+            inputView.addView(inputEngine.getView())
+            inputEngine.onReset()
         }
     }
 

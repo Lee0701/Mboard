@@ -4,7 +4,16 @@ import android.view.KeyEvent
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.keyboard.*
 
-object Layout {
+object SoftKeyboardLayout {
+
+    val ROW_BOTTOM = Row(listOf(
+        Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
+        Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.AlphanumericAlt),
+        Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
+        Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
+        Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.AlphanumericAlt),
+        Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
+    ))
 
     val ROW_NUMBERS = Row(listOf(
         Key(KeyEvent.KEYCODE_1, "1"),
@@ -54,15 +63,13 @@ object Layout {
             Key(KeyEvent.KEYCODE_M, "M"),
             Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, repeatable = true, type = Key.Type.Modifier),
         )),
-        Row(listOf(
-            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-            Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
-            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
-            Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
-        ))
+        ROW_BOTTOM,
     ), 220f)
+
+    val LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON = LAYOUT_QWERTY_MOBILE.let { layout ->
+        val row2 = layout.rows[1].copy(keys = layout.rows[2].keys + listOf(Key(KeyEvent.KEYCODE_SEMICOLON, ";")))
+        layout.copy(rows = layout.rows.take(1) + listOf(row2) + layout.rows.takeLast(2))
+    }
 
     val LAYOUT_QWERTY_MOBILE_WITH_NUM = LAYOUT_QWERTY_MOBILE.let { layout ->
         layout.copy(rows = listOf(ROW_NUMBERS) + layout.rows, height = 275f)

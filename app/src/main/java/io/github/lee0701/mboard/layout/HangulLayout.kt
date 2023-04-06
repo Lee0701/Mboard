@@ -4,7 +4,7 @@ import android.view.KeyEvent
 import io.github.lee0701.mboard.input.CodeConverter.Entry
 
 object HangulLayout {
-    val SEBEOL_390 = mapOf(
+    val LAYOUT_HANGUL_SEBEOL_390 = mapOf(
         KeyEvent.KEYCODE_1 to Entry(0x11c2, 0x11bd),
         KeyEvent.KEYCODE_2 to Entry(0x11bb, 0x0040),
         KeyEvent.KEYCODE_3 to Entry(0x11b8, 0x0023),
@@ -87,7 +87,7 @@ object HangulLayout {
         0x11ba to 0x11ba to 0x11bb,	// ㅆ
     )
 
-    val DUBEOL_STANDARD = mapOf(
+    val LAYOUT_HANGUL_DUBEOL_STANDARD = mapOf(
         KeyEvent.KEYCODE_Q to Entry(0x3142, 0x3143),
         KeyEvent.KEYCODE_W to Entry(0x3148, 0x3149),
         KeyEvent.KEYCODE_E to Entry(0x3137, 0x3138),
