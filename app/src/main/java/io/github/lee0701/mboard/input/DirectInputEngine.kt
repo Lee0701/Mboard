@@ -23,9 +23,15 @@ class DirectInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val range = 0 .. 304
-        return range.map { keyCode -> keyCode to keyCharacterMap.get(keyCode, state.asMetaState()) }
-            .mapNotNull { (keyCode, label) -> (if(label == 0) null else label)?.let { keyCode to it } }.toMap()
-            .mapValues { (_, label) -> label.toChar().toString() }
+        return Companion.getLabels(keyCharacterMap, state)
+    }
+
+    companion object {
+        fun getLabels(keyCharacterMap: KeyCharacterMap, state: KeyboardState): Map<Int, CharSequence> {
+            val range = 0 .. 304
+            return range.map { keyCode -> keyCode to keyCharacterMap.get(keyCode, state.asMetaState()) }
+                .mapNotNull { (keyCode, label) -> (if(label == 0) null else label)?.let { keyCode to it } }.toMap()
+                .mapValues { (_, label) -> label.toChar().toString() }
+        }
     }
 }
