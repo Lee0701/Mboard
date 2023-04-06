@@ -50,6 +50,11 @@ object HangulLayout {
         KeyEvent.KEYCODE_PERIOD to Entry(0x002e, 0x0033),
         KeyEvent.KEYCODE_SLASH to Entry(0x1169, 0x003f),
 
+        CustomKeycode.KEYCODE_COMMA_PERIOD to Entry(0x002c, 0x002e),
+        CustomKeycode.KEYCODE_SEBEOL_390_0 to Entry(0x116e, 0x0030),
+        CustomKeycode.KEYCODE_SEBEOL_390_1 to Entry(0x1109, 0x0031),
+        CustomKeycode.KEYCODE_SEBEOL_390_2 to Entry(0x1112, 0x0032),
+        CustomKeycode.KEYCODE_SEBEOL_390_3 to Entry(0x1110, 0x0033),
         )
 
     val COMB_SEBEOL_390 = mapOf(

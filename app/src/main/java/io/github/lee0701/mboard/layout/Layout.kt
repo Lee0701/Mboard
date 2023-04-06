@@ -76,11 +76,14 @@ object Layout {
             Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, type = Key.Type.Modifier),
         )
         val additionalKeys3Right = listOf(
-            Key(KeyEvent.KEYCODE_APOSTROPHE, "'"),
+            Key(CustomKeycode.KEYCODE_SEBEOL_390_0, ""),
+            Key(CustomKeycode.KEYCODE_SEBEOL_390_1, ""),
+            Key(CustomKeycode.KEYCODE_SEBEOL_390_2, ""),
+            Key(CustomKeycode.KEYCODE_SEBEOL_390_3, ""),
             Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, repeatable = true, type = Key.Type.Modifier),
         )
         val row2 = Row(keys = layout.rows[2].keys + additionalKeys2)
-        val row3 = Row(keys = additionalKeys3Left + layout.rows[3].keys.drop(1).dropLast(1) + additionalKeys3Right)
+        val row3 = Row(keys = additionalKeys3Left + layout.rows[3].keys.drop(1).dropLast(4) + additionalKeys3Right)
         val bottomRow = Row(listOf(
             Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
             Key(KeyEvent.KEYCODE_PERIOD, ",", type = Key.Type.AlphanumericAlt),
