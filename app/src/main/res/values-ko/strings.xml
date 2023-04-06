@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">mBoard</string>
+
+    <string name="title_activity_settings">mBoard 설정</string>
+
+    <string name="pref_header_layout_title">키보드 배열</string>
+    <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>
+    <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
+    <string name="layout_2set_ks5002">두벌식 KS 표준</string>
+    <string name="layout_3set_390">세벌식 3–90</string>
+    <string name="layout_qwerty">QWERTY</string>
+
+</resources>
