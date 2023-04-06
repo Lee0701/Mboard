@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.ime
+package io.github.lee0701.mboard.service
 
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
@@ -10,7 +10,7 @@ import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.layout.HangulLayout
 import io.github.lee0701.mboard.layout.SymbolLayout
 
-class MboardIME: InputMethodService(), InputEngine.Listener {
+class MBoardIME: InputMethodService(), InputEngine.Listener {
 
     private var inputView: FrameLayout? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null

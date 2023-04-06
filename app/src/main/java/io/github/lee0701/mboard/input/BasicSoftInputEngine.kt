@@ -4,8 +4,8 @@ import android.content.Context
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
-import io.github.lee0701.mboard.ime.KeyboardState
-import io.github.lee0701.mboard.ime.ModifierState
+import io.github.lee0701.mboard.service.KeyboardState
+import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.keyboard.Keyboard
 
 class BasicSoftInputEngine(

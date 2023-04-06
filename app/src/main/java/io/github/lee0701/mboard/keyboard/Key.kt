@@ -35,12 +35,12 @@ data class Key(
     enum class Type(
         @StyleRes val styleId: Int,
     ) {
-        Alphanumeric(R.style.Theme_Mboard_Keyboard_Key),
-        AlphanumericAlt(R.style.Theme_Mboard_Keyboard_Key_Mod),
-        Modifier(R.style.Theme_Mboard_Keyboard_Key_Mod),
-        ModifierAlt(R.style.Theme_Mboard_Keyboard_Key),
-        Space(R.style.Theme_Mboard_Keyboard_Key),
-        Return(R.style.Theme_Mboard_Keyboard_Key_Return),
+        Alphanumeric(R.style.Theme_MBoard_Keyboard_Key),
+        AlphanumericAlt(R.style.Theme_MBoard_Keyboard_Key_Mod),
+        Modifier(R.style.Theme_MBoard_Keyboard_Key_Mod),
+        ModifierAlt(R.style.Theme_MBoard_Keyboard_Key),
+        Space(R.style.Theme_MBoard_Keyboard_Key),
+        Return(R.style.Theme_MBoard_Keyboard_Key_Return),
     }
 
     data class ViewWrapper(

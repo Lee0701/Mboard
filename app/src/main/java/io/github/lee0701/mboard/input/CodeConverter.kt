@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.ime.KeyboardState
+import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverter(
     private val map: Map<Int, Entry> = mapOf(),

@@ -1,7 +1,6 @@
-package io.github.lee0701.mboard.ime
+package io.github.lee0701.mboard.service
 
 import android.view.KeyEvent
-import io.github.lee0701.mboard.input.CodeConverter
 
 data class KeyboardState(
     val shiftState: ModifierState = ModifierState(),

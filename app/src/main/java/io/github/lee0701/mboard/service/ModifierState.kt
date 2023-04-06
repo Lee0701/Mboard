@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.ime
+package io.github.lee0701.mboard.service
 
 data class ModifierState(
     val pressed: Boolean = false,

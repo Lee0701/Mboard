@@ -9,10 +9,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Mboard">
+        android:theme="@style/Theme.MBoard">
 
         <service
-            android:name="io.github.lee0701.mboard.ime.MboardIME"
+            android:name="io.github.lee0701.mboard.service.MBoardIME"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">

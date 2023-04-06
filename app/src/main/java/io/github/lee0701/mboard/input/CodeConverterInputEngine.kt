@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.input
 
 import android.view.KeyCharacterMap
-import io.github.lee0701.mboard.ime.KeyboardState
+import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverterInputEngine(
     private val codeTable: Map<Int, CodeConverter.Entry>,

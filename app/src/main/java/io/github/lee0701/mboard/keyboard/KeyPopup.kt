@@ -35,7 +35,7 @@ class KeyPopup(
         })
     }
 
-    private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_Mboard_Keyboard_KeyPopup)
+    private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
     private val binding = KeyPopupBinding.inflate(LayoutInflater.from(wrappedContext), null, false)
     private val popupWindow = PopupWindow(wrappedContext, null).apply {
         this.contentView = binding.root

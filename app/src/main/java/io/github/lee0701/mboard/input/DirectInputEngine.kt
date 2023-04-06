@@ -1,8 +1,7 @@
 package io.github.lee0701.mboard.input
 
 import android.view.KeyCharacterMap
-import android.view.KeyEvent
-import io.github.lee0701.mboard.ime.KeyboardState
+import io.github.lee0701.mboard.service.KeyboardState
 
 class DirectInputEngine(
     override val listener: InputEngine.Listener,
