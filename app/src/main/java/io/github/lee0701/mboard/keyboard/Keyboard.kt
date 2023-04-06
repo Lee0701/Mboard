@@ -26,7 +26,7 @@ data class Keyboard(
     private var keyPopup: KeyPopup? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    fun initView(context: Context, listener: KeyboardListener): ViewWrapper {
+    fun initView(context: Context, listener: Listener): ViewWrapper {
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
         val binding = KeyboardBinding.inflate(LayoutInflater.from(context)).apply {
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, context.resources.displayMetrics).toInt()
@@ -89,5 +89,11 @@ data class Keyboard(
         val keys: List<Key.ViewWrapper>,
     ) {
         val keyMap = keys.associateBy { it.key.code }
+    }
+
+    interface Listener {
+        fun onKeyClick(code: Int, output: String?)
+        fun onKeyDown(code: Int, output: String?)
+        fun onKeyUp(code: Int, output: String?)
     }
 }
