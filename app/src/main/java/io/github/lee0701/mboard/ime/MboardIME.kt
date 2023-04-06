@@ -30,7 +30,6 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
     private val currentInputEngine: InputEngine get() = engines[languages[currentLanguage]]
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
-    private var shiftPressing: Boolean = false
     private var inputWhileShiftPressed: Boolean = false
 
     override fun onCreate() {
@@ -52,43 +51,14 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
     }
 
     override fun onKeyDown(code: Int, output: String?) {
-        val lastState = keyboardState
         when(code) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                keyboardState = lastState.copy(shiftState = lastState.shiftState.copy(pressed = true))
-                shiftPressing = true
-                inputWhileShiftPressed = false
-                updateView()
-            }
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyDown()
         }
     }
 
     override fun onKeyUp(code: Int, output: String?) {
-        val lastState = keyboardState
-        val shiftState = lastState.shiftState
-        val currentTime = System.currentTimeMillis()
-        val timeDiff = currentTime - shiftClickedTime
-        println("$timeDiff $inputWhileShiftPressed")
         when(code) {
-            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
-                if(shiftState.locked) {
-                    keyboardState = lastState.copy(shiftState = ModifierState())
-                } else if(shiftState.pressed) {
-                    if(timeDiff < doubleTapGap) {
-                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = true, locked = true))
-                    } else if(inputWhileShiftPressed) {
-                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = false))
-                    } else {
-                        keyboardState = lastState.copy(shiftState = ModifierState(pressed = true))
-                    }
-                } else {
-                    keyboardState = lastState.copy(shiftState = ModifierState(pressed = true))
-                }
-                shiftClickedTime = currentTime
-                inputWhileShiftPressed = false
-                shiftPressing = false
-                updateView()
-            }
+            KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyUp()
         }
     }
 
@@ -122,8 +92,48 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
         updateView()
     }
 
+    private fun onShiftKeyDown() {
+        val lastState = keyboardState
+        val lastShiftState = lastState.shiftState
+        val currentShiftState = lastShiftState.copy()
+        val newShiftState = currentShiftState.copy()
+
+        keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = true))
+        inputWhileShiftPressed = false
+        updateView()
+    }
+
+    private fun onShiftKeyUp() {
+        val lastState = keyboardState
+        val lastShiftState = lastState.shiftState
+        val currentShiftState = lastShiftState.copy(pressing = false)
+
+        val currentTime = System.currentTimeMillis()
+        val timeDiff = currentTime - shiftClickedTime
+
+        val newShiftState = if(currentShiftState.locked) {
+            ModifierState()
+        } else if(currentShiftState.pressed) {
+            if(timeDiff < doubleTapGap) {
+                ModifierState(pressed = true, locked = true)
+            } else {
+                ModifierState()
+            }
+        } else if(inputWhileShiftPressed) {
+            ModifierState()
+        } else {
+            ModifierState(pressed = true)
+        }
+
+        keyboardState = lastState.copy(shiftState = newShiftState.copy(pressing = false))
+        shiftClickedTime = currentTime
+        inputWhileShiftPressed = false
+        updateView()
+    }
+
     private fun onPrintingKey(code: Int) {
         currentInputEngine.onKey(code, keyboardState)
+        if(keyboardState.shiftState.pressing) inputWhileShiftPressed = true
     }
 
     override fun onComposingText(text: CharSequence) {
@@ -152,7 +162,10 @@ class MboardIME: InputMethodService(), KeyboardListener, InputEngine.Listener {
 
     private fun autoUnlockShift() {
         val lastState = keyboardState
-        if(!lastState.shiftState.locked) keyboardState = lastState.copy(shiftState = ModifierState())
+        val lastShiftState = lastState.shiftState
+        if(!lastShiftState.locked && !lastShiftState.pressing) {
+            keyboardState = lastState.copy(shiftState = ModifierState())
+        }
     }
 
     private fun updateView() {
