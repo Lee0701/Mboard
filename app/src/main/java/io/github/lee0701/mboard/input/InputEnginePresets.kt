@@ -1,10 +1,47 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.layout.HangulLayout
-import io.github.lee0701.mboard.layout.SoftKeyboardLayout
-import io.github.lee0701.mboard.layout.SymbolLayout
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.CodeConvertTable
+import io.github.lee0701.mboard.module.Keyboard
+import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
+import io.github.lee0701.mboard.service.MBoardIME
 
 object InputEnginePresets {
+
+    val mapper = ObjectMapper(YAMLFactory()).apply {
+        registerModule(KotlinModule.Builder().build())
+    }
+
+    fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
+            DirectInputEngine(mBoardIME),
+            mBoardIME,
+        )
+    }
+
+    fun Hangul2SetKS5002(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
+            HangulInputEngine(
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.conv_hangul_2set_ks5002), CodeConvertTable::class.java).inflate(),
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_2set_ks5002), JamoCombinationTable::class.java).inflate(),
+                mBoardIME,
+            ),
+            mBoardIME,
+        )
+    }
+
+    fun SymbolsG(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
+            CodeConverterInputEngine(mapper.readValue(mBoardIME.resources.openRawResource(R.raw.conv_symbol_g), CodeConvertTable::class.java), mBoardIME),
+            mBoardIME,
+        )
+    }
 
 //    private val HANGUL_2SET_KS5002 = { listener: InputEngine.Listener ->
 //        BasicSoftInputEngine(

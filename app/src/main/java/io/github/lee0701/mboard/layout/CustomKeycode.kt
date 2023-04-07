@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.layout
 
-import io.github.lee0701.mboard.input.CodeConverter
+import io.github.lee0701.mboard.module.CodeConvertTable.Entry
 
 object CustomKeycode {
     const val KEYCODE_COMMA_PERIOD = 0x102c
@@ -12,6 +12,6 @@ object CustomKeycode {
     const val KEYCODE_SEBEOL_390_3 = 0x1033
 
     val LAYOUT_CUSTOM_KEYS = mapOf(
-        KEYCODE_COMMA_PERIOD to CodeConverter.Entry(0x002c, 0x002e),
+        KEYCODE_COMMA_PERIOD to Entry(0x002c, 0x002e),
     )
 }

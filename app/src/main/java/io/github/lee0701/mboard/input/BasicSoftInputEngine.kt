@@ -12,15 +12,12 @@ import io.github.lee0701.mboard.keyboard.Keyboard
 import io.github.lee0701.mboard.keyboard.Themes
 
 class BasicSoftInputEngine(
-    initSoftKeyboard: () -> Keyboard,
-    initInputEngine: (InputEngine.Listener) -> InputEngine,
+    private val softKeyboard: Keyboard,
+    private val inputEngine: InputEngine,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
 
     private val doubleTapGap: Int = 500
-
-    private val softKeyboard = initSoftKeyboard()
-    private val inputEngine = initInputEngine(listener)
 
     private var softKeyboardWrapper: Keyboard.ViewWrapper? = null
 

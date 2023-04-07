@@ -17,7 +17,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
-import io.github.lee0701.mboard.layout.HangulLayout
 import io.github.lee0701.mboard.module.Keyboard
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceChangeListener {
@@ -41,26 +40,22 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
 
         val engines = listOf(
-            BasicSoftInputEngine(
-                { mapper.readValue(resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate() },
-                { listener -> DirectInputEngine(listener) },
-                this,
-            ),
-            BasicSoftInputEngine(
-                { mapper.readValue(resources.openRawResource(R.raw.qwerty_mobile_3set_391), Keyboard::class.java).inflate() },
-                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391, HangulLayout.COMB_SEBEOL_391, it) },
-                this,
-            ),
+            InputEnginePresets.LatinQWERTY(this),
+            InputEnginePresets.Hangul2SetKS5002(this),
+            InputEnginePresets.SymbolsG(this),
+//            BasicSoftInputEngine(
+//                { mapper.readValue(resources.openRawResource(R.raw.qwerty_mobile_3set_391), Keyboard::class.java).inflate() },
+//                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391, HangulLayout.COMB_SEBEOL_391, it) },
+//                this,
+//            ),
 //            InputEnginePresets.of(latinPresetKey, this) ?: DirectInputEngine(this),
 //            InputEnginePresets.of(hangulPresetKey, this) ?: DirectInputEngine(this),
 //            InputEnginePresets.of("layout_symbols_g", this) ?: DirectInputEngine(this),
         )
 
         val table = arrayOf(
-            intArrayOf(0, 0),
-            intArrayOf(1, 0),
-//            intArrayOf(0, 2),
-//            intArrayOf(1, 2),
+            intArrayOf(0, 2),
+            intArrayOf(1, 2),
         )
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher

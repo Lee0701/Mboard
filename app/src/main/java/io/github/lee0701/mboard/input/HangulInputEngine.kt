@@ -4,13 +4,12 @@ import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.service.KeyboardState
 
 class HangulInputEngine(
-    private val codeTable: Map<Int, CodeConverter.Entry>,
-    private val jamoCombinationTable: Map<Pair<Int, Int>, Int>,
+    private val codeConverter: CodeConverter,
+    private val jamoCombinationTable: JamoCombinationTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
-    private val codeConverter = CodeConverter(codeTable)
     private val hangulCombiner = HangulCombiner(jamoCombinationTable)
 
     private val stateStack: MutableList<HangulCombiner.State> = mutableListOf()
@@ -45,7 +44,7 @@ class HangulInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val codeMap = codeTable.mapValues { (_, entry) -> entry.withKeyboardState(state).toChar().toString() }
+        val codeMap = codeConverter.map.mapValues { (_, entry) -> entry.withKeyboardState(state).toChar().toString() }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 
