@@ -37,9 +37,12 @@ class BasicSoftInputEngine(
     }
 
     override fun onReset() {
-        keyboardState = KeyboardState()
         inputEngine.onReset()
         updateView()
+    }
+
+    override fun onResetView() {
+        keyboardState = KeyboardState()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

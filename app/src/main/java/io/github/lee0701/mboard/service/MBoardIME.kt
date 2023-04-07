@@ -72,7 +72,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
-        inputEngineSwitcher?.getCurrentEngine()?.onReset()
+        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
+        inputEngine?.onReset()
+        if(inputEngine is SoftInputEngine) inputEngine.onResetView()
     }
 
     override fun onFinishInput() {
@@ -80,14 +82,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     override fun onSystemKey(code: Int): Boolean {
+        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 inputEngineSwitcher?.nextLanguage()
+                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
                 updateView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 inputEngineSwitcher?.nextExtra()
+                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
                 updateView()
                 true
             }
