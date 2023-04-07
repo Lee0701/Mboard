@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.input
 
 import io.github.lee0701.mboard.layout.HangulLayout
+import io.github.lee0701.mboard.layout.LatinLayout
 import io.github.lee0701.mboard.layout.SoftKeyboardLayout
 import io.github.lee0701.mboard.layout.SymbolLayout
 
@@ -51,6 +52,22 @@ object InputEnginePresets {
         )
     }
 
+    private val LATIN_DVORAK = { listener: InputEngine.Listener ->
+        BasicSoftInputEngine(
+            { SoftKeyboardLayout.LAYOUT_QWERTY_DVORAK_CUSTOM },
+            { CodeConverterInputEngine(LatinLayout.LAYOUT_LATIN_DVORAK, it) },
+            listener,
+        )
+    }
+
+    private val LATIN_COLEMAK = { listener: InputEngine.Listener ->
+        BasicSoftInputEngine(
+            { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
+            { CodeConverterInputEngine(LatinLayout.LAYOUT_LATIN_COLEMAK, it) },
+            listener,
+        )
+    }
+
     private val SYMBOLS_G = { listener: InputEngine.Listener ->
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
@@ -62,6 +79,8 @@ object InputEnginePresets {
 
     private val map = mapOf<String, (InputEngine.Listener) -> InputEngine>(
         "layout_latin_qwerty" to LATIN_QWERTY,
+        "layout_latin_dvorak" to LATIN_DVORAK,
+        "layout_latin_colemak" to LATIN_COLEMAK,
 
         "layout_2set_ks5002" to HANGUL_2SET_KS5002,
         "layout_3set_390" to HANGUL_3SET_390,

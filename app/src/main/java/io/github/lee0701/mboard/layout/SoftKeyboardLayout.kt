@@ -71,6 +71,13 @@ object SoftKeyboardLayout {
         layout.copy(rows = layout.rows.take(1) + listOf(row2) + layout.rows.takeLast(2))
     }
 
+    val LAYOUT_QWERTY_DVORAK_CUSTOM = LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON.let { layout ->
+        val keys = layout.rows[2].keys
+        val newKeys = keys.take(1) + keys.drop(2).dropLast(1) + listOf(Key(KeyEvent.KEYCODE_SLASH, "/")) + keys.takeLast(1)
+        val row3 = layout.rows[2].copy(keys = newKeys)
+        layout.copy(rows = layout.rows.take(2) + row3 + layout.rows.takeLast(1))
+    }
+
     val LAYOUT_QWERTY_MOBILE_WITH_NUM = LAYOUT_QWERTY_MOBILE.let { layout ->
         layout.copy(rows = listOf(ROW_NUMBERS) + layout.rows, height = 275f)
     }

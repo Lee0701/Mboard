@@ -27,10 +27,14 @@
 
     <string-array name="layout_latin_presets">
         <item>@string/layout_latin_qwerty</item>
+        <item>@string/layout_latin_dvorak</item>
+        <item>@string/layout_latin_colemak</item>
     </string-array>
 
     <string-array name="layout_latin_preset_values">
         <item>layout_latin_qwerty</item>
+        <item>layout_latin_dvorak</item>
+        <item>layout_latin_colemak</item>
     </string-array>
 
 </resources>

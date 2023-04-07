@@ -22,6 +22,8 @@
     <string name="layout_3set_391">3-Set 391 (Final)</string>
     <string name="layout_3set_391_strict">3-Set 391 (Final, Strict)</string>
     <string name="layout_latin_qwerty">QWERTY</string>
+    <string name="layout_latin_dvorak">Dvorak</string>
+    <string name="layout_latin_colemak">Colemak</string>
 
     <string name="pref_header_behaviour_title">Behaviour</string>
     <string name="pref_behaviour_double_tap_gap_title">Double-tap Gap</string>
