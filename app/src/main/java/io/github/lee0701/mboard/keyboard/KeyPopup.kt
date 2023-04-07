@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
@@ -66,6 +68,19 @@ class KeyPopup(
         else binding.icon.setImageDrawable(null)
         if(key.binding.label.text != null) binding.label.text = key.binding.label.text
         else binding.label.text = ""
+        if(animator.isRunning) animator.cancel()
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
+    }
+
+    fun show(parent: View, parentX: Int, parentY: Int) {
+        val x = parentX - popupWindow.width / 2
+        val y = parentY - popupWindow.height / 2 * 3
+//        val icon = key.findViewById<AppCompatImageView>(R.id.icon)
+//        val label = key.findViewById<AppCompatTextView>(R.id.label)
+//        if(icon.drawable != null) binding.icon.setImageDrawable(icon.drawable)
+//        else binding.icon.setImageDrawable(null)
+//        if(label.text != null) binding.label.text = label.text
+//        else binding.label.text = ""
         if(animator.isRunning) animator.cancel()
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
