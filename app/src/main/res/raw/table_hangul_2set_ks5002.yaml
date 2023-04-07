@@ -1,0 +1,164 @@
+---
+map:
+  45:
+    base: 12610
+    shift: 12611
+    capsLocked: 12611
+    alt: 12610
+    altShift: 12611
+  51:
+    base: 12616
+    shift: 12617
+    capsLocked: 12617
+    alt: 12616
+    altShift: 12617
+  33:
+    base: 12599
+    shift: 12600
+    capsLocked: 12600
+    alt: 12599
+    altShift: 12600
+  46:
+    base: 12593
+    shift: 12594
+    capsLocked: 12594
+    alt: 12593
+    altShift: 12594
+  48:
+    base: 12613
+    shift: 12614
+    capsLocked: 12614
+    alt: 12613
+    altShift: 12614
+  53:
+    base: 12635
+    shift: 12635
+    capsLocked: 12635
+    alt: 12635
+    altShift: 12635
+  49:
+    base: 12629
+    shift: 12629
+    capsLocked: 12629
+    alt: 12629
+    altShift: 12629
+  37:
+    base: 12625
+    shift: 12625
+    capsLocked: 12625
+    alt: 12625
+    altShift: 12625
+  43:
+    base: 12624
+    shift: 12626
+    capsLocked: 12626
+    alt: 12624
+    altShift: 12626
+  44:
+    base: 12628
+    shift: 12630
+    capsLocked: 12630
+    alt: 12628
+    altShift: 12630
+  29:
+    base: 12609
+    shift: 12609
+    capsLocked: 12609
+    alt: 12609
+    altShift: 12609
+  47:
+    base: 12596
+    shift: 12596
+    capsLocked: 12596
+    alt: 12596
+    altShift: 12596
+  32:
+    base: 12615
+    shift: 12615
+    capsLocked: 12615
+    alt: 12615
+    altShift: 12615
+  34:
+    base: 12601
+    shift: 12601
+    capsLocked: 12601
+    alt: 12601
+    altShift: 12601
+  35:
+    base: 12622
+    shift: 12622
+    capsLocked: 12622
+    alt: 12622
+    altShift: 12622
+  36:
+    base: 12631
+    shift: 12631
+    capsLocked: 12631
+    alt: 12631
+    altShift: 12631
+  38:
+    base: 12627
+    shift: 12627
+    capsLocked: 12627
+    alt: 12627
+    altShift: 12627
+  39:
+    base: 12623
+    shift: 12623
+    capsLocked: 12623
+    alt: 12623
+    altShift: 12623
+  40:
+    base: 12643
+    shift: 12643
+    capsLocked: 12643
+    alt: 12643
+    altShift: 12643
+  54:
+    base: 12619
+    shift: 12619
+    capsLocked: 12619
+    alt: 12619
+    altShift: 12619
+  52:
+    base: 12620
+    shift: 12620
+    capsLocked: 12620
+    alt: 12620
+    altShift: 12620
+  31:
+    base: 12618
+    shift: 12618
+    capsLocked: 12618
+    alt: 12618
+    altShift: 12618
+  50:
+    base: 12621
+    shift: 12621
+    capsLocked: 12621
+    alt: 12621
+    altShift: 12621
+  30:
+    base: 12640
+    shift: 12640
+    capsLocked: 12640
+    alt: 12640
+    altShift: 12640
+  42:
+    base: 12636
+    shift: 12636
+    capsLocked: 12636
+    alt: 12636
+    altShift: 12636
+  41:
+    base: 12641
+    shift: 12641
+    capsLocked: 12641
+    alt: 12641
+    altShift: 12641
+  4140:
+    base: 44
+    shift: 46
+    capsLocked: 46
+    alt: 44
+    altShift: 46

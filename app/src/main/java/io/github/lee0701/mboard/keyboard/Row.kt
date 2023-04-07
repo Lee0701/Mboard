@@ -40,6 +40,7 @@ data class Row(
         }
         return ViewWrapper(this, view, keyViewWrappers)
     }
+
     data class ViewWrapper(
         val row: Row,
         val binding: KeyboardRowBinding,

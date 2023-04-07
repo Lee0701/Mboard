@@ -1,7 +1,8 @@
 package io.github.lee0701.mboard.keyboard
 
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.keyboard.Key.Type.*
+import io.github.lee0701.mboard.module.KeyType.*
+import io.github.lee0701.mboard.module.KeyIconType.*
 
 object Themes {
     val Static = Theme(
@@ -14,7 +15,14 @@ object Themes {
             Space to R.style.Theme_MBoard_Keyboard_Key,
             Return to R.style.Theme_MBoard_Keyboard_Key_Return,
         ),
-        R.style.Theme_MBoard_Keyboard_KeyPopup
+        mapOf(
+            Shift to R.drawable.keyic_shift,
+            Caps to R.drawable.keyic_shift_lock,
+            Backspace to R.drawable.keyic_backspace,
+            Language to R.drawable.keyic_language,
+            Enter to R.drawable.keyic_enter,
+        ),
+        R.style.Theme_MBoard_Keyboard_KeyPopup,
     )
 
     val Dynamic = Theme(
@@ -26,8 +34,15 @@ object Themes {
             ModifierAlt to R.style.Theme_MBoard_Keyboard_Key_Overlay,
             Space to R.style.Theme_MBoard_Keyboard_Key_Overlay,
             Return to R.style.Theme_MBoard_Keyboard_Key_Return_Overlay,
-            ),
-        R.style.Theme_MBoard_Keyboard_KeyPopup_Overlay
+        ),
+        mapOf(
+            Shift to R.drawable.keyic_shift,
+            Caps to R.drawable.keyic_shift_lock,
+            Backspace to R.drawable.keyic_backspace,
+            Language to R.drawable.keyic_language,
+            Enter to R.drawable.keyic_enter,
+        ),
+        R.style.Theme_MBoard_Keyboard_KeyPopup_Overlay,
     )
 
     val map: Map<String, Theme> = mapOf(

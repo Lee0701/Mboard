@@ -3,7 +3,7 @@ package io.github.lee0701.mboard.input
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverter(
-    private val map: Map<Int, Entry> = mapOf(),
+    val map: Map<Int, Entry> = mapOf(),
 ) {
     fun convert(input: Int, state: KeyboardState): Int? {
         val entry = map[input] ?: return null

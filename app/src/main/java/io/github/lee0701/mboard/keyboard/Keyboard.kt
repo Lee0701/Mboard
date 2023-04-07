@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.databinding.KeyboardBinding
+import io.github.lee0701.mboard.module.KeyType
 import kotlin.math.roundToInt
 
 data class Keyboard(
@@ -30,7 +31,7 @@ data class Keyboard(
         val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
         val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
 
-        val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboard)
+        val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
 
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
         val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
@@ -54,7 +55,7 @@ data class Keyboard(
                     MotionEvent.ACTION_DOWN -> {
                         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                         if(showKeyPopups &&
-                            (key.key.type == Key.Type.Alphanumeric || key.key.type == Key.Type.AlphanumericAlt)) {
+                            (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
                             keyPopup?.apply {
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
                                 val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2

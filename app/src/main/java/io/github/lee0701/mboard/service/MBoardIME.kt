@@ -12,11 +12,12 @@ import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.DirectInputEngine
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.InputEnginePresets
-import io.github.lee0701.mboard.input.SoftInputEngine
+import io.github.lee0701.mboard.input.*
+import io.github.lee0701.mboard.module.Keyboard
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceChangeListener {
 
@@ -32,14 +33,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     private fun reload(sharedPreferences: SharedPreferences, force: Boolean = false) {
+        val mapper = ObjectMapper(YAMLFactory())
+        mapper.registerModule(KotlinModule.Builder().build())
+
         val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
 
         val engines = listOf(
-            InputEnginePresets.of(latinPresetKey, this) ?: DirectInputEngine(this),
-            InputEnginePresets.of(hangulPresetKey, this) ?: DirectInputEngine(this),
-            InputEnginePresets.of("layout_symbols_g", this) ?: DirectInputEngine(this),
-        )
+            InputEnginePresets.of(latinPresetKey, this),
+            InputEnginePresets.of(hangulPresetKey, this),
+            InputEnginePresets.SymbolsG(this),
+        ).map { it ?: DirectInputEngine(this) }
 
         val table = arrayOf(
             intArrayOf(0, 2),

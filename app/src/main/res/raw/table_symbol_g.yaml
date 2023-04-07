@@ -1,0 +1,164 @@
+---
+map:
+  45:
+    base: 49
+    shift: 126
+    capsLocked: 126
+    alt: 49
+    altShift: 126
+  51:
+    base: 50
+    shift: 96
+    capsLocked: 96
+    alt: 50
+    altShift: 96
+  33:
+    base: 51
+    shift: 124
+    capsLocked: 124
+    alt: 51
+    altShift: 124
+  46:
+    base: 52
+    shift: 8226
+    capsLocked: 8226
+    alt: 52
+    altShift: 8226
+  48:
+    base: 53
+    shift: 8730
+    capsLocked: 8730
+    alt: 53
+    altShift: 8730
+  53:
+    base: 54
+    shift: 960
+    capsLocked: 960
+    alt: 54
+    altShift: 960
+  49:
+    base: 55
+    shift: 247
+    capsLocked: 247
+    alt: 55
+    altShift: 247
+  37:
+    base: 56
+    shift: 215
+    capsLocked: 215
+    alt: 56
+    altShift: 215
+  43:
+    base: 57
+    shift: 182
+    capsLocked: 182
+    alt: 57
+    altShift: 182
+  44:
+    base: 48
+    shift: 8710
+    capsLocked: 8710
+    alt: 48
+    altShift: 8710
+  29:
+    base: 64
+    shift: 8364
+    capsLocked: 8364
+    alt: 64
+    altShift: 8364
+  47:
+    base: 35
+    shift: 165
+    capsLocked: 165
+    alt: 35
+    altShift: 165
+  32:
+    base: 163
+    shift: 36
+    capsLocked: 36
+    alt: 163
+    altShift: 36
+  34:
+    base: 95
+    shift: 162
+    capsLocked: 162
+    alt: 95
+    altShift: 162
+  35:
+    base: 38
+    shift: 94
+    capsLocked: 94
+    alt: 38
+    altShift: 94
+  36:
+    base: 45
+    shift: 176
+    capsLocked: 176
+    alt: 45
+    altShift: 176
+  38:
+    base: 43
+    shift: 61
+    capsLocked: 61
+    alt: 43
+    altShift: 61
+  39:
+    base: 40
+    shift: 123
+    capsLocked: 123
+    alt: 40
+    altShift: 123
+  40:
+    base: 41
+    shift: 125
+    capsLocked: 125
+    alt: 41
+    altShift: 125
+  74:
+    base: 47
+    shift: 92
+    capsLocked: 92
+    alt: 47
+    altShift: 92
+  54:
+    base: 42
+    shift: 37
+    capsLocked: 37
+    alt: 42
+    altShift: 37
+  52:
+    base: 34
+    shift: 169
+    capsLocked: 169
+    alt: 34
+    altShift: 169
+  31:
+    base: 92
+    shift: 174
+    capsLocked: 174
+    alt: 92
+    altShift: 174
+  50:
+    base: 58
+    shift: 8482
+    capsLocked: 8482
+    alt: 58
+    altShift: 8482
+  30:
+    base: 59
+    shift: 10003
+    capsLocked: 10003
+    alt: 59
+    altShift: 10003
+  42:
+    base: 33
+    shift: 91
+    capsLocked: 91
+    alt: 33
+    altShift: 91
+  41:
+    base: 63
+    shift: 93
+    capsLocked: 93
+    alt: 63
+    altShift: 93

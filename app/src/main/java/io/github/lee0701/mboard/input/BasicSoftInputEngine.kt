@@ -12,16 +12,12 @@ import io.github.lee0701.mboard.keyboard.Keyboard
 import io.github.lee0701.mboard.keyboard.Themes
 
 class BasicSoftInputEngine(
-    initSoftKeyboard: () -> Keyboard,
-    initInputEngine: (InputEngine.Listener) -> InputEngine,
-    val autoUnlockShift: Boolean = true,
+    private val softKeyboard: Keyboard,
+    private val inputEngine: InputEngine,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
 
     private var doubleTapGap: Int = 500
-
-    private val softKeyboard = initSoftKeyboard()
-    private val inputEngine = initInputEngine(listener)
 
     private var softKeyboardWrapper: Keyboard.ViewWrapper? = null
 
@@ -170,7 +166,7 @@ class BasicSoftInputEngine(
     }
 
     private fun autoUnlockShift() {
-        if(!autoUnlockShift) return
+//        if(!autoUnlockShift) return
         val lastState = keyboardState
         val lastShiftState = lastState.shiftState
         if(!lastShiftState.locked && !lastShiftState.pressing) {
