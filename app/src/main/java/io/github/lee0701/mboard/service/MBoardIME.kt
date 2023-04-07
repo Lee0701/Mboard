@@ -56,7 +56,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     override fun onCreateInputView(): View {
-        inputEngineSwitcher?.initViews(this)
         val inputView = FrameLayout(this, null)
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
         val keyboardView =
@@ -78,7 +77,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         super.onStartInput(attribute, restarting)
         val inputEngine = inputEngineSwitcher?.getCurrentEngine()
         inputEngine?.onReset()
-        if(inputEngine is SoftInputEngine) inputEngine.onResetView()
     }
 
     override fun onFinishInput() {
@@ -90,13 +88,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 inputEngineSwitcher?.nextLanguage()
-                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
+                if(inputEngine is SoftInputEngine) inputEngine.onReset()
                 updateView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 inputEngineSwitcher?.nextExtra()
-                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
+                if(inputEngine is SoftInputEngine) inputEngine.onReset()
                 updateView()
                 true
             }
@@ -142,13 +140,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     private fun updateView() {
-        val inputView = inputView ?: return
-        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-        inputView.removeAllViews()
-        if(inputEngine is SoftInputEngine) {
-            inputView.addView(inputEngine.getView())
-            inputEngine.onReset()
-        }
+        setInputView(onCreateInputView())
     }
 
     override fun onDestroy() {

@@ -1,8 +1,6 @@
 package io.github.lee0701.mboard.service
 
-import android.content.Context
 import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
 
 class InputEngineSwitcher(
     private val engines: List<InputEngine>,
@@ -10,10 +8,6 @@ class InputEngineSwitcher(
 ) {
     private var languageIndex = 0
     private var extraIndex = 0
-
-    fun initViews(context: Context) {
-        engines.filterIsInstance<SoftInputEngine>().forEach { it.initView(context) }
-    }
 
     fun getCurrentEngine(): InputEngine {
         return engines[table[languageIndex][extraIndex]]
