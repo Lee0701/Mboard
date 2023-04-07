@@ -17,7 +17,7 @@ object InputEnginePresets {
 
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
             DirectInputEngine(mBoardIME),
             mBoardIME,
         )
@@ -25,9 +25,9 @@ object InputEnginePresets {
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.conv_hangul_2set_ks5002), CodeConvertTable::class.java).inflate(),
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_2set_ks5002), CodeConvertTable::class.java).inflate(),
                 mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_2set_ks5002), JamoCombinationTable::class.java).inflate(),
                 mBoardIME,
             ),
@@ -37,44 +37,48 @@ object InputEnginePresets {
 
     fun SymbolsG(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.qwerty_mobile), Keyboard::class.java).inflate(),
-            CodeConverterInputEngine(mapper.readValue(mBoardIME.resources.openRawResource(R.raw.conv_symbol_g), CodeConvertTable::class.java), mBoardIME),
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
+            CodeConverterInputEngine(mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_symbol_g), CodeConvertTable::class.java), mBoardIME),
             mBoardIME,
         )
     }
 
-//    private val HANGUL_2SET_KS5002 = { listener: InputEngine.Listener ->
-//        BasicSoftInputEngine(
-//            { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
-//            { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_2SET_STANDARD, HangulLayout.COMB_2SET_STANDARD, it) },
-//            listener,
-//        )
-//    }
-//
-//    private val HANGUL_3SET_390 = { listener: InputEngine.Listener ->
-//        BasicSoftInputEngine(
-//            { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE },
-//            { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_390, HangulLayout.COMB_SEBEOL_390, it) },
-//            listener,
-//        )
-//    }
-//
-//    private val HANGUL_3SET_391 = { listener: InputEngine.Listener ->
-//        BasicSoftInputEngine(
-//            { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_391_MOBILE },
-//            { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391, HangulLayout.COMB_SEBEOL_391, it) },
-//            listener,
-//        )
-//    }
-//
-//    private val HANGUL_3SET_391_STRICT = { listener: InputEngine.Listener ->
-//        BasicSoftInputEngine(
-//            { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_391_MOBILE },
-//            { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391_STRICT, HangulLayout.COMB_SEBEOL_391_STRICT, it) },
-//            listener,
-//        )
-//    }
-//
+    private fun Hangul3Set390(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_390), Keyboard::class.java).inflate(),
+            HangulInputEngine(
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_390), CodeConvertTable::class.java).inflate(),
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_390), JamoCombinationTable::class.java).inflate(),
+                mBoardIME,
+            ),
+            mBoardIME,
+        )
+    }
+
+    private fun Hangul3Set391(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391), Keyboard::class.java).inflate(),
+            HangulInputEngine(
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391), CodeConvertTable::class.java).inflate(),
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391), JamoCombinationTable::class.java).inflate(),
+                mBoardIME,
+            ),
+            mBoardIME,
+        )
+    }
+
+    private fun Hangul3Set391Strict(mBoardIME: MBoardIME): InputEngine {
+        return BasicSoftInputEngine(
+            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391), Keyboard::class.java).inflate(),
+            HangulInputEngine(
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391), CodeConvertTable::class.java).inflate(),
+                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391_strict), JamoCombinationTable::class.java).inflate(),
+                mBoardIME,
+            ),
+            mBoardIME,
+        )
+    }
+
 //    private val LAITN_QWERTY = { listener: InputEngine.Listener ->
 //        BasicSoftInputEngine(
 //            { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
