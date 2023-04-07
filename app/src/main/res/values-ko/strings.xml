@@ -18,6 +18,7 @@
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>
     <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
     <string name="layout_2set_ks5002">두벌식 KS 표준</string>
+    <string name="layout_2set_old_hangul">두벌식 옛한글</string>
     <string name="layout_3set_390">세벌식 3–90</string>
     <string name="layout_3set_391">세벌식 3–91 (최종)</string>
     <string name="layout_3set_391_strict">세벌식 3–91 (최종, 정석 강요)</string>
