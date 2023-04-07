@@ -5,6 +5,7 @@ import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
 import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.keyboard.Keyboard
@@ -61,6 +62,9 @@ class BasicSoftInputEngine(
 
     private fun updateView() {
         updateLabels(getShiftedLabels() + inputEngine.getLabels(keyboardState))
+
+        val shiftKeys = softKeyboardWrapper?.keys?.filter { it.key.code in setOf(KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT) }.orEmpty()
+        shiftKeys.forEach { it.binding.icon.setImageResource(if(keyboardState.shiftState.locked) R.drawable.keyic_shift_lock else R.drawable.keyic_shift) }
     }
 
     private fun getShiftedLabels(): Map<Int, CharSequence> {
