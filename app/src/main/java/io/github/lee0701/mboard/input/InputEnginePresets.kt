@@ -63,7 +63,7 @@ object InputEnginePresets {
     }
 
     private val map = mapOf<String, (InputEngine.Listener) -> InputEngine>(
-        "layout_latin_qwerty" to LAITN_QWERTY,
+        "layout_latin_qwerty" to LATIN_QWERTY,
 
         "layout_2set_ks5002" to HANGUL_2SET_KS5002,
         "layout_3set_390" to HANGUL_3SET_390,

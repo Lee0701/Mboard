@@ -42,7 +42,7 @@ class HangulCombiner(
                     newStates += State(jong = input)
                 }
             } else newStates += state.copy(jong = input)
-        } else if(Hangul.isConsonant(input)) {
+        } else if(Hangul.isConsonant(input and 0x1fffff)) {
             val cho = Hangul.consonantToCho(input and 0xffff)
             val jong = Hangul.consonantToJong(input and 0xffff)
             if(state.cho != null && state.jung != null) {
@@ -71,7 +71,7 @@ class HangulCombiner(
             } else {
                 newStates += state.copy(cho = cho)
             }
-        } else if(Hangul.isVowel(input)) {
+        } else if(Hangul.isVowel(input and 0x1fffff)) {
             val jung = Hangul.vowelToJung(input and 0xffff)
             val newStateJong = state.jong
             val jongCombination = state.jongCombination
