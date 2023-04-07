@@ -4,14 +4,19 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
+import java.util.*
 import kotlin.math.roundToInt
 
 class KeyboardView(
@@ -21,6 +26,7 @@ class KeyboardView(
     private val theme: Theme,
     private val listener: Keyboard.Listener,
 ): View(context, attrs) {
+
     private val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
     private val keyboardHeight = dipToPixel(keyboard.height)
 
@@ -39,6 +45,14 @@ class KeyboardView(
 
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val pointers = mutableMapOf<Int, TouchPointer>()
+    private var keyPopup: KeyPopup? = null
+
+    private val showKeyPopups = true
+    private val longPressDuration = 500L
+    private val repeatInterval = 50L
 
     init {
         textPaint.textAlign = Paint.Align.CENTER
@@ -78,6 +92,7 @@ class KeyboardView(
         keyMarginVertical = resources.getDimension(R.dimen.key_margin_vertical)
 
         cacheKeys()
+        keyPopup = KeyPopup(context)
     }
 
     private fun cacheKeys() {
@@ -91,7 +106,7 @@ class KeyboardView(
                 val width = keyWidthUnit * key.width
                 val height = rowHeight
                 val icon = key.icon?.let { ContextCompat.getDrawable(context, it) }
-                cachedKeys += CachedKey(key, x, y, width, height, icon)
+                cachedKeys += CachedKey(key, x.roundToInt(), y.roundToInt(), width.roundToInt(), height.roundToInt(), icon)
                 x += width
             }
         }
@@ -100,9 +115,12 @@ class KeyboardView(
     override fun onDraw(canvas: Canvas?) {
         if(canvas == null) return
         getLocalVisibleRect(rect)
+        val bitmapCache = mutableMapOf<Pair<Float, Float>, Bitmap>()
+
+        // Draw keyboard background
         canvas.drawBitmap(keyboardBackground.toBitmap(rect.width(), rect.height()), 0f, 0f, bitmapPaint)
 
-        val bitmapCache = mutableMapOf<Pair<Float, Float>, Bitmap>()
+        // Draw key backgrounds
         cachedKeys.forEach { key ->
             val background = keyBackgrounds[key.key.type]
             if(background != null) {
@@ -116,6 +134,7 @@ class KeyboardView(
             }
         }
 
+        // Draw key foregrounds
         cachedKeys.forEach { key ->
             val baseX = key.x + key.width/2
             val baseY = key.y + key.height/2
@@ -125,7 +144,7 @@ class KeyboardView(
                 val bitmap = key.icon.toBitmap()
                 val x = baseX - bitmap.width/2
                 val y = baseY - bitmap.height/2
-                canvas.drawBitmap(bitmap, x, y, bitmapPaint)
+                canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), bitmapPaint)
             }
             val textSize = keyLabelTextSizes[key.key.type]
             val textColor = keyLabelTextColors[key.key.type]
@@ -134,17 +153,52 @@ class KeyboardView(
                 textPaint.textSize = textSize
                 val x = baseX
                 val y = baseY - (textPaint.descent() + textPaint.ascent())/2
-                canvas.drawText(key.key.label, x, y, textPaint)
+                canvas.drawText(key.key.label, x.toFloat(), y.toFloat(), textPaint)
             }
         }
     }
 
-    private fun onDrawKeyBackground(canvas: Canvas, key: Key) {
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(event == null) return super.onTouchEvent(event)
 
-    }
+        val pointerId = event.getPointerId(event.actionIndex)
+        val x = event.getX(event.actionIndex).roundToInt()
+        val y = event.getY(event.actionIndex).roundToInt()
 
-    private fun onDrawKeyForeground(canvas: Canvas, key: Key) {
+        val key = findKey(x, y) ?: return super.onTouchEvent(event)
 
+        when(event.actionMasked) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                val pointer = TouchPointer(x, y, key)
+
+                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                if(showKeyPopups &&
+                    (key.key.type == Key.Type.Alphanumeric || key.key.type == Key.Type.AlphanumericAlt)) {
+                    keyPopup?.apply {
+                        show(this@KeyboardView, key.x + key.width/2, key.y + key.height/2)
+                    }
+                } else {
+                    keyPopup?.cancel()
+                }
+                fun repeater() {
+                    listener.onKeyClick(key.key.code, key.key.output)
+                    handler.postDelayed({ repeater() }, repeatInterval)
+                }
+                handler.postDelayed({
+                    if(key.key.repeatable) repeater()
+                }, longPressDuration)
+                listener.onKeyDown(key.key.code, key.key.output)
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                handler.removeCallbacksAndMessages(null)
+                keyPopup?.hide()
+                listener.onKeyUp(key.key.code, key.key.output)
+                listener.onKeyClick(key.key.code, key.key.output)
+                performClick()
+            }
+        }
+
+        return true
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -156,12 +210,30 @@ class KeyboardView(
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
     }
 
+    private fun findKey(x: Int, y: Int): CachedKey? {
+        cachedKeys.forEach { key ->
+            if(x in key.x until key.x+key.width) {
+                if(y in key.y until key.y+key.height) {
+                    return key
+                }
+            }
+        }
+        return null
+    }
+
     data class CachedKey(
         val key: Key,
-        val x: Float,
-        val y: Float,
-        val width: Float,
-        val height: Float,
+        val x: Int,
+        val y: Int,
+        val width: Int,
+        val height: Int,
         val icon: Drawable?,
     )
+
+    data class TouchPointer(
+        val initialX: Int,
+        val initialY: Int,
+        val key: CachedKey,
+    )
+
 }
