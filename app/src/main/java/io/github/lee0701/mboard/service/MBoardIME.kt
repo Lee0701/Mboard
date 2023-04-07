@@ -40,18 +40,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
 
         val engines = listOf(
-            InputEnginePresets.LatinQWERTY(this),
-            InputEnginePresets.Hangul2SetKS5002(this),
+            InputEnginePresets.of(latinPresetKey, this),
+            InputEnginePresets.of(hangulPresetKey, this),
             InputEnginePresets.SymbolsG(this),
-//            BasicSoftInputEngine(
-//                { mapper.readValue(resources.openRawResource(R.raw.qwerty_mobile_3set_391), Keyboard::class.java).inflate() },
-//                { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391, HangulLayout.COMB_SEBEOL_391, it) },
-//                this,
-//            ),
-//            InputEnginePresets.of(latinPresetKey, this) ?: DirectInputEngine(this),
-//            InputEnginePresets.of(hangulPresetKey, this) ?: DirectInputEngine(this),
-//            InputEnginePresets.of("layout_symbols_g", this) ?: DirectInputEngine(this),
-        )
+        ).map { it ?: DirectInputEngine(this) }
 
         val table = arrayOf(
             intArrayOf(0, 2),
