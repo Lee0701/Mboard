@@ -8,7 +8,7 @@ class HangulCombiner(
     fun combine(state: State, input: Int): Pair<CharSequence, List<State>> {
         val newStates = mutableListOf<State>()
         var composed = ""
-        if(Hangul.isCho(input)) {
+        if(Hangul.isCho(input and 0x1fffff)) {
             if(state.cho != null) {
                 val combination = jamoCombinationMap[state.cho to input]
                 if(combination != null) {
@@ -23,7 +23,7 @@ class HangulCombiner(
                     newStates += State(cho = input)
                 }
             } else newStates += state.copy(cho = input)
-        } else if(Hangul.isJung(input)) {
+        } else if(Hangul.isJung(input and 0x1fffff)) {
             if(state.jung != null) {
                 val combination = jamoCombinationMap[state.jung to input]
                 if(combination != null) newStates += state.copy(jung = combination)
@@ -32,7 +32,7 @@ class HangulCombiner(
                     newStates += State(jung = input)
                 }
             } else newStates += state.copy(jung = input)
-        } else if(Hangul.isJong(input)) {
+        } else if(Hangul.isJong(input and 0x1fffff)) {
             val newStateJong = state.jong
             if(newStateJong != null) {
                 val combination = jamoCombinationMap[newStateJong to input]
@@ -100,7 +100,6 @@ class HangulCombiner(
         } else {
             composed += state.composed
             composed += input.toChar()
-            newStates += State()
         }
         return composed to newStates.map { it.copy(last = input) }
     }
