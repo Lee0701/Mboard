@@ -47,6 +47,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
             { HangulInputEngine(HangulLayout.LAYOUT_2SET_OLD_HANGUL, HangulLayout.COMB_FULL, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -64,6 +65,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_DVORAK_CUSTOM },
             { CodeConverterInputEngine(LatinLayout.LAYOUT_LATIN_DVORAK, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -72,6 +74,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
             { CodeConverterInputEngine(LatinLayout.LAYOUT_LATIN_COLEMAK, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
