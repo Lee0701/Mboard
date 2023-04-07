@@ -4,7 +4,42 @@ import android.view.KeyEvent
 import io.github.lee0701.mboard.input.CodeConverter.Entry
 
 object HangulLayout {
-    val LAYOUT_HANGUL_SEBEOL_390 = mapOf(
+
+    val COMB_3SET_CHO = mapOf(
+        0x1100 to 0x1100 to 0x1101,	// ㄲ
+        0x1103 to 0x1103 to 0x1104,	// ㄸ
+        0x1107 to 0x1107 to 0x1108,	// ㅃ
+        0x1109 to 0x1109 to 0x110a,	// ㅆ
+        0x110c to 0x110c to 0x110d,	// ㅉ
+    )
+
+    val COMB_3SET_JUNG = mapOf(
+        0x1169 to 0x1161 to 0x116a,	// ㅘ
+        0x1169 to 0x1162 to 0x116b,	// ㅙ
+        0x1169 to 0x1175 to 0x116c,	// ㅚ
+        0x116e to 0x1165 to 0x116f,	// ㅝ
+        0x116e to 0x1166 to 0x1170,	// ㅞ
+        0x116e to 0x1175 to 0x1171,	// ㅟ
+        0x1173 to 0x1175 to 0x1174,	// ㅢ
+    )
+
+    val COMB_3SET_JONG = mapOf(
+        0x11a8 to 0x11a8 to 0x11a9,	// ㄲ
+        0x11a8 to 0x11ba to 0x11aa,	// ㄳ
+        0x11ab to 0x11bd to 0x11ac,	// ㄵ
+        0x11ab to 0x11c2 to 0x11ad,	// ㄶ
+        0x11af to 0x11a8 to 0x11b0,	// ㄺ
+        0x11af to 0x11b7 to 0x11b1,	// ㄻ
+        0x11af to 0x11b8 to 0x11b2,	// ㄼ
+        0x11af to 0x11ba to 0x11b3,	// ㄽ
+        0x11af to 0x11c0 to 0x11b4,	// ㄾ
+        0x11af to 0x11c1 to 0x11b5,	// ㄿ
+        0x11af to 0x11c2 to 0x11b6,	// ㅀ
+        0x11b8 to 0x11ba to 0x11b9,	// ㅄ
+        0x11ba to 0x11ba to 0x11bb,	// ㅆ
+    )
+
+    val LAYOUT_HANGUL_3SET_390 = mapOf(
         KeyEvent.KEYCODE_1 to Entry(0x11c2, 0x11bd),
         KeyEvent.KEYCODE_2 to Entry(0x11bb, 0x0040),
         KeyEvent.KEYCODE_3 to Entry(0x11b8, 0x0023),
@@ -50,44 +85,68 @@ object HangulLayout {
         KeyEvent.KEYCODE_PERIOD to Entry(0x002e, 0x0033),
         KeyEvent.KEYCODE_SLASH to Entry(0x1169, 0x003f),
 
-        CustomKeycode.KEYCODE_COMMA_PERIOD to Entry(0x002c, 0x002e),
         CustomKeycode.KEYCODE_SEBEOL_390_0 to Entry(0x116e, 0x0030),
         CustomKeycode.KEYCODE_SEBEOL_390_1 to Entry(0x1109, 0x0031),
         CustomKeycode.KEYCODE_SEBEOL_390_2 to Entry(0x1112, 0x0032),
         CustomKeycode.KEYCODE_SEBEOL_390_3 to Entry(0x1110, 0x0033),
-    )
+    ) + CustomKeycode.LAYOUT_CUSTOM_KEYS
 
-    val COMB_SEBEOL_390 = mapOf(
-        0x1100 to 0x1100 to 0x1101,	// ㄲ
-        0x1103 to 0x1103 to 0x1104,	// ㄸ
-        0x1107 to 0x1107 to 0x1108,	// ㅃ
-        0x1109 to 0x1109 to 0x110a,	// ㅆ
-        0x110c to 0x110c to 0x110d,	// ㅉ
+    val COMB_SEBEOL_390 = COMB_3SET_CHO + COMB_3SET_JUNG + COMB_3SET_JONG
 
-        0x1169 to 0x1161 to 0x116a,	// ㅘ
-        0x1169 to 0x1162 to 0x116b,	// ㅙ
-        0x1169 to 0x1175 to 0x116c,	// ㅚ
-        0x116e to 0x1165 to 0x116f,	// ㅝ
-        0x116e to 0x1166 to 0x1170,	// ㅞ
-        0x116e to 0x1175 to 0x1171,	// ㅟ
-        0x1173 to 0x1175 to 0x1174,	// ㅢ
+    val LAYOUT_HANGUL_3SET_391 = mapOf(
+        KeyEvent.KEYCODE_1 to Entry(0x11c2, 0x11a9), // ᇂ, ᆩ
+        KeyEvent.KEYCODE_2 to Entry(0x11bb, 0x11b0), // ᆻ, ᆰ
+        KeyEvent.KEYCODE_3 to Entry(0x11b8, 0x11bd), // ᆸ, ᆽ
+        KeyEvent.KEYCODE_4 to Entry(0x116d, 0x11b5), // ᅭ, ᆵ
+        KeyEvent.KEYCODE_5 to Entry(0x1172, 0x11b4), // ᅲ, ᆴ
+        KeyEvent.KEYCODE_6 to Entry(0x1163, 0x003d), // ᅣ, =
+        KeyEvent.KEYCODE_7 to Entry(0x1168, 0x201c), // ᅨ, “
+        KeyEvent.KEYCODE_8 to Entry(0x1174, 0x201d), // ᅴ, ”
+        KeyEvent.KEYCODE_9 to Entry(0x116e, 0x0027), // ᅮ, '
+        KeyEvent.KEYCODE_0 to Entry(0x110f, 0x007e), // ᄏ, ~
+        KeyEvent.KEYCODE_Q to Entry(0x11ba, 0x11c1), // ᆺ, ᇁ
+        KeyEvent.KEYCODE_W to Entry(0x11af, 0x11c0), // ᆯ, ᇀ
+        KeyEvent.KEYCODE_E to Entry(0x1167, 0x11ac), // ᅧ, ᆬ
+        KeyEvent.KEYCODE_R to Entry(0x1162, 0x11b6), // ᅢ, ᆶ
+        KeyEvent.KEYCODE_T to Entry(0x1165, 0x11b3), // ᅥ, ᆳ
+        KeyEvent.KEYCODE_Y to Entry(0x1105, 0x0035), // ᄅ, 5
+        KeyEvent.KEYCODE_U to Entry(0x1103, 0x0036), // ᄃ, 6
+        KeyEvent.KEYCODE_I to Entry(0x1106, 0x0037), // ᄆ, 7
+        KeyEvent.KEYCODE_O to Entry(0x110e, 0x0038), // ᄎ, 8
+        KeyEvent.KEYCODE_P to Entry(0x1111, 0x0039), // ᄑ, 9
+        KeyEvent.KEYCODE_A to Entry(0x11bc, 0x11ae), // ᆼ, ᆮ
+        KeyEvent.KEYCODE_S to Entry(0x11ab, 0x11ad), // ᆫ, ᆭ
+        KeyEvent.KEYCODE_D to Entry(0x1175, 0x11b2), // ᅵ, ᆲ
+        KeyEvent.KEYCODE_F to Entry(0x1161, 0x11b1), // ᅡ, ᆱ
+        KeyEvent.KEYCODE_G to Entry(0x1173, 0x1164), // ᅳ, ᅤ
+        KeyEvent.KEYCODE_H to Entry(0x1102, 0x0030), // ᄂ, 0
+        KeyEvent.KEYCODE_J to Entry(0x110b, 0x0031), // ᄋ, 1
+        KeyEvent.KEYCODE_K to Entry(0x1100, 0x0032), // ᄀ, 2
+        KeyEvent.KEYCODE_L to Entry(0x110c, 0x0033), // ᄌ, 3
+        KeyEvent.KEYCODE_SEMICOLON to Entry(0x1107, 0x0034), // ᄇ, 4
+        KeyEvent.KEYCODE_APOSTROPHE to Entry(0x1110, 0x00b7), // ᄐ, ·
+        KeyEvent.KEYCODE_Z to Entry(0x11b7, 0x11be), // ᆷ, ᆾ
+        KeyEvent.KEYCODE_X to Entry(0x11a8, 0x11b9), // ᆨ, ᆹ
+        KeyEvent.KEYCODE_C to Entry(0x1166, 0x11bf), // ᅦ, ᆿ
+        KeyEvent.KEYCODE_V to Entry(0x1169, 0x11aa), // ᅩ, ᆪ
+        KeyEvent.KEYCODE_B to Entry(0x116e, 0x003f), // ᅮ, ?
+        KeyEvent.KEYCODE_N to Entry(0x1109, 0x002d), // ᄉ, -
+        KeyEvent.KEYCODE_M to Entry(0x1112, 0x0022), // ᄒ, "
+        KeyEvent.KEYCODE_COMMA to Entry(0x002c, 0x002c), // ,, ,
+        KeyEvent.KEYCODE_PERIOD to Entry(0x002e, 0x002e), // ., .
+        KeyEvent.KEYCODE_SLASH to Entry(0x1169, 0x0021), // ᅩ, !
+        KeyEvent.KEYCODE_MINUS to Entry(0x0029, 0x003b), // ), ;
+        KeyEvent.KEYCODE_NUM to Entry(0x003e, 0x002b), // >, +
+        KeyEvent.KEYCODE_LEFT_BRACKET to Entry(0x0028, 0x0025), // (, %
+        KeyEvent.KEYCODE_RIGHT_BRACKET to Entry(0x003c, 0x002f), // <, /
+        KeyEvent.KEYCODE_BACKSLASH to Entry(0x003a, 0x005c), // :, \
+        KeyEvent.KEYCODE_GRAVE to Entry(0x002a, 0x203b), // *, ※
+    ) + CustomKeycode.LAYOUT_CUSTOM_KEYS
 
-        0x11a8 to 0x11a8 to 0x11a9,	// ㄲ
-        0x11a8 to 0x11ba to 0x11aa,	// ㄳ
-        0x11ab to 0x11bd to 0x11ac,	// ㄵ
-        0x11ab to 0x11c2 to 0x11ad,	// ㄶ
-        0x11af to 0x11a8 to 0x11b0,	// ㄺ
-        0x11af to 0x11b7 to 0x11b1,	// ㄻ
-        0x11af to 0x11b8 to 0x11b2,	// ㄼ
-        0x11af to 0x11ba to 0x11b3,	// ㄽ
-        0x11af to 0x11c0 to 0x11b4,	// ㄾ
-        0x11af to 0x11c1 to 0x11b5,	// ㄿ
-        0x11af to 0x11c2 to 0x11b6,	// ㅀ
-        0x11b8 to 0x11ba to 0x11b9,	// ㅄ
-        0x11ba to 0x11ba to 0x11bb,	// ㅆ
-    )
+    val COMB_SEBEOL_391 = COMB_3SET_CHO + COMB_3SET_JUNG + COMB_3SET_JONG
+    val COMB_SEBEOL_391_STRICT = COMB_3SET_CHO + COMB_3SET_JUNG
 
-    val LAYOUT_HANGUL_DUBEOL_STANDARD = mapOf(
+    val LAYOUT_HANGUL_2SET_STANDARD = mapOf(
         KeyEvent.KEYCODE_Q to Entry(0x3142, 0x3143),
         KeyEvent.KEYCODE_W to Entry(0x3148, 0x3149),
         KeyEvent.KEYCODE_E to Entry(0x3137, 0x3138),
@@ -116,9 +175,9 @@ object HangulLayout {
         KeyEvent.KEYCODE_B to Entry(0x3160),
         KeyEvent.KEYCODE_N to Entry(0x315c),
         KeyEvent.KEYCODE_M to Entry(0x3161),
-    )
+    ) + CustomKeycode.LAYOUT_CUSTOM_KEYS
 
-    val COMB_DUBEOL_STANDARD = mapOf(
+    val COMB_2SET_STANDARD = mapOf(
         0x1169 to 0x1161 to 0x116a,	// ㅘ
         0x1169 to 0x1162 to 0x116b,	// ㅙ
         0x1169 to 0x1175 to 0x116c,	// ㅚ

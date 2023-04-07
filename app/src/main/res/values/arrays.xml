@@ -14,11 +14,13 @@
     <string-array name="layout_hangul_presets">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>
+        <item>@string/layout_3set_391</item>
     </string-array>
 
     <string-array name="layout_hangul_preset_values">
         <item>layout_2set_ks5002</item>
         <item>layout_3set_390</item>
+        <item>layout_3set_391</item>
     </string-array>
 
     <string-array name="layout_latin_presets">
