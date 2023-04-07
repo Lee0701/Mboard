@@ -32,7 +32,7 @@ data class Keyboard(
         val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
 
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
-        val binding = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard, null, false).apply {
+        val view = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard, null, false).apply {
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, wrappedContext.resources.displayMetrics).toInt()
             layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, height
@@ -58,7 +58,7 @@ data class Keyboard(
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
                                 val x = key.view.x.roundToInt() + key.view.width / 2
                                 val y = row.view.y.roundToInt() + row.view.height / 2
-                                show(binding, key, x, y)
+                                show(view, key, x, y)
                             }
                         } else {
                             keyPopup?.cancel()
@@ -84,7 +84,7 @@ data class Keyboard(
                 listener.onKeyClick(key.key.code, key.key.output)
             }
         }
-        return ViewWrapper(this, binding, rowViewWrappers, keyViewWrappers)
+        return ViewWrapper(this, view, rowViewWrappers, keyViewWrappers)
     }
 
     data class ViewWrapper(

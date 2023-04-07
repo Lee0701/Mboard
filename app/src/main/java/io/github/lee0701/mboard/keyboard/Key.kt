@@ -22,7 +22,7 @@ data class Key(
 ) {
     fun initView(context: Context, theme: Theme): ViewWrapper {
         val wrappedContext = theme.keyBackground[type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
-        val binding = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard_key, null, false).apply {
+        val view = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard_key, null, false).apply {
             val key = this@Key
             val icon = theme.keyIcon[key.iconType]
             if(key.label != null) findViewById<AppCompatTextView>(R.id.label).text = key.label
@@ -33,7 +33,7 @@ data class Key(
                 weight = key.width
             }
         }
-        return ViewWrapper(this, binding)
+        return ViewWrapper(this, view)
     }
 
     data class ViewWrapper(

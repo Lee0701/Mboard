@@ -16,6 +16,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.KeyType
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -38,10 +39,10 @@ class KeyboardView(
     private val cachedKeys = mutableListOf<CachedKey>()
 
     private val keyboardBackground: Drawable
-    private val keyBackgrounds: Map<Key.Type, Drawable>
-    private val keyIconTints: Map<Key.Type, Int>
-    private val keyLabelTextColors: Map<Key.Type, Int>
-    private val keyLabelTextSizes: Map<Key.Type, Float>
+    private val keyBackgrounds: Map<KeyType, Drawable>
+    private val keyIconTints: Map<KeyType, Int>
+    private val keyLabelTextColors: Map<KeyType, Int>
+    private val keyLabelTextSizes: Map<KeyType, Float>
 
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
@@ -57,7 +58,7 @@ class KeyboardView(
     init {
         textPaint.textAlign = Paint.Align.CENTER
 
-        val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboard)
+        val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
         keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
         val background = ContextCompat.getDrawable(keyboardContext, typedValue.resourceId) ?: ColorDrawable(Color.WHITE)
         keyboardContext.theme.resolveAttribute(R.attr.backgroundTint, typedValue, true)
@@ -65,7 +66,7 @@ class KeyboardView(
         DrawableCompat.setTint(background, backgroundTint)
         this.keyboardBackground = background
 
-        val keyContexts = theme.key.mapValues { (_, id) ->
+        val keyContexts = theme.keyBackground.mapValues { (_, id) ->
             DynamicColors.wrapContextIfAvailable(context, id)
         }
         keyBackgrounds = keyContexts.mapValues { (_, keyContext) ->
@@ -105,7 +106,7 @@ class KeyboardView(
             row.keys.forEachIndexed { i, key ->
                 val width = keyWidthUnit * key.width
                 val height = rowHeight
-                val icon = key.icon?.let { ContextCompat.getDrawable(context, it) }
+                val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
                 cachedKeys += CachedKey(key, x.roundToInt(), y.roundToInt(), width.roundToInt(), height.roundToInt(), icon)
                 x += width
             }
@@ -173,7 +174,7 @@ class KeyboardView(
 
                 this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if(showKeyPopups &&
-                    (key.key.type == Key.Type.Alphanumeric || key.key.type == Key.Type.AlphanumericAlt)) {
+                    (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
                     keyPopup?.apply {
                         show(this@KeyboardView, key.x + key.width/2, key.y + key.height/2)
                     }
