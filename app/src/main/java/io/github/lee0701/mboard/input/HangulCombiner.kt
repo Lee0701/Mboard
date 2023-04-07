@@ -100,7 +100,6 @@ class HangulCombiner(
         } else {
             composed += state.composed
             composed += input.toChar()
-            newStates += State()
         }
         return composed to newStates.map { it.copy(last = input) }
     }
