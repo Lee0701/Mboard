@@ -8,10 +8,12 @@ import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
-import io.github.lee0701.mboard.databinding.KeyboardBinding
+import io.github.lee0701.mboard.R
 import kotlin.math.roundToInt
 
 data class Keyboard(
@@ -33,15 +35,15 @@ data class Keyboard(
         val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboard)
 
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
-        val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
+        val binding = LayoutInflater.from(wrappedContext).inflate(R.layout.keyboard, null, false).apply {
             val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this@Keyboard.height, wrappedContext.resources.displayMetrics).toInt()
-            root.layoutParams = FrameLayout.LayoutParams(
+            layoutParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, height
             )
             rows.forEach { row ->
                 val rowViewWrapper = row.initView(context, theme)
                 rowViewWrappers += rowViewWrapper
-                root.addView(rowViewWrapper.binding.root)
+                (this as ViewGroup).addView(rowViewWrapper.view)
             }
         }
 
@@ -49,7 +51,7 @@ data class Keyboard(
 
         val keyViewWrappers = rowViewWrappers.flatMap { it.keys }
         keyViewWrappers.forEach { key ->
-            key.binding.root.setOnTouchListener { v, event ->
+            key.view.setOnTouchListener { v, event ->
                 when(event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -57,9 +59,9 @@ data class Keyboard(
                             (key.key.type == Key.Type.Alphanumeric || key.key.type == Key.Type.AlphanumericAlt)) {
                             keyPopup?.apply {
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
-                                val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2
-                                val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
-                                show(binding.root, key, x, y)
+                                val x = key.view.x.roundToInt() + key.view.width / 2
+                                val y = row.view.y.roundToInt() + row.view.height / 2
+                                show(binding, key, x, y)
                             }
                         } else {
                             keyPopup?.cancel()
@@ -81,7 +83,7 @@ data class Keyboard(
                 }
                 false
             }
-            key.binding.root.setOnClickListener {
+            key.view.setOnClickListener {
                 listener.onKeyClick(key.key.code, key.key.output)
             }
         }
@@ -90,7 +92,7 @@ data class Keyboard(
 
     data class ViewWrapper(
         val keyboard: Keyboard,
-        val binding: KeyboardBinding,
+        val view: View,
         val rows: List<Row.ViewWrapper>,
         val keys: List<Key.ViewWrapper>,
     ) {

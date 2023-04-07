@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">mBoard</string>
+    <string name="service_name">mBoard 입력기</string>
 
     <string name="title_activity_settings">mBoard 설정</string>
 
