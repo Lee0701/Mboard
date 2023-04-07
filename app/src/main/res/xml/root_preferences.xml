@@ -58,9 +58,15 @@
             app:title="@string/pref_behaviour_show_popups_title" />
 
         <io.github.lee0701.mboard.settings.IntEditTextPreference
-            app:key="behaviour_longpress_duration"
+            app:key="behaviour_double_tap_gap"
+            app:defaultValue="500"
+            app:title="@string/pref_behaviour_double_tap_gap_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.IntEditTextPreference
+            app:key="behaviour_long_press_duration"
             app:defaultValue="1000"
-            app:title="@string/pref_behaviour_longpress_duration_title"
+            app:title="@string/pref_behaviour_long_press_duration_title"
             app:useSimpleSummaryProvider="true" />
 
         <io.github.lee0701.mboard.settings.IntEditTextPreference

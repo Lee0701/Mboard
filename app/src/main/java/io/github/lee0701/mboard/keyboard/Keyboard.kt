@@ -26,7 +26,7 @@ data class Keyboard(
     fun initView(context: Context, theme: Theme, listener: Listener): ViewWrapper {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val longPressDuration = sharedPreferences.getInt("behaviour_longpress_duration", 1000).toLong()
+        val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 1000).toLong()
         val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
         val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
 

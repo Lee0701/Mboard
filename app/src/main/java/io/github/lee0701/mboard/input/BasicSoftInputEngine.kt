@@ -14,10 +14,11 @@ import io.github.lee0701.mboard.keyboard.Themes
 class BasicSoftInputEngine(
     initSoftKeyboard: () -> Keyboard,
     initInputEngine: (InputEngine.Listener) -> InputEngine,
+    val autoUnlockShift: Boolean = true,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
 
-    private val doubleTapGap: Int = 500
+    private var doubleTapGap: Int = 500
 
     private val softKeyboard = initSoftKeyboard()
     private val inputEngine = initInputEngine(listener)
@@ -51,6 +52,7 @@ class BasicSoftInputEngine(
 
     override fun initView(context: Context): View {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.map[name] ?: Themes.Static
         val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
@@ -168,6 +170,7 @@ class BasicSoftInputEngine(
     }
 
     private fun autoUnlockShift() {
+        if(!autoUnlockShift) return
         val lastState = keyboardState
         val lastShiftState = lastState.shiftState
         if(!lastShiftState.locked && !lastShiftState.pressing) {
@@ -183,4 +186,5 @@ class BasicSoftInputEngine(
             outInsets.contentTopInsets = visibleTopY
         }
     }
+
 }
