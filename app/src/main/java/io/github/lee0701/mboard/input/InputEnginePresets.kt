@@ -10,6 +10,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
             { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_2SET_STANDARD, HangulLayout.COMB_2SET_STANDARD, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -18,6 +19,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_390_MOBILE },
             { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_390, HangulLayout.COMB_SEBEOL_390, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -26,6 +28,7 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_391_MOBILE },
             { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391, HangulLayout.COMB_SEBEOL_391, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -34,14 +37,16 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_SEBEOLSIK_391_MOBILE },
             { HangulInputEngine(HangulLayout.LAYOUT_HANGUL_3SET_391_STRICT, HangulLayout.COMB_SEBEOL_391_STRICT, it) },
+            autoUnlockShift = true,
             listener,
         )
     }
 
-    private val LAITN_QWERTY = { listener: InputEngine.Listener ->
+    private val LATIN_QWERTY = { listener: InputEngine.Listener ->
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
             { DirectInputEngine(it) },
+            autoUnlockShift = true,
             listener,
         )
     }
@@ -50,12 +55,13 @@ object InputEnginePresets {
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE_WITH_SEMICOLON },
             { CodeConverterInputEngine(SymbolLayout.LAYOUT_SYMBOLS_G, it) },
+            autoUnlockShift = false,
             listener,
         )
     }
 
     private val map = mapOf<String, (InputEngine.Listener) -> InputEngine>(
-        "layout_latin_qwerty" to LAITN_QWERTY,
+        "layout_latin_qwerty" to LATIN_QWERTY,
 
         "layout_2set_ks5002" to HANGUL_2SET_KS5002,
         "layout_3set_390" to HANGUL_3SET_390,
