@@ -65,7 +65,7 @@
 
         <io.github.lee0701.mboard.settings.IntEditTextPreference
             app:key="behaviour_long_press_duration"
-            app:defaultValue="1000"
+            app:defaultValue="500"
             app:title="@string/pref_behaviour_long_press_duration_title"
             app:useSimpleSummaryProvider="true" />
 
