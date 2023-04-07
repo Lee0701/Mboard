@@ -31,7 +31,7 @@ data class Keyboard(
         val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
         val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
 
-        val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboard)
+        val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
 
         val rowViewWrappers = mutableListOf<Row.ViewWrapper>()
         val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {

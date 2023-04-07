@@ -68,7 +68,7 @@ rows:
   - code: 59
     output: null
     label: null
-    icon: 2131230878
+    iconType: "Shift"
     width: 1.5
     repeatable: false
     type: "Modifier"
@@ -96,7 +96,7 @@ rows:
   - code: 67
     output: null
     label: null
-    icon: 2131230874
+    iconType: "Backspace"
     width: 1.5
     repeatable: true
     type: "Modifier"
@@ -105,42 +105,42 @@ rows:
   - code: 63
     output: null
     label: "?12"
-    icon: null
+    iconType: null
     width: 1.5
     repeatable: false
     type: "Modifier"
   - code: 55
     output: ","
     label: ","
-    icon: null
+    iconType: null
     width: 1.0
     repeatable: false
     type: "AlphanumericAlt"
   - code: 204
     output: null
     label: null
-    icon: 2131230876
+    iconType: "Language"
     width: 1.0
     repeatable: false
     type: "ModifierAlt"
   - code: 62
     output: null
     label: ""
-    icon: null
+    iconType: null
     width: 4.0
     repeatable: false
     type: "Space"
   - code: 56
     output: "."
     label: "."
-    icon: null
+    iconType: null
     width: 1.0
     repeatable: false
     type: "AlphanumericAlt"
   - code: 66
     output: null
     label: null
-    icon: 2131230875
+    iconType: "Enter"
     width: 1.5
     repeatable: false
     type: "Return"

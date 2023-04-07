@@ -1,9 +1,11 @@
 package io.github.lee0701.mboard.keyboard
 
+import io.github.lee0701.mboard.module.KeyIconType
 import io.github.lee0701.mboard.module.KeyType
 
 data class Theme(
-    val keyboard: Int,
-    val key: Map<KeyType, Int> = mapOf(),
-    val popup: Int,
+    val keyboardBackground: Int,
+    val keyBackground: Map<KeyType, Int> = mapOf(),
+    val keyIcon: Map<KeyIconType, Int> = mapOf(),
+    val popupBackground: Int,
 )
