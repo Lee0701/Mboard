@@ -38,11 +38,8 @@ class BasicSoftInputEngine(
 
     override fun onReset() {
         inputEngine.onReset()
-        updateView()
-    }
-
-    override fun onResetView() {
         keyboardState = KeyboardState()
+        updateView()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
@@ -57,10 +54,6 @@ class BasicSoftInputEngine(
         this.softKeyboardWrapper = softKeyboardWrapper
         updateView()
         return softKeyboardWrapper.binding.root
-    }
-
-    override fun getView(): View {
-        return softKeyboardWrapper!!.binding.root
     }
 
     private fun updateView() {
