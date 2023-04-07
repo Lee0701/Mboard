@@ -38,7 +38,15 @@ object InputEnginePresets {
         )
     }
 
-    private val LAITN_QWERTY = { listener: InputEngine.Listener ->
+    private val HANGUL_2SET_OLD_HANGUL = { listener: InputEngine.Listener ->
+        BasicSoftInputEngine(
+            { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
+            { HangulInputEngine(HangulLayout.LAYOUT_2SET_OLD_HANGUL, HangulLayout.COMB_FULL, it) },
+            listener,
+        )
+    }
+
+    private val LATIN_QWERTY = { listener: InputEngine.Listener ->
         BasicSoftInputEngine(
             { SoftKeyboardLayout.LAYOUT_QWERTY_MOBILE },
             { DirectInputEngine(it) },
@@ -61,6 +69,7 @@ object InputEnginePresets {
         "layout_3set_390" to HANGUL_3SET_390,
         "layout_3set_391" to HANGUL_3SET_391,
         "layout_3set_391_strict" to HANGUL_3SET_391_STRICT,
+        "layout_2set_old_hangul" to HANGUL_2SET_OLD_HANGUL,
 
         "layout_symbols_g" to SYMBOLS_G,
     )
