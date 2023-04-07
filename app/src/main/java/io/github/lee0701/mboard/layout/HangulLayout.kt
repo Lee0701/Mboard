@@ -143,8 +143,21 @@ object HangulLayout {
         KeyEvent.KEYCODE_GRAVE to Entry(0x002a, 0x203b), // *, ※
     ) + CustomKeycode.LAYOUT_CUSTOM_KEYS
 
+    val LAYOUT_HANGUL_3SET_391_STRICT = LAYOUT_HANGUL_3SET_391 + mapOf(
+        KeyEvent.KEYCODE_9 to Entry(0x100116e, 0x0027), // ᅮ, '
+        KeyEvent.KEYCODE_SLASH to Entry(0x1001169, 0x0021), // ᅩ, !
+    )
+
     val COMB_SEBEOL_391 = COMB_3SET_CHO + COMB_3SET_JUNG + COMB_3SET_JONG
-    val COMB_SEBEOL_391_STRICT = COMB_3SET_CHO + COMB_3SET_JUNG
+
+    val COMB_SEBEOL_391_STRICT = COMB_3SET_CHO + mapOf(
+        0x1001169 to 0x1161 to 0x116a,	// ㅘ
+        0x1001169 to 0x1162 to 0x116b,	// ㅙ
+        0x1001169 to 0x1175 to 0x116c,	// ㅚ
+        0x100116e to 0x1165 to 0x116f,	// ㅝ
+        0x100116e to 0x1166 to 0x1170,	// ㅞ
+        0x100116e to 0x1175 to 0x1171,	// ㅟ
+    )
 
     val LAYOUT_HANGUL_2SET_STANDARD = mapOf(
         KeyEvent.KEYCODE_Q to Entry(0x3142, 0x3143),
