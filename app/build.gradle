@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+    implementation "androidx.multidex:multidex:2.0.1"
+
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2'
 
