@@ -62,7 +62,7 @@ class HangulCombiner(
                     newStates += State(cho = cho)
                 } else {
                     val combination = jamoCombinationMap[state.cho to cho]
-                    if(combination != null) newStates += state.copy(cho = cho)
+                    if(combination != null) newStates += state.copy(cho = combination)
                     else {
                         composed += state.composed
                         newStates += State(cho = cho)
@@ -115,19 +115,20 @@ class HangulCombiner(
         val jungChar: Char? = jung?.and(0xffff)?.toChar()
         val jongChar: Char? = jong?.and(0xffff)?.toChar()
 
-        val ordinalCho: Int? = cho?.and(0xffff)?.minus(0x1100)
-        val ordinalJung: Int? = jung?.and(0xffff)?.minus(0x1161)
-        val ordinalJong: Int? = jong?.and(0xffff)?.minus(0x11a7)
+        private val ordinalCho: Int? = cho?.and(0xffff)?.minus(0x1100)
+        private val ordinalJung: Int? = jung?.and(0xffff)?.minus(0x1161)
+        private val ordinalJong: Int? = jong?.and(0xffff)?.minus(0x11a7)
 
         val nfc: Char? =
-            if(ordinalCho != null && ordinalJung != null) Hangul.combineNFC(ordinalCho, ordinalJung, ordinalJong)
+            if(ordinalCho != null && ordinalJung != null && listOfNotNull(cho, jung, jong).all { Hangul.isModernJamo(it) })
+                Hangul.combineNFC(ordinalCho, ordinalJung, ordinalJong)
             else null
         val nfd: CharSequence =
             Hangul.combineNFD(choChar, jungChar, jongChar)
 
         val composed: CharSequence =
             if(cho == null && jung == null && jong == null) ""
-            else if(listOfNotNull(cho, jung, jong).size == 1)
+            else if(listOfNotNull(cho, jung, jong).let { it.size == 1 && it.all { c -> Hangul.isModernJamo(c) } })
                 (choChar?.let { Hangul.choToCompatConsonant(it) } ?:
                 jungChar?.let { Hangul.jungToCompatVowel(it) } ?:
                 jongChar?.let { Hangul.jongToCompatConsonant(it) })?.toString().orEmpty()
