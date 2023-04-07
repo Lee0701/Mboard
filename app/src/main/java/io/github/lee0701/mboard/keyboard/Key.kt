@@ -2,12 +2,10 @@ package io.github.lee0701.mboard.keyboard
 
 import android.content.Context
 import android.view.LayoutInflater
-import androidx.annotation.StyleRes
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
+import io.github.lee0701.mboard.module.KeyType
 
 data class Key(
     val code: Int,
@@ -16,7 +14,7 @@ data class Key(
     val icon: Int? = null,
     val width: Float = 1f,
     val repeatable: Boolean = false,
-    val type: Type = Type.Alphanumeric,
+    val type: KeyType = KeyType.Alphanumeric,
 ) {
     fun initView(context: Context, theme: Theme): ViewWrapper {
         val wrappedContext = theme.key[type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
@@ -31,15 +29,6 @@ data class Key(
             }
         }
         return ViewWrapper(this, binding)
-    }
-
-    enum class Type {
-        Alphanumeric,
-        AlphanumericAlt,
-        Modifier,
-        ModifierAlt,
-        Space,
-        Return,
     }
 
     data class ViewWrapper(

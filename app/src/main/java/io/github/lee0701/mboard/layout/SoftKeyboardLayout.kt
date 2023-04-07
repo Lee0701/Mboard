@@ -2,17 +2,17 @@ package io.github.lee0701.mboard.layout
 
 import android.view.KeyEvent
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.keyboard.*
+import io.github.lee0701.mboard.module.*
 
 object SoftKeyboardLayout {
 
     val ROW_BOTTOM = Row(listOf(
-        Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-        Key(KeyEvent.KEYCODE_COMMA, ",", type = Key.Type.AlphanumericAlt),
-        Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
-        Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
-        Key(KeyEvent.KEYCODE_PERIOD, ".", type = Key.Type.AlphanumericAlt),
-        Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
+        Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = KeyType.Modifier),
+        Key(KeyEvent.KEYCODE_COMMA, ",", type = KeyType.AlphanumericAlt),
+        Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = KeyType.ModifierAlt),
+        Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = KeyType.Space),
+        Key(KeyEvent.KEYCODE_PERIOD, ".", type = KeyType.AlphanumericAlt),
+        Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = KeyType.Return),
     ))
 
     val ROW_NUMBERS = Row(listOf(
@@ -53,7 +53,7 @@ object SoftKeyboardLayout {
             Key(KeyEvent.KEYCODE_L, "L"),
         ), padding = 0.5f),
         Row(listOf(
-            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, width = 1.5f, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, width = 1.5f, type = KeyType.Modifier),
             Key(KeyEvent.KEYCODE_Z, "Z"),
             Key(KeyEvent.KEYCODE_X, "X"),
             Key(KeyEvent.KEYCODE_C, "C"),
@@ -61,7 +61,7 @@ object SoftKeyboardLayout {
             Key(KeyEvent.KEYCODE_B, "B"),
             Key(KeyEvent.KEYCODE_N, "N"),
             Key(KeyEvent.KEYCODE_M, "M"),
-            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, repeatable = true, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, width = 1.5f, repeatable = true, type = KeyType.Modifier),
         )),
         ROW_BOTTOM,
     ), 220f)
@@ -80,24 +80,24 @@ object SoftKeyboardLayout {
             Key(KeyEvent.KEYCODE_SEMICOLON, ";"),
         )
         val additionalKeys3Left = listOf(
-            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, type = KeyType.Modifier),
         )
         val additionalKeys3Right = listOf(
             Key(CustomKeycode.KEYCODE_SEBEOL_390_0, ""),
             Key(CustomKeycode.KEYCODE_SEBEOL_390_1, ""),
             Key(CustomKeycode.KEYCODE_SEBEOL_390_2, ""),
             Key(CustomKeycode.KEYCODE_SEBEOL_390_3, ""),
-            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, repeatable = true, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, repeatable = true, type = KeyType.Modifier),
         )
         val row2 = Row(keys = layout.rows[2].keys + additionalKeys2)
         val row3 = Row(keys = additionalKeys3Left + layout.rows[3].keys.drop(1).dropLast(4) + additionalKeys3Right)
         val bottomRow = Row(listOf(
-            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-            Key(CustomKeycode.KEYCODE_COMMA_PERIOD, ",", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
-            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
-            Key(KeyEvent.KEYCODE_SLASH, "/", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
+            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = KeyType.Modifier),
+            Key(CustomKeycode.KEYCODE_COMMA_PERIOD, ",", type = KeyType.AlphanumericAlt),
+            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = KeyType.ModifierAlt),
+            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = KeyType.Space),
+            Key(KeyEvent.KEYCODE_SLASH, "/", type = KeyType.AlphanumericAlt),
+            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = KeyType.Return),
         ))
         val rows = listOf(layout.rows[0], layout.rows[1], row2, row3, bottomRow)
         return@let layout.copy(rows = rows)
@@ -108,21 +108,21 @@ object SoftKeyboardLayout {
             Key(KeyEvent.KEYCODE_SEMICOLON, ";"),
         )
         val additionalKeys3Left = listOf(
-            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_SHIFT_LEFT, null, icon = R.drawable.keyic_shift, type = KeyType.Modifier),
         )
         val additionalKeys3Right = listOf(
             Key(KeyEvent.KEYCODE_APOSTROPHE, "'"),
-            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, repeatable = true, type = Key.Type.Modifier),
+            Key(KeyEvent.KEYCODE_DEL, null, icon = R.drawable.keyic_backspace, repeatable = true, type = KeyType.Modifier),
         )
         val row2 = Row(keys = layout.rows[2].keys + additionalKeys2)
         val row3 = Row(keys = additionalKeys3Left + layout.rows[3].keys.drop(1).dropLast(1) + additionalKeys3Right)
         val bottomRow = Row(listOf(
-            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = Key.Type.Modifier),
-            Key(CustomKeycode.KEYCODE_COMMA_PERIOD, ",", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = Key.Type.ModifierAlt),
-            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = Key.Type.Space),
-            Key(KeyEvent.KEYCODE_SLASH, "/", type = Key.Type.AlphanumericAlt),
-            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = Key.Type.Return),
+            Key(KeyEvent.KEYCODE_SYM, null, "?12", width = 1.5f, type = KeyType.Modifier),
+            Key(CustomKeycode.KEYCODE_COMMA_PERIOD, ",", type = KeyType.AlphanumericAlt),
+            Key(KeyEvent.KEYCODE_LANGUAGE_SWITCH, null, icon = R.drawable.keyic_language, type = KeyType.ModifierAlt),
+            Key(KeyEvent.KEYCODE_SPACE, null, "", width = 4f, type = KeyType.Space),
+            Key(KeyEvent.KEYCODE_SLASH, "/", type = KeyType.AlphanumericAlt),
+            Key(KeyEvent.KEYCODE_ENTER, null, icon = R.drawable.keyic_enter, width = 1.5f, type = KeyType.Return),
         ))
         val rows = listOf(layout.rows[0], layout.rows[1], row2, row3, bottomRow)
         return@let layout.copy(rows = rows)

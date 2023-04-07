@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.keyboard
 
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.keyboard.Key.Type.*
+import io.github.lee0701.mboard.module.KeyType.*
 
 object Themes {
     val Static = Theme(
