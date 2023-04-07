@@ -22,6 +22,8 @@
     <string name="layout_3set_391">세벌식 3–91 (최종)</string>
     <string name="layout_3set_391_strict">세벌식 3–91 (최종, 정석 강요)</string>
     <string name="layout_latin_qwerty">QWERTY</string>
+    <string name="layout_latin_dvorak">드보락</string>
+    <string name="layout_latin_colemak">콜맥</string>
 
     <string name="pref_header_behaviour_title">작동</string>
     <string name="pref_behaviour_longpress_duration_title">롱클릭 길이</string>
