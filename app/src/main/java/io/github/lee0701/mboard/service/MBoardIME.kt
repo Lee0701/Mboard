@@ -61,10 +61,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         if(keyboardView != null) {
             inputView.removeAllViews()
             inputView.addView(keyboardView)
-            val typedValue = TypedValue()
-            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
-            val color = ContextCompat.getColor(this, typedValue.resourceId)
-            setNavBarColor(color)
+//            val typedValue = TypedValue()
+//            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
+//            val color = ContextCompat.getColor(this, typedValue.resourceId)
+//            setNavBarColor(color)
         }
         this.inputView = inputView
         return inputView

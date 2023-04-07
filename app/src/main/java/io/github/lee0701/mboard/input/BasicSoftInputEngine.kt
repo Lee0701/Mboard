@@ -9,6 +9,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.keyboard.Keyboard
+import io.github.lee0701.mboard.keyboard.KeyboardView
 import io.github.lee0701.mboard.keyboard.Themes
 
 class BasicSoftInputEngine(
@@ -51,10 +52,11 @@ class BasicSoftInputEngine(
         doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.map[name] ?: Themes.Static
-        val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
-        this.softKeyboardWrapper = softKeyboardWrapper
-        updateView()
-        return softKeyboardWrapper.binding.root
+//        val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
+//        this.softKeyboardWrapper = softKeyboardWrapper
+//        updateView()
+//        return softKeyboardWrapper.binding.root
+        return KeyboardView(context, null, softKeyboard, theme, this)
     }
 
     override fun getView(): View {
