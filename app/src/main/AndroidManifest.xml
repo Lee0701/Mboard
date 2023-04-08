@@ -3,6 +3,11 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <queries>
+        <package android:name="io.github.lee0701.converter" />
+        <package android:name="io.github.lee0701.converter.donation" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
