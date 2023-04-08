@@ -1,7 +1,9 @@
 package io.github.lee0701.mboard.module.hangul
 
 import io.github.lee0701.mboard.input.JamoCombinationTable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class JamoCombinationTable(
     val list: List<List<Int>> = listOf(),
 ) {
