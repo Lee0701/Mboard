@@ -15,6 +15,7 @@ object InputEnginePresets {
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             DirectInputEngine(mBoardIME),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -26,6 +27,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_latin_dvorak)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -37,6 +39,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_latin_colemak)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -49,6 +52,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_2set_ks5002)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -61,6 +65,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_full)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -73,6 +78,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_390)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -85,6 +91,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -97,6 +104,7 @@ object InputEnginePresets {
                 Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391_strict)).inflate(),
                 mBoardIME,
             ),
+            autoUnlockShift = true,
             mBoardIME,
         )
     }
@@ -105,6 +113,7 @@ object InputEnginePresets {
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             CodeConverterInputEngine(Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_symbol_g)), mBoardIME),
+            autoUnlockShift = false,
             mBoardIME,
         )
     }
