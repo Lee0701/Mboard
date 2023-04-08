@@ -69,12 +69,9 @@ rows:
     output: null
     label: null
     iconType: "Shift"
-    width: 1
+    width: 1.5
     repeatable: false
     type: "Modifier"
-  - code: 54
-    output: "Z"
-    label: "Z"
   - code: 52
     output: "X"
     label: "X"
@@ -100,7 +97,7 @@ rows:
     output: null
     label: null
     iconType: "Backspace"
-    width: 1
+    width: 1.5
     repeatable: true
     type: "Modifier"
   padding: 0.0
