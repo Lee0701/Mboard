@@ -11,5 +11,6 @@
     <dimen name="key_popup_width">18dp</dimen>
     <dimen name="key_popup_height">22dp</dimen>
 
-    <dimen name="candidate_text_size">22sp</dimen>
+    <dimen name="candidates_view_height">48dp</dimen>
+    <dimen name="candidates_text_size">22sp</dimen>
 </resources>

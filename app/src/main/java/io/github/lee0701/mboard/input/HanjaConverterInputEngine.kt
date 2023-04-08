@@ -1,8 +1,10 @@
 package io.github.lee0701.mboard.input
 
+import android.view.KeyEvent
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
 import io.github.lee0701.mboard.dictionary.ListDictionary
 import io.github.lee0701.mboard.service.KeyboardState
+import kotlinx.coroutines.*
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
@@ -26,7 +28,7 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        convert()
+        MainScope().launch { convert() }
     }
 
     override fun onFinishComposing() {
@@ -43,8 +45,7 @@ class HanjaConverterInputEngine(
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
-        if(composingChar.isNotEmpty()) inputEngine.onDelete()
-        else if(composingWordStack.isNotEmpty()) composingWordStack.removeLast()
+        if(composingWordStack.isNotEmpty()) composingWordStack.removeLast()
         else listener.onDeleteText(beforeLength, afterLength)
         updateView()
     }
@@ -63,9 +64,10 @@ class HanjaConverterInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private fun convert() {
-        val result = dictionary.search(currentComposing) ?: return
-        listener.onCandidates(result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) })
+    private suspend fun convert() = withContext(Dispatchers.IO) {
+        val result = dictionary.search(currentComposing) ?: return@withContext
+        val candidates = result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) }
+        listener.onCandidates(candidates)
     }
 
     private fun updateView() {

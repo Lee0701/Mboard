@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
+import kotlin.math.roundToInt
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
 
@@ -141,10 +142,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val inputView = this.inputView ?: return
         val currentEngine = inputEngineSwitcher?.getCurrentEngine()
         if(currentEngine is SoftInputEngine) {
+            val candidatesHeight = resources.getDimension(R.dimen.candidates_view_height).roundToInt()
             currentEngine.onComputeInsets(inputView, outInsets)
             if(outInsets == null) return
-            outInsets.visibleTopInsets -= 200
-            outInsets.contentTopInsets -= 200
+            outInsets.visibleTopInsets -= candidatesHeight
+            outInsets.contentTopInsets -= candidatesHeight
         }
         else return super.onComputeInsets(outInsets)
     }

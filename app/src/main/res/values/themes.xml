@@ -43,7 +43,7 @@
 
     <style name="Theme.MBoard.Candidates.Item">
         <item name="android:background">?selectableItemBackground</item>
-        <item name="android:textSize">@dimen/candidate_text_size</item>
+        <item name="android:textSize">@dimen/candidates_text_size</item>
     </style>
 
 </resources>

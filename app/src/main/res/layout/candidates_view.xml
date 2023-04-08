@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Theme.MBoard.Candidates"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
+    android:layout_height="@dimen/candidates_view_height">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

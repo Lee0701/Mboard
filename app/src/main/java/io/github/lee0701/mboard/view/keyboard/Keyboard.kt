@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
