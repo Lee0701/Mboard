@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">mBoard</string>
 
+    <string name="msg_hanja_converter_not_found">HanjaConverter not found. Please install it to use Hanja conversion feature.</string>
+
     <string name="title_activity_settings">mBoard Settings</string>
 
     <string name="pref_header_method_title">Input Method</string>

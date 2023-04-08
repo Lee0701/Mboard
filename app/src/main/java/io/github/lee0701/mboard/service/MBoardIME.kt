@@ -7,20 +7,20 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.DirectInputEngine
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.InputEnginePresets
-import io.github.lee0701.mboard.input.SoftInputEngine
+import io.github.lee0701.mboard.input.*
+import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceChangeListener {
+class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
 
-    private var inputView: FrameLayout? = null
+    private var inputView: ViewGroup? = null
+    private var defaultCandidatesViewManager: BasicCandidatesViewManager? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
@@ -48,14 +48,22 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
 
+        defaultCandidatesViewManager = BasicCandidatesViewManager(this)
+
         if(force) setInputView(onCreateInputView())
     }
 
     override fun onCreateInputView(): View {
         val inputView = FrameLayout(this, null)
+        inputView.removeAllViews()
         val keyboardView = inputEngineSwitcher?.initView(this)
+
+        val candidatesView = defaultCandidatesViewManager?.initView(this)
+        if(candidatesView != null) {
+            inputView.addView(candidatesView)
+        }
+
         if(keyboardView != null) {
-            inputView.removeAllViews()
             inputView.addView(keyboardView)
 //            val typedValue = TypedValue()
 //            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
@@ -65,6 +73,18 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         this.inputView = inputView
         inputEngineSwitcher?.updateView()
         return inputView
+    }
+
+    override fun onCandidates(list: List<Candidate>) {
+        val sorted = list.sortedByDescending { it.score }
+        defaultCandidatesViewManager?.showCandidates(sorted)
+    }
+
+    override fun onItemClicked(candidate: Candidate) {
+        onComposingText(candidate.text)
+        onFinishComposing()
+        inputEngineSwitcher?.getCurrentEngine()?.onReset()
+        onCandidates(listOf())
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
@@ -120,7 +140,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     override fun onComputeInsets(outInsets: Insets?) {
         val inputView = this.inputView ?: return
         val currentEngine = inputEngineSwitcher?.getCurrentEngine()
-        if(currentEngine is SoftInputEngine) currentEngine.onComputeInsets(inputView, outInsets)
+        if(currentEngine is SoftInputEngine) {
+            currentEngine.onComputeInsets(inputView, outInsets)
+            if(outInsets == null) return
+            outInsets.visibleTopInsets -= 200
+            outInsets.contentTopInsets -= 200
+        }
         else return super.onComputeInsets(outInsets)
     }
 

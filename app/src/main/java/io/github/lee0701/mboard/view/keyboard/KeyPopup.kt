@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.keyboard
+package io.github.lee0701.mboard.view.keyboard
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

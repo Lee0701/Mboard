@@ -1,14 +1,16 @@
 package io.github.lee0701.mboard.input
 
-import android.content.pm.PackageManager.NameNotFoundException
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.dictionary.DictionaryManager
+import io.github.lee0701.mboard.dictionary.EmptyDictionary
 import io.github.lee0701.mboard.dictionary.MapDictionary
 import io.github.lee0701.mboard.module.CodeConvertTable
 import io.github.lee0701.mboard.module.Keyboard
+import io.github.lee0701.mboard.module.external.HanjaConverter
 import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 
@@ -48,24 +50,7 @@ object InputEnginePresets {
     }
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME): InputEngine {
-        val packageNames = listOf(
-            "io.github.lee0701.converter.donation",
-            "io.github.lee0701.converter",
-        )
-        var resources: Resources? = null
-        var packageName: String? = null
-        for(name in packageNames) {
-            try {
-                resources = mBoardIME.packageManager.getResourcesForApplication(name)
-                packageName = name
-            } catch(ex: NameNotFoundException) {
-            }
-            if(resources != null) break
-        }
-        val dictionary = if(resources != null && packageName != null)
-            DictionaryManager.loadCompoundDictionary(resources, listOf("base"), packageName)
-        else
-            MapDictionary(mapOf())
+        val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             { listener -> HanjaConverterInputEngine({ listener -> HangulInputEngine(

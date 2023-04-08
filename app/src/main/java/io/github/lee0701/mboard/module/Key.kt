@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.module
 
 import android.content.Context
-import io.github.lee0701.mboard.keyboard.Key
+import io.github.lee0701.mboard.view.keyboard.Key
 import kotlinx.serialization.Serializable
 
 @Serializable

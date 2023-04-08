@@ -19,6 +19,7 @@ interface InputEngine {
         fun onFinishComposing()
         fun onCommitText(text: CharSequence)
         fun onDeleteText(beforeLength: Int, afterLength: Int)
+        fun onCandidates(list: List<Candidate>)
         fun onSystemKey(code: Int): Boolean
         fun onEditorAction(code: Int)
     }
