@@ -1,23 +1,19 @@
 package io.github.lee0701.mboard.input
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.CodeConvertTable
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
+import java.io.InputStream
 
 object InputEnginePresets {
 
-    val mapper = ObjectMapper(YAMLFactory()).apply {
-        registerModule(KotlinModule.Builder().build())
-    }
-
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             DirectInputEngine(mBoardIME),
             mBoardIME,
         )
@@ -25,9 +21,9 @@ object InputEnginePresets {
 
     fun LatinDvorak(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_dvorak_custom), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_dvorak_custom)).inflate(),
             CodeConverterInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_latin_dvorak), CodeConvertTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_latin_dvorak)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -36,9 +32,9 @@ object InputEnginePresets {
 
     fun LatinColemak(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_with_semicolon), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_with_semicolon)).inflate(),
             CodeConverterInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_latin_colemak), CodeConvertTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_latin_colemak)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -47,10 +43,10 @@ object InputEnginePresets {
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_2set_ks5002), CodeConvertTable::class.java).inflate(),
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_2set_ks5002), JamoCombinationTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_hangul_2set_ks5002)).inflate(),
+                Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_2set_ks5002)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -59,10 +55,10 @@ object InputEnginePresets {
 
     fun Hangul2SetOldHangul(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_2set_old_hangul), CodeConvertTable::class.java).inflate(),
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_full), JamoCombinationTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_hangul_2set_old_hangul)).inflate(),
+                Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_full)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -71,10 +67,10 @@ object InputEnginePresets {
 
     private fun Hangul3Set390(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_390), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_390)).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_390), CodeConvertTable::class.java).inflate(),
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_390), JamoCombinationTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_390)).inflate(),
+                Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_390)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -83,10 +79,10 @@ object InputEnginePresets {
 
     private fun Hangul3Set391(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391)).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391), CodeConvertTable::class.java).inflate(),
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391), JamoCombinationTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391)).inflate(),
+                Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -95,10 +91,10 @@ object InputEnginePresets {
 
     private fun Hangul3Set391Strict(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391), Keyboard::class.java).inflate(),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391)).inflate(),
             HangulInputEngine(
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391_strict), CodeConvertTable::class.java).inflate(),
-                mapper.readValue(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391_strict), JamoCombinationTable::class.java).inflate(),
+                Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391_strict)).inflate(),
+                Yaml.default.decodeFromStream<JamoCombinationTable>(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391_strict)).inflate(),
                 mBoardIME,
             ),
             mBoardIME,
@@ -107,8 +103,8 @@ object InputEnginePresets {
 
     fun SymbolsG(mBoardIME: MBoardIME): InputEngine {
         return BasicSoftInputEngine(
-            mapper.readValue(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile), Keyboard::class.java).inflate(),
-            CodeConverterInputEngine(mapper.readValue(mBoardIME.resources.openRawResource(R.raw.table_symbol_g), CodeConvertTable::class.java), mBoardIME),
+            Yaml.default.decodeFromStream<Keyboard>(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile)).inflate(),
+            CodeConverterInputEngine(Yaml.default.decodeFromStream<CodeConvertTable>(mBoardIME.resources.openRawResource(R.raw.table_symbol_g)), mBoardIME),
             mBoardIME,
         )
     }

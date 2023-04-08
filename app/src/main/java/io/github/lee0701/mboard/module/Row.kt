@@ -1,9 +1,11 @@
 package io.github.lee0701.mboard.module
 
 import io.github.lee0701.mboard.keyboard.Row
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Row(
-    val keys: List<Key>,
+    val keys: List<Key> = listOf(),
     val padding: Float = 0f,
 ) {
     fun inflate(): Row {

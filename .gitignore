@@ -2,6 +2,7 @@ dict/
 
 app/lint-baseline.xml
 app-*.aab
+output-metadata.json
 *.iml
 .gradle
 .idea/*
