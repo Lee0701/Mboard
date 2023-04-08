@@ -3,7 +3,7 @@ package io.github.lee0701.mboard.module.input
 import io.github.lee0701.mboard.charset.Hangul
 
 class CombineHangul(
-    val jamoCombinationTable: Map<Pair<Int, Int>, Int> = mapOf(),
+    private val jamoCombinationTable: Map<Pair<Int, Int>, Int> = mapOf(),
 ): InputModule<Pair<CombineHangul.State, Int>, List<CombineHangul.State>> {
 
     override fun process(stateAndInput: Pair<State, Int>): List<State> {
@@ -55,8 +55,11 @@ class CombineHangul(
                         composed += state.composed
                         newStates += State(cho = cho)
                     }
-                } else {
+                } else if(jong > 0) {
                     newStates += state.copy(jong = jong)
+                } else {
+                    composed += state.composed
+                    newStates += State(cho = cho)
                 }
             } else if(state.cho != null) {
                 if(state.last != null && !Hangul.isConsonant(state.last)) {
@@ -139,5 +142,13 @@ class CombineHangul(
                 nfc?.toString() ?: nfd
 
         val text: CharSequence = "$committed$composed"
+    }
+
+    class Batch(
+        private val combineHangul: CombineHangul,
+    ): InputModule<Pair<CombineHangul.State, List<Int>>, CombineHangul.State> {
+        override fun process(input: Pair<CombineHangul.State, List<Int>>): CombineHangul.State {
+            return input.second.fold(input.first) { acc, code -> combineHangul.process(acc to code).last() }
+        }
     }
 }
