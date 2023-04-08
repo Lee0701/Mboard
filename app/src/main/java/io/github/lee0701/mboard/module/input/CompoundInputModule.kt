@@ -1,14 +1,13 @@
 package io.github.lee0701.mboard.module.input
 
 class CompoundInputModule<In, Md, Out>(
-    val left: InputModule<In, Md>,
-    val right: InputModule<Md, Out>,
+    private val left: InputModule<In, Md>,
+    private val right: InputModule<Md, Out>,
 ): InputModule<In, Out> {
     override fun process(input: In): Out {
         return right.process(left.process(input))
     }
-
-    operator fun InputModule<In, Md>.plus(another: InputModule<Md, Out>): CompoundInputModule<In, Md, Out> {
-        return CompoundInputModule(this, another)
-    }
+}
+operator fun <In, Md, Out> InputModule<In, Md>.plus(another: InputModule<Md, Out>): CompoundInputModule<In, Md, Out> {
+    return CompoundInputModule(this, another)
 }

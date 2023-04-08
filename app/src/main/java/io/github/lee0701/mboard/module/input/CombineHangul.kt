@@ -146,8 +146,8 @@ class CombineHangul(
 
     class Batch(
         private val combineHangul: CombineHangul,
-    ): InputModule<Pair<CombineHangul.State, List<Int>>, CombineHangul.State> {
-        override fun process(input: Pair<CombineHangul.State, List<Int>>): CombineHangul.State {
+    ): InputModule<Pair<State, List<Int>>, State> {
+        override fun process(input: Pair<State, List<Int>>): State {
             return input.second.fold(input.first) { acc, code -> combineHangul.process(acc to code).last() }
         }
     }
