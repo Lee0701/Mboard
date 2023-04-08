@@ -17,6 +17,7 @@ import io.github.lee0701.mboard.keyboard.Themes
 class BasicSoftInputEngine(
     private val softKeyboard: Keyboard,
     private val inputEngine: InputEngine,
+    private val autoUnlockShift: Boolean = true,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
 
@@ -163,7 +164,7 @@ class BasicSoftInputEngine(
     }
 
     private fun autoUnlockShift() {
-//        if(!autoUnlockShift) return
+        if(!autoUnlockShift) return
         val lastState = keyboardState
         val lastShiftState = lastState.shiftState
         if(!lastShiftState.locked && !lastShiftState.pressing) {
