@@ -16,10 +16,12 @@ import io.github.lee0701.mboard.keyboard.Themes
 
 class BasicSoftInputEngine(
     private val softKeyboard: Keyboard,
-    private val inputEngine: InputEngine,
+    getInputEngine: (InputEngine.Listener) -> InputEngine,
     private val autoUnlockShift: Boolean = true,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
+
+    private val inputEngine: InputEngine = getInputEngine(listener)
 
     private var doubleTapGap: Int = 500
 
