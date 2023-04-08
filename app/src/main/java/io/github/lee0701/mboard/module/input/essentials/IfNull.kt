@@ -1,6 +1,6 @@
-package io.github.lee0701.mboard.module.input
+package io.github.lee0701.mboard.module.input.essentials
 
-class NullConvert<T>(
+class IfNull<T>(
     private val defValue: () -> T
 ): InputModule<T?, T> {
     override fun process(input: T?): T {

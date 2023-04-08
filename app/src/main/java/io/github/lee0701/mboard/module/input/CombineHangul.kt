@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.module.input
 
 import io.github.lee0701.mboard.charset.Hangul
+import io.github.lee0701.mboard.module.input.essentials.InputModule
 
 class CombineHangul(
     private val jamoCombinationTable: Map<Pair<Int, Int>, Int> = mapOf(),
@@ -148,7 +149,7 @@ class CombineHangul(
         private val combineHangul: CombineHangul,
     ): InputModule<Pair<State, List<Int>>, State> {
         override fun process(input: Pair<State, List<Int>>): State {
-            return input.second.fold(input.first) { acc, code -> combineHangul.process(acc to code).last() }
+            return input.second.fold(input.first) { acc, code -> combineHangul.process(acc to code).lastOrNull() ?: input.first }
         }
     }
 }
