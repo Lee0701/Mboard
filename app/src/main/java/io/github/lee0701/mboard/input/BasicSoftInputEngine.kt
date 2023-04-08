@@ -8,8 +8,8 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
-import io.github.lee0701.mboard.keyboard.Keyboard
-import io.github.lee0701.mboard.keyboard.Themes
+import io.github.lee0701.mboard.view.keyboard.Keyboard
+import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(
     private val softKeyboard: Keyboard,

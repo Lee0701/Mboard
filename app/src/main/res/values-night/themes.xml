@@ -36,4 +36,13 @@
         <item name="iconTint">@color/key_fg_dark</item>
     </style>
 
+    <style name="Theme.MBoard.Candidates">
+        <item name="android:background">@color/keyboard_bg_dark</item>
+    </style>
+
+    <style name="Theme.MBoard.Candidates.Item">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textSize">@dimen/candidate_text_size</item>
+    </style>
+
 </resources>

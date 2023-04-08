@@ -25,14 +25,14 @@ class HanjaConverterInputEngine(
 
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
-        convert()
         updateView()
+        convert()
     }
 
     override fun onFinishComposing() {
         listener.onFinishComposing()
-        composingWordStack.clear()
         composingChar = ""
+        composingWordStack.clear()
     }
 
     override fun onCommitText(text: CharSequence) {
@@ -49,6 +49,10 @@ class HanjaConverterInputEngine(
         updateView()
     }
 
+    override fun onCandidates(list: List<Candidate>) {
+        listener.onCandidates(list)
+    }
+
     override fun onSystemKey(code: Int): Boolean {
         onReset()
         return listener.onSystemKey(code)
@@ -60,8 +64,8 @@ class HanjaConverterInputEngine(
     }
 
     private fun convert() {
-        val result = dictionary.search(currentComposing)
-        println(result)
+        val result = dictionary.search(currentComposing) ?: return
+        listener.onCandidates(result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) })
     }
 
     private fun updateView() {

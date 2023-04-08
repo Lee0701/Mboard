@@ -31,4 +31,13 @@
         <item name="iconTint">@android:color/system_accent1_50</item>
     </style>
 
+    <style name="Theme.MBoard.Candidates">
+        <item name="android:background">@android:color/system_neutral1_900</item>
+    </style>
+
+    <style name="Theme.MBoard.Candidates.Item">
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:textSize">@dimen/candidate_text_size</item>
+    </style>
+
 </resources>

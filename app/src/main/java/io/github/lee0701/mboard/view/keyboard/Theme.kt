@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.keyboard
+package io.github.lee0701.mboard.view.keyboard
 
 import io.github.lee0701.mboard.module.KeyIconType
 import io.github.lee0701.mboard.module.KeyType
