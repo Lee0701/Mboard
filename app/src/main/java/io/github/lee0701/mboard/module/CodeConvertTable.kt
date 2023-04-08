@@ -5,15 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CodeConvertTable(
-    val map: Map<Int, Entry> = mapOf(),
+    val map: Map<String, Entry> = mapOf(),
 ) {
+
     @Serializable
     data class Entry(
-        val base: Int,
-        val shift: Int = base,
-        val capsLocked: Int = shift,
-        val alt: Int = base,
-        val altShift: Int = shift,
+        @Serializable(with = HexIntSerializer::class) val base: Int? = null,
+        @Serializable(with = HexIntSerializer::class) val shift: Int? = base,
+        @Serializable(with = HexIntSerializer::class) val capsLock: Int? = shift,
+        @Serializable(with = HexIntSerializer::class) val alt: Int? = base,
+        @Serializable(with = HexIntSerializer::class) val altShift: Int? = shift,
     ) {
         fun withKeyboardState(keyboardState: KeyboardState): Int {
             val shiftPressed = keyboardState.shiftState.pressed || keyboardState.shiftState.pressing

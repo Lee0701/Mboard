@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".service.ImportExportActivity"
+            android:exported="false">
+        </activity>
+
         <service
             android:name="io.github.lee0701.mboard.service.MBoardIME"
             android:label="@string/app_name"

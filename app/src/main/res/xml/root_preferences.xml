@@ -77,4 +77,10 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory>
+
+        <io.github.lee0701.mboard.settings.StartActivityPreference />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

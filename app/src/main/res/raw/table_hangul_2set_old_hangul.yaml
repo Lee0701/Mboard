@@ -1,158 +1,79 @@
----
 map:
-  45:
-    base: 12610
-    shift: 12611
-    capsLocked: 12611
-    alt: 12610
-    altShift: 12611
-  51:
-    base: 12616
-    shift: 12617
-    capsLocked: 12617
-    alt: 12616
-    altShift: 12617
-  33:
-    base: 12599
-    shift: 12600
-    capsLocked: 12600
-    alt: 12599
-    altShift: 12600
-  46:
-    base: 12593
-    shift: 12594
-    capsLocked: 12594
-    alt: 12593
-    altShift: 12594
-  48:
-    base: 12613
-    shift: 12614
-    capsLocked: 12614
-    alt: 12613
-    altShift: 12614
-  53:
-    base: 12635
-    shift: 12635
-    capsLocked: 12635
-    alt: 12635
-    altShift: 12635
-  49:
-    base: 12629
-    shift: 12629
-    capsLocked: 12629
-    alt: 12629
-    altShift: 12629
-  37:
-    base: 12625
-    shift: 12625
-    capsLocked: 12625
-    alt: 12625
-    altShift: 12625
-  43:
-    base: 12624
-    shift: 12626
-    capsLocked: 12626
-    alt: 12624
-    altShift: 12626
-  44:
-    base: 12628
-    shift: 12630
-    capsLocked: 12630
-    alt: 12628
-    altShift: 12630
-  29:
-    base: 12609
-    shift: 12671
-    capsLocked: 12671
-    alt: 12609
-    altShift: 12671
-  47:
-    base: 12596
-    shift: 12598
-    capsLocked: 12598
-    alt: 12596
-    altShift: 12598
-  32:
-    base: 12615
-    shift: 12673
-    capsLocked: 12673
-    alt: 12615
-    altShift: 12673
-  34:
-    base: 12601
-    shift: 12608
-    capsLocked: 12608
-    alt: 12601
-    altShift: 12608
-  35:
-    base: 12622
-    shift: 12678
-    capsLocked: 12678
-    alt: 12622
-    altShift: 12678
-  36:
-    base: 12631
-    shift: 4483
-    capsLocked: 4483
-    alt: 12631
-    altShift: 4483
-  38:
-    base: 12627
-    shift: 4447
-    capsLocked: 4447
-    alt: 12627
-    altShift: 4447
-  39:
-    base: 12623
-    shift: 12685
-    capsLocked: 12685
-    alt: 12623
-    altShift: 12685
-  40:
-    base: 12643
-    shift: 12684
-    capsLocked: 12684
-    alt: 12643
-    altShift: 12684
-  54:
-    base: 12619
-    shift: 4412
-    capsLocked: 4412
-    alt: 12619
-    altShift: 4412
-  52:
-    base: 12620
-    shift: 4414
-    capsLocked: 4414
-    alt: 12620
-    altShift: 4414
-  31:
-    base: 12618
-    shift: 4430
-    capsLocked: 4430
-    alt: 12618
-    altShift: 4430
-  50:
-    base: 12621
-    shift: 4432
-    capsLocked: 4432
-    alt: 12621
-    altShift: 4432
-  30:
-    base: 12640
-    shift: 4436
-    capsLocked: 4436
-    alt: 12640
-    altShift: 4436
-  42:
-    base: 12636
-    shift: 4437
-    capsLocked: 4437
-    alt: 12636
-    altShift: 4437
-  41:
-    base: 12641
-    shift: 12641
-    capsLocked: 12641
-    alt: 12641
-    altShift: 12641
+  "KEYCODE_Q":
+    base: 0x3142
+    shift: 0x3143
+  "KEYCODE_W":
+    base: 0x3148
+    shift: 0x3149
+  "KEYCODE_E":
+    base: 0x3137
+    shift: 0x3138
+  "KEYCODE_R":
+    base: 0x3131
+    shift: 0x3132
+  "KEYCODE_T":
+    base: 0x3145
+    shift: 0x3146
+  "KEYCODE_Y":
+    base: 0x315b
+    shift: 0x315b
+  "KEYCODE_U":
+    base: 0x3155
+    shift: 0x3155
+  "KEYCODE_I":
+    base: 0x3151
+    shift: 0x3151
+  "KEYCODE_O":
+    base: 0x3150
+    shift: 0x3152
+  "KEYCODE_P":
+    base: 0x3154
+    shift: 0x3156
+  "KEYCODE_A":
+    base: 0x3141
+    shift: 0x317f
+  "KEYCODE_S":
+    base: 0x3134
+    shift: 0x3136
+  "KEYCODE_D":
+    base: 0x3147
+    shift: 0x3181
+  "KEYCODE_F":
+    base: 0x3139
+    shift: 0x3140
+  "KEYCODE_G":
+    base: 0x314e
+    shift: 0x3186
+  "KEYCODE_H":
+    base: 0x3157
+    shift: 0x1183
+  "KEYCODE_J":
+    base: 0x3153
+    shift: 0x115f
+  "KEYCODE_K":
+    base: 0x314f
+    shift: 0x318d
+  "KEYCODE_L":
+    base: 0x3163
+    shift: 0x318c
+  "KEYCODE_Z":
+    base: 0x314b
+    shift: 0x113c
+  "KEYCODE_X":
+    base: 0x314c
+    shift: 0x113e
+  "KEYCODE_C":
+    base: 0x314a
+    shift: 0x114e
+  "KEYCODE_V":
+    base: 0x314d
+    shift: 0x1150
+  "KEYCODE_B":
+    base: 0x3160
+    shift: 0x1154
+  "KEYCODE_N":
+    base: 0x315c
+    shift: 0x1155
+  "KEYCODE_M":
+    base: 0x3161
+    shift: 0x3161
