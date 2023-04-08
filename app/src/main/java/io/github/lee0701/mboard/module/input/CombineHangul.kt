@@ -141,11 +141,3 @@ class CombineHangul(
         val text: CharSequence = "$committed$composed"
     }
 }
-
-fun main() {
-    val combiner = CombineHangul(mapOf(
-    ))
-    val inputs = listOf(0x1100, 0x1161, 0x110b, 0x1165)
-    val result = inputs.fold(listOf( CombineHangul.State())) { acc, i -> combiner.process(acc.last() to i) }
-    println(result.last().text)
-}
