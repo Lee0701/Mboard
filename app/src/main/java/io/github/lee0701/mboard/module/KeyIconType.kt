@@ -8,5 +8,5 @@ enum class KeyIconType {
     Caps,
     Backspace,
     Language,
-    Enter,
+    Return,
 }

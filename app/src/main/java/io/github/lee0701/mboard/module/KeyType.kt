@@ -9,5 +9,5 @@ enum class KeyType {
     Modifier,
     ModifierAlt,
     Space,
-    Return,
+    Action,
 }

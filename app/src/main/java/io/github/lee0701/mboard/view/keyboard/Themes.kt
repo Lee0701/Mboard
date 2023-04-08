@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.view.keyboard
 
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.KeyIconType
 import io.github.lee0701.mboard.module.KeyType.*
 import io.github.lee0701.mboard.module.KeyIconType.*
 
@@ -13,14 +14,14 @@ object Themes {
             Modifier to R.style.Theme_MBoard_Keyboard_Key_Mod,
             ModifierAlt to R.style.Theme_MBoard_Keyboard_Key,
             Space to R.style.Theme_MBoard_Keyboard_Key,
-            Return to R.style.Theme_MBoard_Keyboard_Key_Return,
+            Action to R.style.Theme_MBoard_Keyboard_Key_Return,
         ),
         mapOf(
             Shift to R.drawable.keyic_shift,
             Caps to R.drawable.keyic_shift_lock,
             Backspace to R.drawable.keyic_backspace,
             Language to R.drawable.keyic_language,
-            Enter to R.drawable.keyic_enter,
+            Return to R.drawable.keyic_return,
         ),
         R.style.Theme_MBoard_Keyboard_KeyPopup,
     )
@@ -33,14 +34,14 @@ object Themes {
             Modifier to R.style.Theme_MBoard_Keyboard_Key_Mod_Overlay,
             ModifierAlt to R.style.Theme_MBoard_Keyboard_Key_Overlay,
             Space to R.style.Theme_MBoard_Keyboard_Key_Overlay,
-            Return to R.style.Theme_MBoard_Keyboard_Key_Return_Overlay,
+            Action to R.style.Theme_MBoard_Keyboard_Key_Return_Overlay,
         ),
         mapOf(
             Shift to R.drawable.keyic_shift,
             Caps to R.drawable.keyic_shift_lock,
             Backspace to R.drawable.keyic_backspace,
             Language to R.drawable.keyic_language,
-            Enter to R.drawable.keyic_enter,
+            Return to R.drawable.keyic_return,
         ),
         R.style.Theme_MBoard_Keyboard_KeyPopup_Overlay,
     )
