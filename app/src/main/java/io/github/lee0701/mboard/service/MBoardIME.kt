@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
@@ -54,15 +55,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onCreateInputView(): View {
-        val inputView = FrameLayout(this, null)
+        val inputView = LinearLayoutCompat(this, null).apply {
+            orientation = LinearLayoutCompat.VERTICAL
+        }
         inputView.removeAllViews()
-        val keyboardView = inputEngineSwitcher?.initView(this)
 
         val candidatesView = defaultCandidatesViewManager?.initView(this)
         if(candidatesView != null) {
             inputView.addView(candidatesView)
         }
 
+        val keyboardView = inputEngineSwitcher?.initView(this)
         if(keyboardView != null) {
             inputView.addView(keyboardView)
 //            val typedValue = TypedValue()
