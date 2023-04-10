@@ -41,9 +41,7 @@ class HanjaConverterInputEngine(
     }
 
     override fun onCommitText(text: CharSequence) {
-        composingChar = text.toString()
-        val newComposingText = currentComposing
-        if(composingWordStack.lastOrNull() != newComposingText) composingWordStack += newComposingText
+        composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
     }
 
