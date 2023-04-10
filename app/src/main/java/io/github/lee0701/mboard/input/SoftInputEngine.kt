@@ -6,9 +6,8 @@ import android.view.View
 import io.github.lee0701.mboard.view.keyboard.Keyboard
 
 interface SoftInputEngine: InputEngine, Keyboard.Listener {
-    fun initView(context: Context): View
-    fun getView(): View
-    fun onResetView()
+    fun initView(context: Context): View?
+    fun updateView()
 
     fun onComputeInsets(inputView: View, outInsets: InputMethodService.Insets?)
 

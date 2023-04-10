@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.input
 
+import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.service.KeyboardState
 
@@ -24,6 +25,10 @@ class DirectInputEngine(
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         return Companion.getLabels(keyCharacterMap, state)
+    }
+
+    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
+        return emptyMap()
     }
 
     companion object {
