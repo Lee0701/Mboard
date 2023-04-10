@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.module
 
-import io.github.lee0701.mboard.view.keyboard.Row
+import io.github.lee0701.mboard.view.keyboard_legacy.Row
 import kotlinx.serialization.Serializable
 
 @Serializable

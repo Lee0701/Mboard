@@ -20,11 +20,9 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.Key
 import io.github.lee0701.mboard.module.KeyType
-import io.github.lee0701.mboard.view.keyboard.Key
-import io.github.lee0701.mboard.view.keyboard.KeyPopup
-import io.github.lee0701.mboard.view.keyboard.Keyboard
-import io.github.lee0701.mboard.view.keyboard.Theme
+import io.github.lee0701.mboard.module.Keyboard
 import kotlin.math.roundToInt
 
 class KeyboardView(
@@ -32,7 +30,7 @@ class KeyboardView(
     attrs: AttributeSet?,
     private val keyboard: Keyboard,
     private val theme: Theme,
-    private val listener: Keyboard.Listener,
+    private val listener: KeyboardListener,
 ): View(context, attrs) {
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 

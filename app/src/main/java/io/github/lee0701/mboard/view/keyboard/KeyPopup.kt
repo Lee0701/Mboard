@@ -12,12 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyPopupBinding
+import io.github.lee0701.mboard.view.keyboard_legacy.Key
 import kotlin.math.roundToInt
 
 class KeyPopup(

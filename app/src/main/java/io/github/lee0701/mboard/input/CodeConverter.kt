@@ -1,38 +1,13 @@
 package io.github.lee0701.mboard.input
 
+import io.github.lee0701.mboard.module.CodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverter(
-    val map: Map<Int, Entry> = mapOf(),
+    val table: CodeConvertTable,
 ) {
     fun convert(input: Int, state: KeyboardState): Int? {
-        val entry = map[input] ?: return null
+        val entry = table.map[input] ?: return null
         return entry.withKeyboardState(state)
-    }
-
-    data class Entry(
-        val base: Int,
-        val shift: Int = base,
-        val capsLocked: Int = shift,
-        val alt: Int = base,
-        val altShift: Int = shift,
-    ) {
-        constructor(
-            base: Char,
-            shift: Char = base,
-            capsLocked: Char = shift,
-            alt: Char = base,
-            altShift: Char = shift,
-        ): this(base.code, shift.code, capsLocked.code, alt.code, altShift.code)
-
-        fun withKeyboardState(keyboardState: KeyboardState): Int {
-            val shiftPressed = keyboardState.shiftState.pressed || keyboardState.shiftState.pressing
-            val altPressed = keyboardState.altState.pressed || keyboardState.altState.pressing
-            return if(keyboardState.shiftState.locked) capsLocked
-            else if(shiftPressed && altPressed) altShift
-            else if(shiftPressed) shift
-            else if(altPressed) alt
-            else base
-        }
     }
 }

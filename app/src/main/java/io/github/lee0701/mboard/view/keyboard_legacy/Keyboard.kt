@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.view.keyboard
+package io.github.lee0701.mboard.view.keyboard_legacy
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.FrameLayout
@@ -14,6 +13,9 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.module.KeyType
+import io.github.lee0701.mboard.view.keyboard.KeyPopup
+import io.github.lee0701.mboard.view.keyboard.KeyboardListener
+import io.github.lee0701.mboard.view.keyboard.Theme
 import kotlin.math.roundToInt
 
 data class Keyboard(
@@ -25,7 +27,7 @@ data class Keyboard(
     private var keyPopup: KeyPopup? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    fun initView(context: Context, theme: Theme, listener: Listener): ViewWrapper {
+    fun initView(context: Context, theme: Theme, listener: KeyboardListener): ViewWrapper {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 1000).toLong()
@@ -99,9 +101,4 @@ data class Keyboard(
         val keyMap = keys.associateBy { it.key.code }
     }
 
-    interface Listener {
-        fun onKeyClick(code: Int, output: String?)
-        fun onKeyDown(code: Int, output: String?)
-        fun onKeyUp(code: Int, output: String?)
-    }
 }

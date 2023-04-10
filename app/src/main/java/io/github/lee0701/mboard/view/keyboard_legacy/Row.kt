@@ -1,10 +1,11 @@
-package io.github.lee0701.mboard.view.keyboard
+package io.github.lee0701.mboard.view.keyboard_legacy
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
+import io.github.lee0701.mboard.view.keyboard.Theme
 
 data class Row(
     val keys: List<Key>,

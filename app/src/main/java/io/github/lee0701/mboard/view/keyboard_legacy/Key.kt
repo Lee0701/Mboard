@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.view.keyboard
+package io.github.lee0701.mboard.view.keyboard_legacy
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.module.KeyIconType
 import io.github.lee0701.mboard.module.KeyType
+import io.github.lee0701.mboard.view.keyboard.Theme
 
 data class Key(
     val code: Int,

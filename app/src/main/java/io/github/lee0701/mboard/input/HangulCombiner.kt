@@ -1,9 +1,10 @@
 package io.github.lee0701.mboard.input
 
 import io.github.lee0701.mboard.charset.Hangul
+import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
 
 class HangulCombiner(
-    val jamoCombinationTable: JamoCombinationTable,
+    private val jamoCombinationTable: JamoCombinationTable,
 ) {
     fun combine(state: State, input: Int): Pair<CharSequence, List<State>> {
         val newStates = mutableListOf<State>()
