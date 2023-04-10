@@ -8,10 +8,10 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.keyboard.KeyboardView
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.keyboard.Keyboard
+import io.github.lee0701.mboard.view.keyboard.KeyboardView
 import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(

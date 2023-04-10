@@ -9,9 +9,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
@@ -58,8 +58,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onCreateInputView(): View {
-        val inputView = LinearLayout(this, null)
-        inputView.orientation = LinearLayout.VERTICAL
+        val inputView = LinearLayoutCompat(this, null).apply {
+            orientation = LinearLayoutCompat.VERTICAL
+        }
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
 
         val candidatesView = defaultCandidatesViewManager?.initView(this)

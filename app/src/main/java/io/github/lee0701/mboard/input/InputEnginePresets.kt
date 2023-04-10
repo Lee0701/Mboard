@@ -1,9 +1,13 @@
 package io.github.lee0701.mboard.input
 
+import android.content.pm.PackageManager
+import android.content.res.Resources
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.dictionary.DictionaryManager
 import io.github.lee0701.mboard.dictionary.EmptyDictionary
+import io.github.lee0701.mboard.dictionary.MapDictionary
 import io.github.lee0701.mboard.module.CodeConvertTable
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.module.external.HanjaConverter

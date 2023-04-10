@@ -4,9 +4,10 @@ import android.graphics.drawable.Drawable
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
 import io.github.lee0701.mboard.dictionary.ListDictionary
 import io.github.lee0701.mboard.service.KeyboardState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
@@ -30,7 +31,7 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        CoroutineScope(Dispatchers.IO).launch { convert() }
+        MainScope().launch { convert() }
     }
 
     override fun onFinishComposing() {
@@ -66,8 +67,8 @@ class HanjaConverterInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private fun convert() {
-        val result = dictionary.search(currentComposing) ?: return
+    private suspend fun convert() = withContext(Dispatchers.IO) {
+        val result = dictionary.search(currentComposing) ?: return@withContext
         val candidates = result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) }
         listener.onCandidates(candidates)
     }
