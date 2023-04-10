@@ -28,7 +28,7 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        MainScope().launch { convert() }
+        CoroutineScope(Dispatchers.IO).launch { convert() }
     }
 
     override fun onFinishComposing() {
@@ -64,8 +64,8 @@ class HanjaConverterInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private suspend fun convert() = withContext(Dispatchers.IO) {
-        val result = dictionary.search(currentComposing) ?: return@withContext
+    private fun convert() {
+        val result = dictionary.search(currentComposing) ?: return
         val candidates = result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) }
         listener.onCandidates(candidates)
     }
