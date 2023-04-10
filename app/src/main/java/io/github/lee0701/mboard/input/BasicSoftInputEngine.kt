@@ -11,16 +11,17 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
+import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
 import io.github.lee0701.mboard.view.keyboard.KeyboardView
+import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
 import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(
-    private val softKeyboard: Keyboard,
+    private val keyboard: Keyboard,
     getInputEngine: (InputEngine.Listener) -> InputEngine,
     private val autoUnlockShift: Boolean = true,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
-
     private val inputEngine: InputEngine = getInputEngine(listener)
 
     private var doubleTapGap: Int = 500
@@ -30,6 +31,15 @@ class BasicSoftInputEngine(
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
     private var inputHappened: Boolean = false
+
+    override fun initView(context: Context): View? {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
+        val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
+        val theme = Themes.map[name] ?: Themes.Static
+        keyboardView = StackedViewKeyboardView(context, null, keyboard, theme, this)
+        return keyboardView
+    }
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
@@ -57,18 +67,9 @@ class BasicSoftInputEngine(
         return inputEngine.getIcons(state) + shiftIcon?.let { mapOf(KeyEvent.KEYCODE_SHIFT_LEFT to it, KeyEvent.KEYCODE_SHIFT_RIGHT to it) }.orEmpty()
     }
 
-    override fun initView(context: Context): View? {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
-        val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-        val theme = Themes.map[name] ?: Themes.Static
-        keyboardView = KeyboardView(context, null, softKeyboard, theme, this)
-        return keyboardView
-    }
-
     override fun updateView() {
         updateLabelsAndIcons(getShiftedLabels() + getLabels(keyboardState), getIcons(keyboardState))
-    keyboardView?.apply {
+        keyboardView?.apply {
             invalidate()
         }
     }
@@ -77,7 +78,7 @@ class BasicSoftInputEngine(
         fun label(label: String) =
             if(keyboardState.shiftState.pressed || keyboardState.shiftState.locked) label.uppercase()
             else label.lowercase()
-        return softKeyboard.rows.flatMap { it.keys }.associate { it.code to label(it.label.orEmpty()) }
+        return keyboard.rows.flatMap { it.keys }.associate { it.code to label(it.label.orEmpty()) }
     }
 
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {

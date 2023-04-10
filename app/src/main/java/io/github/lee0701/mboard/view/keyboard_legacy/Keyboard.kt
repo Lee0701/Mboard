@@ -63,7 +63,7 @@ data class Keyboard(
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
                                 val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2
                                 val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
-                                show(binding.root, key, x, y)
+                                show(binding.root, key.key.label, key.binding.icon.drawable, x, y)
                             }
                         } else {
                             keyPopup?.cancel()

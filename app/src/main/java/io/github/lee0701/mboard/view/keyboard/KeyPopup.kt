@@ -61,17 +61,6 @@ class KeyPopup(
         }
     }
 
-    fun show(parent: View, key: Key.ViewWrapper, parentX: Int, parentY: Int) {
-        val x = parentX - popupWindow.width / 2
-        val y = parentY - popupWindow.height / 2 * 3
-        if(key.binding.icon.drawable != null) binding.icon.setImageDrawable(key.binding.icon.drawable)
-        else binding.icon.setImageDrawable(null)
-        if(key.binding.label.text != null) binding.label.text = key.binding.label.text
-        else binding.label.text = ""
-        if(animator.isRunning) animator.cancel()
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
-    }
-
     fun show(parent: View, label: CharSequence?, icon: Drawable?, parentX: Int, parentY: Int) {
         val x = parentX - popupWindow.width / 2
         val y = parentY - popupWindow.height / 2 * 3
