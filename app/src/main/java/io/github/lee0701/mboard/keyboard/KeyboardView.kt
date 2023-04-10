@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.keyboard
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -14,6 +15,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.KeyType
@@ -26,6 +28,7 @@ class KeyboardView(
     private val theme: Theme,
     private val listener: Keyboard.Listener,
 ): View(context, attrs) {
+    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
     private val keyboardHeight = dipToPixel(keyboard.height)
@@ -46,13 +49,13 @@ class KeyboardView(
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
 
-    private val handler = Handler(Looper.getMainLooper())
-    private val pointers = mutableMapOf<Int, TouchPointer>()
-    private var keyPopup: KeyPopup? = null
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
+    private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
 
-    private val showKeyPopups = true
-    private val longPressDuration = 500L
-    private val repeatInterval = 50L
+    private val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
+    private val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
+    private val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
 
     init {
         textPaint.textAlign = Paint.Align.CENTER
@@ -92,7 +95,6 @@ class KeyboardView(
         keyMarginVertical = resources.getDimension(R.dimen.key_margin_vertical)
 
         cacheKeys()
-        keyPopup = KeyPopup(context)
     }
 
     fun cacheKeys() {
@@ -174,11 +176,12 @@ class KeyboardView(
                 this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if(showKeyPopups &&
                     (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
-                    keyPopup?.apply {
+                    val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
+                    keyPopup.apply {
                         show(this@KeyboardView, key.key.label, key.icon, key.x + key.width/2, key.y + key.height/2)
                     }
                 } else {
-                    keyPopup?.cancel()
+                    keyPopups[pointerId]?.cancel()
                 }
                 fun repeater() {
                     listener.onKeyClick(key.key.code, key.key.output)
@@ -191,7 +194,7 @@ class KeyboardView(
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 handler.removeCallbacksAndMessages(null)
-                keyPopup?.hide()
+                keyPopups[pointerId]?.hide()
                 listener.onKeyUp(key.key.code, key.key.output)
                 listener.onKeyClick(key.key.code, key.key.output)
                 performClick()
