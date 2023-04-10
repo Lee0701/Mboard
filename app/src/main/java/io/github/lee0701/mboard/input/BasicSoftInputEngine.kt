@@ -30,7 +30,7 @@ class BasicSoftInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
-        updateLabelsAndIcons(inputEngine.getLabels(keyboardState), inputEngine.getIcons(keyboardState))
+        updateView()
     }
 
     override fun onDelete() {
@@ -65,6 +65,9 @@ class BasicSoftInputEngine(
 
     override fun updateView() {
         updateLabelsAndIcons(getShiftedLabels() + getLabels(keyboardState), getIcons(keyboardState))
+    keyboardView?.apply {
+            invalidate()
+        }
     }
 
     private fun getShiftedLabels(): Map<Int, CharSequence> {
@@ -77,7 +80,6 @@ class BasicSoftInputEngine(
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
         val keyboardView = keyboardView ?: return
         keyboardView.updateLabelsAndIcons(labels, icons)
-        keyboardView.invalidate()
     }
 
     override fun onKeyDown(code: Int, output: String?) {

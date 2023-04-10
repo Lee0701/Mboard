@@ -1,7 +1,9 @@
 package io.github.lee0701.mboard.keyboard
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -38,20 +40,20 @@ class KeyboardView(
     private val bitmapPaint = Paint()
     private val textPaint = Paint()
 
-    private val cachedKeys = mutableListOf<CachedKey>()
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
+    private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
+    private val cachedKeys: MutableList<CachedKey> = mutableListOf()
+    private val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
 
     private val keyboardBackground: Drawable
-    private val keyBackgrounds: Map<KeyType, Drawable>
+    private val keyBackgrounds: Map<KeyType, Pair<Drawable, ColorStateList>>
     private val keyIconTints: Map<KeyType, Int>
     private val keyLabelTextColors: Map<KeyType, Int>
     private val keyLabelTextSizes: Map<KeyType, Float>
 
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
-
-    private val handler: Handler = Handler(Looper.getMainLooper())
-    private val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
-    private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
 
     private val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
     private val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
@@ -75,9 +77,8 @@ class KeyboardView(
             keyContext.theme.resolveAttribute(R.attr.background, typedValue, true)
             val keyBackground = ContextCompat.getDrawable(keyContext, typedValue.resourceId) ?: ColorDrawable(Color.TRANSPARENT)
             keyContext.theme.resolveAttribute(R.attr.backgroundTint, typedValue, true)
-            val keyBackgroundTint = ContextCompat.getColor(keyContext, typedValue.resourceId)
-            DrawableCompat.setTint(keyBackground, keyBackgroundTint)
-            keyBackground
+            val keyBackgroundTint = ContextCompat.getColorStateList(keyContext, typedValue.resourceId) ?: ColorStateList(arrayOf(), intArrayOf())
+            keyBackground to keyBackgroundTint
         }
         keyIconTints = keyContexts.mapValues { (_, keyContext) ->
             keyContext.theme.resolveAttribute(R.attr.iconTint, typedValue, true)
@@ -114,24 +115,31 @@ class KeyboardView(
         }
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         if(canvas == null) return
         getLocalVisibleRect(rect)
-        val bitmapCache = mutableMapOf<Pair<Float, Float>, Bitmap>()
+        val bitmapCache = mutableMapOf<BitmapCacheKey, Bitmap>()
 
         // Draw keyboard background
         canvas.drawBitmap(keyboardBackground.toBitmap(rect.width(), rect.height()), 0f, 0f, bitmapPaint)
 
         // Draw key backgrounds
         cachedKeys.forEach { key ->
-            val background = keyBackgrounds[key.key.type]
-            if(background != null) {
+            val keyBackgroundInfo = keyBackgrounds[key.key.type]
+            val pressed = keyStates[key.key.code] == true
+            if(keyBackgroundInfo != null) {
+                val background = keyBackgroundInfo.first.mutate().constantState?.newDrawable()?.apply {
+                    val keyState = intArrayOf(if(pressed) android.R.attr.state_pressed else -android.R.attr.state_pressed)
+                    DrawableCompat.setTint(this, keyBackgroundInfo.second.getColorForState(keyState, keyBackgroundInfo.second.defaultColor))
+                } ?: keyBackgroundInfo.first
                 val x = key.x + keyMarginHorizontal
                 val y = key.y + keyMarginVertical
-                val width = key.width - keyMarginHorizontal*2
-                val height = key.height - keyMarginVertical*2
-                val bitmap = bitmapCache.getOrPut(width to height) {
-                    background.toBitmap(width.roundToInt(), height.roundToInt()) }
+                val width = (key.width - keyMarginHorizontal*2).roundToInt()
+                val height = (key.height - keyMarginVertical*2).roundToInt()
+                val bitmap = bitmapCache.getOrPut(BitmapCacheKey(width, height, pressed, key.key.type)) {
+                    background.toBitmap(width, height)
+                }
                 canvas.drawBitmap(bitmap, x, y, bitmapPaint)
             }
         }
@@ -190,14 +198,18 @@ class KeyboardView(
                 handler.postDelayed({
                     if(key.key.repeatable) repeater()
                 }, longPressDuration)
+                keyStates[key.key.code] = true
                 listener.onKeyDown(key.key.code, key.key.output)
+                invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 handler.removeCallbacksAndMessages(null)
                 keyPopups[pointerId]?.hide()
+                keyStates[key.key.code] = false
                 listener.onKeyUp(key.key.code, key.key.output)
                 listener.onKeyClick(key.key.code, key.key.output)
                 performClick()
+                invalidate()
             }
         }
 
@@ -251,4 +263,10 @@ class KeyboardView(
         val key: CachedKey,
     )
 
+    data class BitmapCacheKey(
+        val width: Int,
+        val height: Int,
+        val pressed: Boolean,
+        val type: KeyType,
+    )
 }
