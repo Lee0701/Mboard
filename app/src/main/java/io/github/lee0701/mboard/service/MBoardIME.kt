@@ -52,12 +52,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     override fun onCreateInputView(): View {
-        inputEngineSwitcher?.initViews(this)
         val inputView = FrameLayout(this, null)
-        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
-        val keyboardView =
-            if(currentInputEngine is SoftInputEngine) currentInputEngine.initView(this)
-            else null
+        val keyboardView = inputEngineSwitcher?.initView(this)
         if(keyboardView != null) {
             inputView.removeAllViews()
             inputView.addView(keyboardView)
