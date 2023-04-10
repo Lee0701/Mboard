@@ -1,5 +1,7 @@
 package io.github.lee0701.mboard.module
 
+import android.view.KeyEvent
+import io.github.lee0701.mboard.module.serialization.HexIntSerializer
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.serialization.Serializable
 
@@ -7,6 +9,7 @@ import kotlinx.serialization.Serializable
 data class CodeConvertTable(
     val map: Map<String, Entry> = mapOf(),
 ) {
+    val codeMap: Map<Int, Entry> = map.mapKeys { (k, _) -> KeyEvent.keyCodeFromString(k) }
 
     @Serializable
     data class Entry(
@@ -16,10 +19,10 @@ data class CodeConvertTable(
         @Serializable(with = HexIntSerializer::class) val alt: Int? = base,
         @Serializable(with = HexIntSerializer::class) val altShift: Int? = shift,
     ) {
-        fun withKeyboardState(keyboardState: KeyboardState): Int {
+        fun withKeyboardState(keyboardState: KeyboardState): Int? {
             val shiftPressed = keyboardState.shiftState.pressed || keyboardState.shiftState.pressing
             val altPressed = keyboardState.altState.pressed || keyboardState.altState.pressing
-            return if(keyboardState.shiftState.locked) capsLocked
+            return if(keyboardState.shiftState.locked) capsLock
             else if(shiftPressed && altPressed) altShift
             else if(shiftPressed) shift
             else if(altPressed) alt

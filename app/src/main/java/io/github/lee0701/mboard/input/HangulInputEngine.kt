@@ -19,7 +19,7 @@ class HangulInputEngine(
     private val hangulState: HangulCombiner.State get() = stateStack.lastOrNull() ?: HangulCombiner.State()
 
     override fun onKey(code: Int, state: KeyboardState) {
-        val converted = table.map[code]?.withKeyboardState(state)
+        val converted = table.codeMap[code]?.withKeyboardState(state)
         if(converted == null) {
             val char = keyCharacterMap.get(code, state.asMetaState())
             onReset()
@@ -47,7 +47,7 @@ class HangulInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val codeMap = table.map.mapValues { (_, entry) -> entry.withKeyboardState(state).toChar().toString() }
+        val codeMap = table.codeMap.mapValues { (_, entry) -> entry.withKeyboardState(state)?.toChar().toString() }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 

@@ -140,9 +140,9 @@ rows:
   - code: 66
     output: null
     label: null
-    iconType: "Enter"
+    iconType: "Return"
     width: 1.5
     repeatable: false
-    type: "Return"
+    type: "Action"
   padding: 0.0
 height: 220.0
