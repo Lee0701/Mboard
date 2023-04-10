@@ -179,10 +179,9 @@ class KeyboardView(
         val x = event.getX(event.actionIndex).roundToInt()
         val y = event.getY(event.actionIndex).roundToInt()
 
-        val key = findKey(x, y) ?: return super.onTouchEvent(event)
-
         when(event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                val key = findKey(x, y) ?: return super.onTouchEvent(event)
                 val pointer = TouchPointer(x, y, key)
 
                 this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -205,8 +204,11 @@ class KeyboardView(
                 keyStates[key.key.code] = true
                 listener.onKeyDown(key.key.code, key.key.output)
                 invalidate()
+
+                pointers += pointerId to pointer
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return super.onTouchEvent(event)
                 handler.removeCallbacksAndMessages(null)
                 keyPopups[pointerId]?.hide()
                 keyStates[key.key.code] = false
@@ -214,6 +216,8 @@ class KeyboardView(
                 listener.onKeyClick(key.key.code, key.key.output)
                 performClick()
                 invalidate()
+
+                pointers -= pointerId
             }
         }
 
