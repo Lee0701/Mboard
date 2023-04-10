@@ -11,22 +11,25 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
+import io.github.lee0701.mboard.view.keyboard.Themes
 import kotlin.math.roundToInt
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
 
+    private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private var inputView: ViewGroup? = null
     private var defaultCandidatesViewManager: BasicCandidatesViewManager? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
         super.onCreate()
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
         reload(sharedPreferences)
@@ -67,10 +70,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val keyboardView = inputEngineSwitcher?.initView(this)
         if(keyboardView != null) {
             inputView.addView(keyboardView)
-//            val typedValue = TypedValue()
-//            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
-//            val color = ContextCompat.getColor(this, typedValue.resourceId)
-//            setNavBarColor(color)
+            val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
+            val theme = Themes.map[name] ?: Themes.Static
+            val context = ContextThemeWrapper(this, theme.keyboardBackground)
+            val typedValue = TypedValue()
+            val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
+            keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
+            val color = ContextCompat.getColor(this, typedValue.resourceId)
+            setNavBarColor(color)
         }
         this.inputView = inputView
         inputEngineSwitcher?.updateView()
@@ -103,12 +110,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 inputEngineSwitcher?.nextLanguage()
-                setInputView(onCreateInputView())
+                reloadView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 inputEngineSwitcher?.nextExtra()
-                setInputView(onCreateInputView())
+                reloadView()
                 true
             }
             else -> false
