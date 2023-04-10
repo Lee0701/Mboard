@@ -72,39 +72,42 @@ object InputEnginePresets {
     }
 
     private fun Hangul3Set390(mBoardIME: MBoardIME): InputEngine {
+        val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_390)),
-            { listener -> HangulInputEngine(
+            { listener -> HanjaConverterInputEngine({ listener -> HangulInputEngine(
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_390)),
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_390)),
                 listener,
-            ) },
+            ) }, dictionary, listener) },
             autoUnlockShift = true,
             mBoardIME,
         )
     }
 
     private fun Hangul3Set391(mBoardIME: MBoardIME): InputEngine {
+        val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391)),
-            { listener -> HangulInputEngine(
+            { listener -> HanjaConverterInputEngine({ listener -> HangulInputEngine(
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391)),
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391)),
                 listener,
-            ) },
+            ) }, dictionary, listener) },
             autoUnlockShift = true,
             mBoardIME,
         )
     }
 
     private fun Hangul3Set391Strict(mBoardIME: MBoardIME): InputEngine {
+        val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
         return BasicSoftInputEngine(
             Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.soft_qwerty_mobile_3set_391)),
-            { listener -> HangulInputEngine(
+            { listener -> HanjaConverterInputEngine({ listener -> HangulInputEngine(
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.table_hangul_3set_391_strict)),
                 Yaml.default.decodeFromStream(mBoardIME.resources.openRawResource(R.raw.comb_hangul_3set_391_strict)),
                 listener,
-            ) },
+            ) }, dictionary, listener) },
             autoUnlockShift = true,
             mBoardIME,
         )
