@@ -70,7 +70,7 @@ class HanjaConverterInputEngine(
     private suspend fun convert() = withContext(Dispatchers.IO) {
         val result = dictionary.search(currentComposing) ?: return@withContext
         val candidates = result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) }
-        listener.onCandidates(candidates)
+        launch(Dispatchers.Main) { listener.onCandidates(candidates) }
     }
 
     private fun updateView() {
