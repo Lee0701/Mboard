@@ -1,10 +1,13 @@
 package io.github.lee0701.mboard.input
 
-import android.view.KeyEvent
+import android.graphics.drawable.Drawable
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
 import io.github.lee0701.mboard.dictionary.ListDictionary
 import io.github.lee0701.mboard.service.KeyboardState
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
@@ -81,5 +84,9 @@ class HanjaConverterInputEngine(
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         return inputEngine.getLabels(state)
+    }
+
+    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
+        return emptyMap()
     }
 }

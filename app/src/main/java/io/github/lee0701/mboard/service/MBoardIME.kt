@@ -4,14 +4,12 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
 import android.os.Build
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
