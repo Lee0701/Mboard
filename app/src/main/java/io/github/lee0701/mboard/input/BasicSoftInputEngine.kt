@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.input
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.inputmethodservice.InputMethodService
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -15,6 +16,7 @@ import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
 import io.github.lee0701.mboard.view.keyboard.KeyboardView
 import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
 import io.github.lee0701.mboard.view.keyboard.Themes
+import kotlin.math.roundToInt
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,
@@ -177,13 +179,10 @@ class BasicSoftInputEngine(
         }
     }
 
-    override fun onComputeInsets(inputView: View, outInsets: InputMethodService.Insets?) {
-        if(outInsets != null) {
-            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_VISIBLE
-            val visibleTopY = inputView.height - (keyboardView?.height ?: return)
-            outInsets.visibleTopInsets = visibleTopY
-            outInsets.contentTopInsets = visibleTopY
-        }
+    override fun getHeight(): Int {
+        val displayMetrics = keyboardView?.context?.resources?.displayMetrics
+        return if(displayMetrics != null)
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyboard.height, displayMetrics).toInt()
+        else 0
     }
-
 }

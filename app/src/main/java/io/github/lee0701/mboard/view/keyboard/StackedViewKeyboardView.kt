@@ -49,10 +49,6 @@ class StackedViewKeyboardView(
 
         val rowViewWrappers = mutableListOf<RowViewWrapper>()
         val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyboard.height, wrappedContext.resources.displayMetrics).toInt()
-            root.layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, height
-            )
             keyboard.rows.forEach { row ->
                 val rowViewBinding = initRowView(row, theme)
                 rowViewWrappers += rowViewBinding

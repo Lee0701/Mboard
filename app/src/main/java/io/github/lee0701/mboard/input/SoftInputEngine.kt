@@ -9,6 +9,6 @@ interface SoftInputEngine: InputEngine, KeyboardListener {
     fun initView(context: Context): View?
     fun updateView()
 
-    fun onComputeInsets(inputView: View, outInsets: InputMethodService.Insets?)
+    fun getHeight(): Int
 
 }

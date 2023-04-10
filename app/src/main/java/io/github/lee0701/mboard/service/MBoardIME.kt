@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
 
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private var inputView: ViewGroup? = null
+    private var inputViewWrapper: ViewGroup? = null
     private var defaultCandidatesViewManager: BasicCandidatesViewManager? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
@@ -54,23 +54,33 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
         defaultCandidatesViewManager = BasicCandidatesViewManager(this)
 
-        if(force) setInputView(onCreateInputView())
+        if(force) reloadView()
     }
 
     override fun onCreateInputView(): View {
-        val inputView = LinearLayoutCompat(this, null).apply {
+        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
+        val inputViewWrapper = LinearLayoutCompat(this, null).apply {
             orientation = LinearLayoutCompat.VERTICAL
         }
-        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
 
         val candidatesView = defaultCandidatesViewManager?.initView(this)
         if(candidatesView != null) {
-            inputView.addView(candidatesView)
+            candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                resources.getDimension(R.dimen.candidates_view_height).roundToInt()
+            )
+            inputViewWrapper.addView(candidatesView)
         }
 
         val keyboardView = inputEngineSwitcher?.initView(this)
         if(keyboardView != null) {
-            inputView.addView(keyboardView)
+            if(currentInputEngine is SoftInputEngine) {
+                keyboardView.layoutParams = LinearLayoutCompat.LayoutParams(
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                    currentInputEngine.getHeight(),
+                )
+            }
+            inputViewWrapper.addView(keyboardView)
             val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
             val theme = Themes.map[name] ?: Themes.Static
             val context = ContextThemeWrapper(this, theme.keyboardBackground)
@@ -80,9 +90,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             val color = ContextCompat.getColor(this, typedValue.resourceId)
             setNavBarColor(color)
         }
-        this.inputView = inputView
+        this.inputViewWrapper = inputViewWrapper
         inputEngineSwitcher?.updateView()
-        return inputView
+        return inputViewWrapper
     }
 
     override fun onCandidates(list: List<Candidate>) {
@@ -148,16 +158,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onComputeInsets(outInsets: Insets?) {
-        val inputView = this.inputView ?: return
-        val currentEngine = inputEngineSwitcher?.getCurrentEngine()
-        if(currentEngine is SoftInputEngine) {
-            val candidatesHeight = resources.getDimension(R.dimen.candidates_view_height).roundToInt()
-            currentEngine.onComputeInsets(inputView, outInsets)
-            if(outInsets == null) return
-            outInsets.visibleTopInsets -= candidatesHeight
-            outInsets.contentTopInsets -= candidatesHeight
-        }
-        else return super.onComputeInsets(outInsets)
+        super.onComputeInsets(outInsets)
+        outInsets?.contentTopInsets = outInsets?.visibleTopInsets
     }
 
     private fun setNavBarColor(@ColorInt color: Int) {
@@ -182,5 +184,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if(sharedPreferences != null) reload(sharedPreferences, true)
+    }
+
+    override fun onEvaluateFullscreenMode(): Boolean {
+        super.onEvaluateFullscreenMode()
+        return false
+    }
+
+    override fun onEvaluateInputViewShown(): Boolean {
+        return super.onEvaluateInputViewShown()
     }
 }
