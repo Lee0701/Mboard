@@ -15,8 +15,13 @@ class InputEngineSwitcher(
 
     fun initView(context: Context): View? {
         val currentEngine = getCurrentEngine()
-        return if(currentEngine is BasicSoftInputEngine) currentEngine.initView(context)
+        return if(currentEngine is SoftInputEngine) currentEngine.initView(context)
         else null
+    }
+
+    fun updateView() {
+        val currentEngine = getCurrentEngine()
+        if(currentEngine is SoftInputEngine) currentEngine.updateView()
     }
 
     fun getCurrentEngine(): InputEngine {

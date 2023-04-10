@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.input
 
+import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.module.CodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
@@ -34,5 +35,9 @@ class CodeConverterInputEngine(
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         val codeMap = codeConverter.map.mapValues { (_, entry) -> entry.withKeyboardState(state).toChar().toString() }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
+    }
+
+    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
+        return emptyMap()
     }
 }

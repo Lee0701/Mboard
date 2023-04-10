@@ -63,6 +63,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
 //            setNavBarColor(color)
         }
         this.inputView = inputView
+        inputEngineSwitcher?.updateView()
         return inputView
     }
 
@@ -77,18 +78,15 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
     }
 
     override fun onSystemKey(code: Int): Boolean {
-        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 inputEngineSwitcher?.nextLanguage()
-                inputEngine?.onReset()
-                updateView()
+                setInputView(onCreateInputView())
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 inputEngineSwitcher?.nextExtra()
-                inputEngine?.onReset()
-                updateView()
+                setInputView(onCreateInputView())
                 true
             }
             else -> false
@@ -132,8 +130,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, OnSharedPreferenceC
         }
     }
 
-    private fun updateView() {
+    private fun reloadView() {
         setInputView(onCreateInputView())
+    }
+
+    private fun updateView() {
+        inputEngineSwitcher?.updateView()
     }
 
     override fun onDestroy() {

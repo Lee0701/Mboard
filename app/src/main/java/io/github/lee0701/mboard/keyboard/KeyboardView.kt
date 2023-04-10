@@ -17,7 +17,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.KeyType
-import java.util.*
 import kotlin.math.roundToInt
 
 class KeyboardView(
@@ -96,7 +95,7 @@ class KeyboardView(
         keyPopup = KeyPopup(context)
     }
 
-    private fun cacheKeys() {
+    fun cacheKeys() {
         val rowHeight = keyboardHeight / keyboard.rows.size
         keyboard.rows.forEachIndexed { j, row ->
             val keyWidths = row.keys.map { it.width }.sum() + row.padding*2
@@ -152,9 +151,9 @@ class KeyboardView(
             if(key.key.label != null && textSize != null && textColor != null) {
                 textPaint.color = textColor
                 textPaint.textSize = textSize
-                val x = baseX
+                val x = baseX.toFloat()
                 val y = baseY - (textPaint.descent() + textPaint.ascent())/2
-                canvas.drawText(key.key.label, x.toFloat(), y.toFloat(), textPaint)
+                canvas.drawText(key.key.label, x, y, textPaint)
             }
         }
     }
@@ -200,6 +199,18 @@ class KeyboardView(
         }
 
         return true
+    }
+
+    fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
+        val cachedKeys = this.cachedKeys.toList()
+        this.cachedKeys.clear()
+        this.cachedKeys += cachedKeys.map { key ->
+            if(key.icon != null) {
+                key.copy(icon = icons[key.key.code] ?: key.icon)
+            } else {
+                key.copy(key = key.key.copy(label = labels[key.key.code]?.toString()))
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
