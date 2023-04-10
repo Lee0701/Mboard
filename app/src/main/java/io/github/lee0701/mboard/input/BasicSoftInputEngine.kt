@@ -37,7 +37,7 @@ class BasicSoftInputEngine(
         doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.map[name] ?: Themes.Static
-        keyboardView = StackedViewKeyboardView(context, null, keyboard, theme, this)
+        keyboardView = CanvasKeyboardView(context, null, keyboard, theme, this)
         return keyboardView
     }
 

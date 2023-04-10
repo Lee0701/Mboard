@@ -38,6 +38,7 @@ class CanvasKeyboardView(
 
     init {
         textPaint.textAlign = Paint.Align.CENTER
+        setWillNotDraw(false)
         cacheKeys()
         invalidate()
     }

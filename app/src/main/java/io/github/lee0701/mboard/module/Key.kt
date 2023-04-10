@@ -1,6 +1,5 @@
 package io.github.lee0701.mboard.module
 
-import io.github.lee0701.mboard.view.keyboard_legacy.Key
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,16 +11,4 @@ data class Key(
     val width: Float = 1f,
     val repeatable: Boolean = false,
     val type: KeyType = KeyType.Alphanumeric,
-) {
-    fun inflate(): Key {
-        return Key(
-            this.code,
-            this.output,
-            this.label,
-            this.iconType,
-            this.width,
-            this.repeatable,
-            this.type,
-        )
-    }
-}
+)

@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyPopupBinding
-import io.github.lee0701.mboard.view.keyboard_legacy.Key
 import kotlin.math.roundToInt
 
 class KeyPopup(
