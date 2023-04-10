@@ -175,7 +175,7 @@ class KeyboardView(
                 if(showKeyPopups &&
                     (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
                     keyPopup?.apply {
-                        show(this@KeyboardView, key.x + key.width/2, key.y + key.height/2)
+                        show(this@KeyboardView, key.key.label, key.icon, key.x + key.width/2, key.y + key.height/2)
                     }
                 } else {
                     keyPopup?.cancel()

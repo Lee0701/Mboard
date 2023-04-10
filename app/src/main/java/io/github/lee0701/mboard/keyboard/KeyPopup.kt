@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
@@ -72,15 +73,11 @@ class KeyPopup(
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
 
-    fun show(parent: View, parentX: Int, parentY: Int) {
+    fun show(parent: View, label: CharSequence?, icon: Drawable?, parentX: Int, parentY: Int) {
         val x = parentX - popupWindow.width / 2
         val y = parentY - popupWindow.height / 2 * 3
-//        val icon = key.findViewById<AppCompatImageView>(R.id.icon)
-//        val label = key.findViewById<AppCompatTextView>(R.id.label)
-//        if(icon.drawable != null) binding.icon.setImageDrawable(icon.drawable)
-//        else binding.icon.setImageDrawable(null)
-//        if(label.text != null) binding.label.text = label.text
-//        else binding.label.text = ""
+        binding.icon.setImageDrawable(icon)
+        binding.label.text = label
         if(animator.isRunning) animator.cancel()
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
