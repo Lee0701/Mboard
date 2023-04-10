@@ -1,11 +1,14 @@
 package io.github.lee0701.mboard.input
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.inputmethodservice.InputMethodService
 import android.view.KeyEvent
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.keyboard.KeyboardView
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.keyboard.Keyboard
@@ -22,7 +25,7 @@ class BasicSoftInputEngine(
 
     private var doubleTapGap: Int = 500
 
-    private var softKeyboardWrapper: Keyboard.ViewWrapper? = null
+    private var keyboardView: KeyboardView? = null
 
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
@@ -30,6 +33,7 @@ class BasicSoftInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
+        updateView()
     }
 
     override fun onDelete() {
@@ -38,52 +42,47 @@ class BasicSoftInputEngine(
 
     override fun onReset() {
         inputEngine.onReset()
-        updateView()
-    }
-
-    override fun onResetView() {
         keyboardState = KeyboardState()
+        updateView()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         return inputEngine.getLabels(state)
     }
 
-    override fun initView(context: Context): View {
+    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
+        val context = keyboardView?.context
+        val shiftIconID = if(keyboardState.shiftState.locked) R.drawable.keyic_shift_lock else R.drawable.keyic_shift
+        val shiftIcon = context?.let { ContextCompat.getDrawable(it, shiftIconID) }
+        return inputEngine.getIcons(state) + shiftIcon?.let { mapOf(KeyEvent.KEYCODE_SHIFT_LEFT to it, KeyEvent.KEYCODE_SHIFT_RIGHT to it) }.orEmpty()
+    }
+
+    override fun initView(context: Context): View? {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.map[name] ?: Themes.Static
-        val softKeyboardWrapper = softKeyboard.initView(context, theme, this)
-        this.softKeyboardWrapper = softKeyboardWrapper
-        updateView()
-        return softKeyboardWrapper.binding.root
+        keyboardView = KeyboardView(context, null, softKeyboard, theme, this)
+        return keyboardView
     }
 
-    override fun getView(): View {
-        return softKeyboardWrapper!!.binding.root
-    }
-
-    private fun updateView() {
-        updateLabels(getShiftedLabels() + inputEngine.getLabels(keyboardState))
-
-        val shiftKeys = softKeyboardWrapper?.keys?.filter { it.key.code in setOf(KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT) }.orEmpty()
-        shiftKeys.forEach { it.binding.icon.setImageResource(if(keyboardState.shiftState.locked) R.drawable.keyic_shift_lock else R.drawable.keyic_shift) }
+    override fun updateView() {
+        updateLabelsAndIcons(getShiftedLabels() + getLabels(keyboardState), getIcons(keyboardState))
+    keyboardView?.apply {
+            invalidate()
+        }
     }
 
     private fun getShiftedLabels(): Map<Int, CharSequence> {
         fun label(label: String) =
             if(keyboardState.shiftState.pressed || keyboardState.shiftState.locked) label.uppercase()
             else label.lowercase()
-        return softKeyboardWrapper?.keys?.associate { it.key.code to label(it.key.label.orEmpty()) }.orEmpty()
+        return softKeyboard.rows.flatMap { it.keys }.associate { it.code to label(it.label.orEmpty()) }
     }
 
-    private fun updateLabels(labels: Map<Int, CharSequence>) {
-        val keys = softKeyboardWrapper?.keys ?: return
-        keys.map { key ->
-            val label = labels[key.key.code]
-            if(label != null) key.binding.label.text = label
-        }
+    private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
+        val keyboardView = keyboardView ?: return
+        keyboardView.updateLabelsAndIcons(labels, icons)
     }
 
     override fun onKeyDown(code: Int, output: String?) {
@@ -180,7 +179,7 @@ class BasicSoftInputEngine(
     override fun onComputeInsets(inputView: View, outInsets: InputMethodService.Insets?) {
         if(outInsets != null) {
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_VISIBLE
-            val visibleTopY = inputView.height - (softKeyboardWrapper?.binding?.root?.height ?: return)
+            val visibleTopY = inputView.height - (keyboardView?.height ?: return)
             outInsets.visibleTopInsets = visibleTopY
             outInsets.contentTopInsets = visibleTopY
         }

@@ -55,10 +55,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onCreateInputView(): View {
-        inputEngineSwitcher?.initViews(this)
         val inputView = LinearLayout(this, null)
         inputView.orientation = LinearLayout.VERTICAL
-        inputView.removeAllViews()
         val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
 
         val candidatesView = defaultCandidatesViewManager?.initView(this)
@@ -66,17 +64,16 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             inputView.addView(candidatesView)
         }
 
-        val keyboardView =
-            if(currentInputEngine is SoftInputEngine) currentInputEngine.initView(this)
-            else null
+        val keyboardView = inputEngineSwitcher?.initView(this)
         if(keyboardView != null) {
             inputView.addView(keyboardView)
-            val typedValue = TypedValue()
-            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
-            val color = ContextCompat.getColor(this, typedValue.resourceId)
-            setNavBarColor(color)
+//            val typedValue = TypedValue()
+//            keyboardView.context.theme.resolveAttribute(R.attr.background, typedValue, true)
+//            val color = ContextCompat.getColor(this, typedValue.resourceId)
+//            setNavBarColor(color)
         }
         this.inputView = inputView
+        inputEngineSwitcher?.updateView()
         return inputView
     }
 
@@ -96,7 +93,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         super.onStartInput(attribute, restarting)
         val inputEngine = inputEngineSwitcher?.getCurrentEngine()
         inputEngine?.onReset()
-        if(inputEngine is SoftInputEngine) inputEngine.onResetView()
     }
 
     override fun onFinishInput() {
@@ -104,18 +100,15 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onSystemKey(code: Int): Boolean {
-        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 inputEngineSwitcher?.nextLanguage()
-                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
-                updateView()
+                setInputView(onCreateInputView())
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 inputEngineSwitcher?.nextExtra()
-                if(inputEngine is SoftInputEngine) inputEngine.onResetView()
-                updateView()
+                setInputView(onCreateInputView())
                 true
             }
             else -> false
@@ -165,8 +158,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         }
     }
 
-    private fun updateView() {
+    private fun reloadView() {
         setInputView(onCreateInputView())
+    }
+
+    private fun updateView() {
+        inputEngineSwitcher?.updateView()
     }
 
     override fun onDestroy() {

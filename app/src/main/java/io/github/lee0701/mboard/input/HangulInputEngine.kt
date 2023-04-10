@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.input
 
+import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.service.KeyboardState
 
@@ -48,4 +49,7 @@ class HangulInputEngine(
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 
+    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
+        return emptyMap()
+    }
 }

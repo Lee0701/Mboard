@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
@@ -11,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
@@ -66,6 +69,15 @@ class KeyPopup(
         else binding.icon.setImageDrawable(null)
         if(key.binding.label.text != null) binding.label.text = key.binding.label.text
         else binding.label.text = ""
+        if(animator.isRunning) animator.cancel()
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
+    }
+
+    fun show(parent: View, label: CharSequence?, icon: Drawable?, parentX: Int, parentY: Int) {
+        val x = parentX - popupWindow.width / 2
+        val y = parentY - popupWindow.height / 2 * 3
+        binding.icon.setImageDrawable(icon)
+        binding.label.text = label
         if(animator.isRunning) animator.cancel()
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
