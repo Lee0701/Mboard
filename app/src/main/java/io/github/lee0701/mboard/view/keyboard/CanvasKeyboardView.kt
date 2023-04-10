@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.Key
 import io.github.lee0701.mboard.module.KeyType
 import io.github.lee0701.mboard.module.Keyboard
@@ -130,7 +131,9 @@ class CanvasKeyboardView(
                     (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
                     val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
                     keyPopup.apply {
-                        show(this@CanvasKeyboardView, key.key.label, key.icon, key.x + key.width/2, key.y + key.height/2)
+                        val parentX = key.x + key.width/2
+                        val parentY = key.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + key.height/2
+                        show(this@CanvasKeyboardView, key.key.label, key.icon, parentX, parentY)
                     }
                 } else {
                     keyPopups[pointerId]?.cancel()

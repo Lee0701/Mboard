@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
@@ -68,9 +67,9 @@ class StackedViewKeyboardView(
                             (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
                             keyPopup?.apply {
                                 val row = rowViewWrappers.find { key in it.keys } ?: return@apply
-                                val x = key.binding.root.x.roundToInt() + key.binding.root.width / 2
-                                val y = row.binding.root.y.roundToInt() + row.binding.root.height / 2
-                                show(binding.root, key.key.label, key.binding.icon.drawable, x, y)
+                                val parentX = key.binding.root.x.roundToInt() + key.binding.root.width / 2
+                                val parentY = row.binding.root.y.roundToInt() + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height / 2
+                                show(binding.root, key.key.label, key.binding.icon.drawable, parentX, parentY)
                             }
                         } else {
                             keyPopup?.cancel()
