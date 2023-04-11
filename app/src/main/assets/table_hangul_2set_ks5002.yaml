@@ -77,6 +77,3 @@ map:
   "KEYCODE_M":
     base: 0x3161
     shift: 0x3161
-  "4140":
-    base: 0x002c
-    shift: 0x002e
