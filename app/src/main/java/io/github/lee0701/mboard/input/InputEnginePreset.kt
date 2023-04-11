@@ -50,11 +50,12 @@ sealed interface InputEnginePreset {
         val combinationTable: JamoCombinationTable,
         val dictionary: HanjaDictionary,
     ): InputEnginePreset {
+        private val hanjaConverter = DictionaryHanjaConverter(dictionary)
         override fun create(ime: MBoardIME): InputEngine {
             return BasicSoftInputEngine(keyboard, { listener ->
                 HanjaConverterInputEngine({ l ->
                     HangulInputEngine(codeConvertTable, combinationTable, l)
-                }, dictionary, listener)
+                }, hanjaConverter, listener)
             }, true, ime)
         }
     }

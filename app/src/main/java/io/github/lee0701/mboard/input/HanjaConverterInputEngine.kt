@@ -1,20 +1,15 @@
 package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
-import io.github.lee0701.mboard.dictionary.HanjaDictionary
-import io.github.lee0701.mboard.dictionary.HanjaDictionaryEntry
-import io.github.lee0701.mboard.dictionary.ListDictionary
 import io.github.lee0701.mboard.service.KeyboardState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
+import kotlinx.coroutines.*
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val dictionary: ListDictionary<HanjaDictionaryEntry>,
+    private val hanjaConverter: DictionaryHanjaConverter,
     override val listener: InputEngine.Listener,
-): InputEngine, InputEngine.Listener {
+): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
 
     private val inputEngine: InputEngine = getInputEngine(this)
     private val composingWordStack: MutableList<String> = mutableListOf()
@@ -32,7 +27,7 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        MainScope().launch { convert() }
+        convert()
     }
 
     override fun onFinishComposing() {
@@ -56,6 +51,23 @@ class HanjaConverterInputEngine(
         listener.onCandidates(list)
     }
 
+    override fun onItemClicked(candidate: Candidate) {
+        if(candidate is DefaultHanjaCandidate) {
+            listener.onCommitText(candidate.text)
+            val currentComposing = currentComposing
+            composingChar = ""
+            onReset()
+            val newComposingText = currentComposing.drop(candidate.text.length)
+            composingWordStack.clear()
+            newComposingText.indices.forEach { i ->
+                composingWordStack += newComposingText.take(i + 1)
+            }
+            listener.onComposingText(newComposingText)
+            updateView()
+            convert()
+        }
+    }
+
     override fun onSystemKey(code: Int): Boolean {
         onReset()
         return listener.onSystemKey(code)
@@ -66,10 +78,9 @@ class HanjaConverterInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private suspend fun convert() = withContext(Dispatchers.IO) {
-        val result = dictionary.search(currentComposing) ?: return@withContext
-        val candidates = result.map { entry -> DefaultCandidate(entry.result, entry.frequency.toFloat()) }
-        launch(Dispatchers.Main) { listener.onCandidates(candidates) }
+    private fun convert() = CoroutineScope(Dispatchers.IO).launch {
+        val candidates = hanjaConverter.convertPrefix(currentComposing).flatten()
+        launch(Dispatchers.Main) { onCandidates(candidates) }
     }
 
     private fun updateView() {

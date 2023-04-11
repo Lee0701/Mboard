@@ -12,6 +12,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
+import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
 import io.github.lee0701.mboard.view.keyboard.KeyboardView
 import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
@@ -67,6 +68,10 @@ class BasicSoftInputEngine(
         val shiftIconID = if(keyboardState.shiftState.locked) R.drawable.keyic_shift_lock else R.drawable.keyic_shift
         val shiftIcon = context?.let { ContextCompat.getDrawable(it, shiftIconID) }
         return inputEngine.getIcons(state) + shiftIcon?.let { mapOf(KeyEvent.KEYCODE_SHIFT_LEFT to it, KeyEvent.KEYCODE_SHIFT_RIGHT to it) }.orEmpty()
+    }
+
+    override fun onItemClicked(candidate: Candidate) {
+        if(inputEngine is BasicCandidatesViewManager.Listener) inputEngine.onItemClicked(candidate)
     }
 
     override fun updateView() {

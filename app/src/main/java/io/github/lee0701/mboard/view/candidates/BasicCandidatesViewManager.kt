@@ -26,7 +26,9 @@ class BasicCandidatesViewManager(
     }
 
     fun showCandidates(candidates: List<Candidate>) {
-        adapter.submitList(candidates)
+        adapter.submitList(candidates) {
+            binding.recyclerView.scrollToPosition(0)
+        }
     }
 
     class Adapter(
