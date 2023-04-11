@@ -128,11 +128,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onSystemKey(code: Int): Boolean {
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
+                inputEngineSwitcher?.getCurrentEngine()?.onReset()
                 inputEngineSwitcher?.nextLanguage()
                 reloadView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
+                inputEngineSwitcher?.getCurrentEngine()?.onReset()
                 inputEngineSwitcher?.nextExtra()
                 reloadView()
                 true
