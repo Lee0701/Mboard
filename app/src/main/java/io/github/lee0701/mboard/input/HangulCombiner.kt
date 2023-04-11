@@ -133,7 +133,7 @@ class HangulCombiner(
 
         val composed: CharSequence =
             if(cho == null && jung == null && jong == null) ""
-            else if(listOfNotNull(cho, jung, jong).let { it.size == 1 && it.all { c -> Hangul.isModernJamo(c) } })
+            else if(listOfNotNull(cho, jung, jong).let { it.size == 1 && it.all { c -> Hangul.isModernJamo(c and 0xffff) } })
                 (choChar?.let { Hangul.choToCompatConsonant(it) } ?:
                 jungChar?.let { Hangul.jungToCompatVowel(it) } ?:
                 jongChar?.let { Hangul.jongToCompatConsonant(it) })?.toString().orEmpty()
