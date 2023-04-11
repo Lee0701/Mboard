@@ -99,6 +99,7 @@ open class CanvasKeyboardView(
             row.keys.forEachIndexed { i, key ->
                 val width = keyWidthUnit * key.width
                 val height = rowHeight
+                val label = key.label
                 val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
                 cachedKeys += CachedKey(key, x.roundToInt(), y.roundToInt(), width.roundToInt(), height.roundToInt(), icon)
                 x += width

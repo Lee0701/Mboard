@@ -12,10 +12,7 @@ import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
-import io.github.lee0701.mboard.view.keyboard.KeyboardView
-import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
-import io.github.lee0701.mboard.view.keyboard.Themes
+import io.github.lee0701.mboard.view.keyboard.*
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,
@@ -53,7 +50,7 @@ class BasicSoftInputEngine(
         updateView()
     }
 
-    override fun onKeyFlick(code: Int, output: String?) {
+    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
 
     }
 

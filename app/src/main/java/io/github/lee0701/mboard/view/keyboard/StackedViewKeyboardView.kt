@@ -27,18 +27,18 @@ class StackedViewKeyboardView(
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
     private val keyboardViewWrapper = initKeyboardView(keyboard, theme, listener)
-    override val wrappedKeys: List<KeyWrapper> get() = keyboardViewWrapper.keys.toList()
+    override val wrappedKeys: List<KeyWrapper> = keyboardViewWrapper.keys.toList()
 
     init {
         this.addView(keyboardViewWrapper.binding.root)
     }
 
     override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
-        popup.apply {
+        if(key is KeyViewWrapper) popup.apply {
             val parentX = key.x + key.width/2
-            val row = keyboardViewWrapper.rows.findLast { key in it.keys } ?: return
+            val row = keyboardViewWrapper.rows.find { key in it.keys } ?: return
             val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
-            show(this@StackedViewKeyboardView, key.key.label, key.icon, parentX, parentY.roundToInt())
+            show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
         }
     }
 
