@@ -26,6 +26,25 @@
             app:title="@string/pref_appearance_theme_title"
             app:useSimpleSummaryProvider="true" />
 
+        <io.github.lee0701.mboard.settings.IntEditTextPreference
+            app:key="appearance_keyboard_height"
+            app:defaultValue="55"
+            app:title="@string/pref_appearance_keyboard_height_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="appearance_unify_height"
+            app:defaultValue="false"
+            app:title="@string/pref_appearance_unify_height_title" />
+
+        <ListPreference
+            app:key="appearance_keyboard_view_type"
+            app:defaultValue="canvas"
+            app:entries="@array/appearance_keyboard_view_types"
+            app:entryValues="@array/appearance_keyboard_view_type_values"
+            app:title="@string/pref_appearance_keyboard_view_type_title"
+            app:summary="@string/pref_appearance_keyboard_view_type_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -92,12 +111,6 @@
             app:defaultValue="50"
             app:title="@string/pref_behaviour_repeat_interval_title"
             app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory>
-
-        <io.github.lee0701.mboard.settings.StartActivityPreference />
 
     </PreferenceCategory>
 

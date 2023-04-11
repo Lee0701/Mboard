@@ -24,7 +24,7 @@ map:
     base: 0x1174
     shift: 0x201d
   "KEYCODE_9":
-    base: 0x116e
+    base: 0x100116e
     shift: 0x0027
   "KEYCODE_0":
     base: 0x110f
@@ -120,7 +120,7 @@ map:
     base: 0x002e
     shift: 0x002e
   "KEYCODE_SLASH":
-    base: 0x1169
+    base: 0x1001169
     shift: 0x0021
   "KEYCODE_MINUS":
     base: 0x0029
@@ -140,6 +140,3 @@ map:
   "KEYCODE_GRAVE":
     base: 0x002a
     shift: 0x203b
-  "4140":
-    base: 0x002c
-    shift: 0x002e

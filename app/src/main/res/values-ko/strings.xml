@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">mBoard</string>
 
+    <string name="msg_hanja_converter_not_found">한자 변환 기능을 사용하려면 사용하려면 漢字變換器를 설치해 주세요.</string>
+
     <string name="title_activity_settings">mBoard 설정</string>
 
     <string name="pref_header_method_title">입력 방식</string>
@@ -13,6 +15,12 @@
     <string name="pref_appearance_theme_title">키보드 테마</string>
     <string name="theme_static">단색</string>
     <string name="theme_dynamic">다이나믹</string>
+    <string name="pref_appearance_keyboard_height_title">키보드 높이</string>
+    <string name="pref_appearance_unify_height_title">키보드 높이 통일</string>
+    <string name="pref_appearance_keyboard_view_type_title">키보드 뷰 유형</string>
+    <string name="pref_appearance_keyboard_view_type_summary">성능 문제가 있을 경우 이 설정을 변경해 보세요.</string>
+    <string name="keybaord_view_type_canvas">캔버스</string>
+    <string name="keybaord_view_type_stacked_view">뷰 쌓기</string>
 
     <string name="pref_header_layout_title">키보드 배열</string>
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>

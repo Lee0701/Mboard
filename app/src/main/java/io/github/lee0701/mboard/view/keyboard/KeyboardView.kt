@@ -27,6 +27,11 @@ abstract class KeyboardView(
 ): FrameLayout(context, attrs) {
     protected val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+    protected val unifyHeight: Boolean = sharedPreferences.getBoolean("appearance_unify_height", false)
+    protected val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
+    protected val rowHeight = dipToPixel(sharedPreferences.getInt("appearance_keyboard_height", 55).toFloat())
+    protected val keyboardHeight = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+
     protected val keyboardBackground: Drawable
     protected val keyBackgrounds: Map<KeyType, Pair<Drawable, ColorStateList>>
     protected val keyIconTints: Map<KeyType, Int>
@@ -84,4 +89,9 @@ abstract class KeyboardView(
     }
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
+
+    protected fun dipToPixel(dip: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
+    }
+
 }
