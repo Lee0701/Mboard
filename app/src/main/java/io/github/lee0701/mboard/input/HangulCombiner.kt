@@ -54,8 +54,11 @@ class HangulCombiner(
                         composed += state.composed
                         newStates += State(cho = cho)
                     }
-                } else {
+                } else if(jong != 0) {
                     newStates += state.copy(jong = jong)
+                } else {
+                    composed += state.composed
+                    newStates += State(cho = cho)
                 }
             } else if(state.cho != null) {
                 if(state.last != null && !Hangul.isConsonant(state.last)) {
