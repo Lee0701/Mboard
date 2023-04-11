@@ -11,6 +11,24 @@
         <item>theme_dynamic</item>
     </string-array>
 
+    <string-array name="additional_dictionaries">
+        <item>@string/person_name</item>
+        <item>@string/metro_station</item>
+        <item>@string/newly_coined</item>
+    </string-array>
+
+    <string-array name="additional_dictionary_values">
+        <item>person-name</item>
+        <item>metro-station</item>
+        <item>newly-coined</item>
+    </string-array>
+
+    <string-array name="additional_dictionary_defaults">
+        <item>person-name</item>
+        <item>metro-station</item>
+        <item>newly-coined</item>
+    </string-array>
+
     <string-array name="layout_hangul_presets">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>

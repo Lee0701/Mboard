@@ -3,9 +3,9 @@ package io.github.lee0701.mboard.module.external
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.dictionary.DictionaryManager
-import io.github.lee0701.mboard.dictionary.HanjaDictionary
 import io.github.lee0701.mboard.dictionary.HanjaDictionaryEntry
 import io.github.lee0701.mboard.dictionary.ListDictionary
 
@@ -17,10 +17,11 @@ object HanjaConverter {
         )
         for(name in packageNames) {
             try {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                val additional = sharedPreferences.getStringSet("input_hanja_additional_dictionaries", setOf()).orEmpty()
                 val packageContext = context.createPackageContext(name, 0) ?: continue
-                return DictionaryManager.loadCompoundDictionary(packageContext.assets, listOf("base"))
-            } catch(ex: PackageManager.NameNotFoundException) {
-            }
+                return DictionaryManager.loadCompoundDictionary(packageContext.assets, listOf("base") + additional)
+            } catch(ex: PackageManager.NameNotFoundException) { }
         }
         Toast.makeText(context, R.string.msg_hanja_converter_not_found, Toast.LENGTH_LONG).show()
         return null
