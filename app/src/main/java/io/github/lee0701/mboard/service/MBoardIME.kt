@@ -102,10 +102,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onItemClicked(candidate: Candidate) {
-        onComposingText(candidate.text)
-        onFinishComposing()
-        inputEngineSwitcher?.getCurrentEngine()?.onReset()
-        onCandidates(listOf())
+        if(candidate is DefaultHanjaCandidate) {
+            val inputEngine = inputEngineSwitcher?.getCurrentEngine()
+            if(inputEngine is BasicCandidatesViewManager.Listener) {
+                inputEngine.onItemClicked(candidate)
+            }
+        } else {
+            onComposingText(candidate.text)
+            onFinishComposing()
+            inputEngineSwitcher?.getCurrentEngine()?.onReset()
+            onCandidates(listOf())
+        }
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {

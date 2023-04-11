@@ -1,6 +1,5 @@
 package io.github.lee0701.mboard
 
-import android.app.Application
 import androidx.multidex.MultiDexApplication
 import com.google.android.material.color.DynamicColors
 
