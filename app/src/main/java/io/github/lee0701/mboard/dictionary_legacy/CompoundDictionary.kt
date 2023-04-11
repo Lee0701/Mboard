@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.dictionary
+package io.github.lee0701.mboard.dictionary_legacy
 
 class CompoundDictionary<T>(
     private val dictionaries: List<ListDictionary<T>>

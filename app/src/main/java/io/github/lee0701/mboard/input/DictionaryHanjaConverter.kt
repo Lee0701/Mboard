@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.dictionary.HanjaDictionary
+import io.github.lee0701.mboard.dictionary_legacy.HanjaDictionary
 
 open class DictionaryHanjaConverter(
     private val dictionary: HanjaDictionary,

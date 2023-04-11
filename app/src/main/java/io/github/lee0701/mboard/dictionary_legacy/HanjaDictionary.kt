@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.dictionary
+package io.github.lee0701.mboard.dictionary_legacy
 
 typealias HanjaDictionary = ListDictionary<HanjaDictionaryEntry>
 

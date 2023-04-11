@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.dictionary.HanjaDictionary
+import io.github.lee0701.mboard.dictionary_legacy.HanjaDictionary
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.JamoCombinationTable

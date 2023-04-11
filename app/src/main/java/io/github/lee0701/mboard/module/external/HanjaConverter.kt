@@ -5,9 +5,9 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.dictionary.DictionaryManager
-import io.github.lee0701.mboard.dictionary.HanjaDictionaryEntry
-import io.github.lee0701.mboard.dictionary.ListDictionary
+import io.github.lee0701.mboard.dictionary_legacy.DictionaryManager
+import io.github.lee0701.mboard.dictionary_legacy.HanjaDictionaryEntry
+import io.github.lee0701.mboard.dictionary_legacy.ListDictionary
 
 object HanjaConverter {
     fun loadDictionary(context: Context): ListDictionary<HanjaDictionaryEntry>? {

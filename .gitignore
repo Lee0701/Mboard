@@ -1,4 +1,5 @@
 dict/
+dict_src/
 
 app/lint-baseline.xml
 app-*.aab

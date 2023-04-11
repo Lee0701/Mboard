@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.dictionary
 
-interface Dictionary<T> {
-    fun search(key: String): T?
+interface Dictionary {
+    fun search(key: List<Int>): List<Int>
+    fun entries(): Map<CharSequence, List<Int>>
 }
