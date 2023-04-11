@@ -25,9 +25,6 @@ class CanvasKeyboardView(
     listener: KeyboardListener,
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
-    private val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    private val keyboardHeight = dipToPixel(sharedPreferences.getInt("appearance_keyboard_height", 55).toFloat() * keyboard.rows.size)
-
     private val rect = Rect()
     private val bitmapPaint = Paint()
     private val textPaint = Paint()

@@ -16,6 +16,7 @@
     <string name="theme_static">단색</string>
     <string name="theme_dynamic">다이나믹</string>
     <string name="pref_appearance_keyboard_height_title">키보드 높이</string>
+    <string name="pref_appearance_unify_height_title">키보드 높이 통일</string>
 
     <string name="pref_header_layout_title">키보드 배열</string>
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>

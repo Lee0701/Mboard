@@ -16,6 +16,7 @@
     <string name="theme_static">Static</string>
     <string name="theme_dynamic">Dynamic</string>
     <string name="pref_appearance_keyboard_height_title">Keyboard Height</string>
+    <string name="pref_appearance_unify_height_title">Unify Keyboard Heights</string>
 
     <string name="pref_header_layout_title">Keyboard Layout</string>
     <string name="pref_layout_hangul_preset_title">Hangul Keyboard Preset</string>

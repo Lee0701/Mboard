@@ -32,6 +32,11 @@
             app:title="@string/pref_appearance_keyboard_height_title"
             app:useSimpleSummaryProvider="true" />
 
+        <SwitchPreferenceCompat
+            app:key="appearance_unify_height"
+            app:defaultValue="false"
+            app:title="@string/pref_appearance_unify_height_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
