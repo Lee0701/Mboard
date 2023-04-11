@@ -1,13 +1,11 @@
 package io.github.lee0701.mboard.service
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.view.KeyEvent
 import androidx.appcompat.app.AppCompatActivity
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
-import io.github.lee0701.mboard.module.CodeConvertTable
+import io.github.lee0701.mboard.module.table.CodeConvertTable
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream

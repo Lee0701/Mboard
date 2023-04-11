@@ -8,9 +8,9 @@ import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
-import io.github.lee0701.mboard.module.Key
-import io.github.lee0701.mboard.module.KeyType
-import io.github.lee0701.mboard.module.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Key
+import io.github.lee0701.mboard.module.softkeyboard.KeyType
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 
 abstract class KeyboardView(
     context: Context,

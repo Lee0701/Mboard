@@ -2,7 +2,7 @@ package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
-import io.github.lee0701.mboard.module.CodeConvertTable
+import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverterInputEngine(

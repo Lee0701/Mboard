@@ -14,9 +14,9 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.Key
-import io.github.lee0701.mboard.module.KeyType
-import io.github.lee0701.mboard.module.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Key
+import io.github.lee0701.mboard.module.softkeyboard.KeyType
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import kotlin.math.roundToInt
 
 open class CanvasKeyboardView(

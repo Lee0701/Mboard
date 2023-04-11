@@ -2,9 +2,8 @@ package io.github.lee0701.mboard.view.keyboard
 
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.KeyIconType
-import io.github.lee0701.mboard.module.KeyType.*
-import io.github.lee0701.mboard.module.KeyIconType.*
+import io.github.lee0701.mboard.module.softkeyboard.KeyType.*
+import io.github.lee0701.mboard.module.softkeyboard.KeyIconType.*
 
 object Themes {
     val Static = Theme(

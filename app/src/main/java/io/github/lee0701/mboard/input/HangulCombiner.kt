@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.input
 
 import io.github.lee0701.mboard.charset.Hangul
-import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
+import io.github.lee0701.mboard.module.table.JamoCombinationTable
 
 class HangulCombiner(
     private val jamoCombinationTable: JamoCombinationTable,

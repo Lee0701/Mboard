@@ -1,9 +1,9 @@
 package io.github.lee0701.mboard.input
 
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
-import io.github.lee0701.mboard.module.CodeConvertTable
-import io.github.lee0701.mboard.module.Keyboard
-import io.github.lee0701.mboard.module.hangul.JamoCombinationTable
+import io.github.lee0701.mboard.module.table.CodeConvertTable
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 
 sealed interface InputEnginePreset {

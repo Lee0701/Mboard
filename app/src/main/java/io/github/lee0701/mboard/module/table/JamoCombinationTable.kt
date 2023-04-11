@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module.hangul
+package io.github.lee0701.mboard.module.table
 
 import kotlinx.serialization.Serializable
 

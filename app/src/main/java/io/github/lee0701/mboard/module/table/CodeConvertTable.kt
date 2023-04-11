@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module
+package io.github.lee0701.mboard.module.table
 
 import android.view.KeyEvent
 import io.github.lee0701.mboard.layout.CustomKeycode

@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module
+package io.github.lee0701.mboard.module.softkeyboard
 
 import kotlinx.serialization.Serializable
 

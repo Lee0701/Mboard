@@ -13,9 +13,9 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
-import io.github.lee0701.mboard.module.Keyboard
-import io.github.lee0701.mboard.module.Row
-import io.github.lee0701.mboard.module.Key
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
+import io.github.lee0701.mboard.module.softkeyboard.Key
 import kotlin.math.roundToInt
 
 class StackedViewKeyboardView(

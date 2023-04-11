@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.module.CodeConvertTable
+import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverter(
