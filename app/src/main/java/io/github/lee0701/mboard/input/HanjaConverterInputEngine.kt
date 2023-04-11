@@ -37,13 +37,18 @@ class HanjaConverterInputEngine(
     }
 
     override fun onCommitText(text: CharSequence) {
+        if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
-        if(composingWordStack.isNotEmpty()) composingWordStack.removeLast()
-        else listener.onDeleteText(beforeLength, afterLength)
+        if(composingWordStack.isNotEmpty()) {
+            composingWordStack.removeLast()
+        } else {
+            onReset()
+            listener.onDeleteText(beforeLength, afterLength)
+        }
         updateView()
     }
 
@@ -89,6 +94,7 @@ class HanjaConverterInputEngine(
 
     override fun onReset() {
         inputEngine.onReset()
+        listener.onCandidates(listOf())
         updateView()
     }
 
