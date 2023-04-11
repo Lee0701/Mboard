@@ -32,6 +32,7 @@ class BasicSoftInputEngine(
 
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
+    private var ignoreCode: Int = 0
     private var inputHappened: Boolean = false
 
     override fun initView(context: Context): View? {
@@ -50,6 +51,10 @@ class BasicSoftInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
         updateView()
+    }
+
+    override fun onKeyFlick(code: Int, output: String?) {
+
     }
 
     override fun onDelete() {
@@ -149,6 +154,10 @@ class BasicSoftInputEngine(
 
     override fun onKeyClick(code: Int, output: String?) {
         if(listener.onSystemKey(code)) return
+        if(ignoreCode == code) {
+            ignoreCode = 0
+            return
+        }
         when(code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
             }
@@ -171,6 +180,12 @@ class BasicSoftInputEngine(
             }
         }
         updateView()
+    }
+
+    override fun onKeyLongClick(code: Int, output: String?) {
+        inputEngine.onKey(code, keyboardState.copy(shiftState = ModifierState(pressed = true)))
+        ignoreCode = code
+        inputHappened = true
     }
 
     private fun onPrintingKey(code: Int) {

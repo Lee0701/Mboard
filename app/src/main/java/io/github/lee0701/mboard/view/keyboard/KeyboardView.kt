@@ -6,13 +6,11 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
-import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.module.Key
 import io.github.lee0701.mboard.module.KeyType
 import io.github.lee0701.mboard.module.Keyboard
-import kotlin.math.roundToInt
 
 abstract class KeyboardView(
     context: Context,
@@ -54,7 +52,12 @@ abstract class KeyboardView(
             handler.postDelayed({ repeater() }, repeatInterval)
         }
         handler.postDelayed({
-            if(key.key.repeatable) repeater()
+            if(key.key.repeatable) {
+                repeater()
+            } else {
+                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                listener.onKeyLongClick(key.key.code, key.key.output)
+            }
         }, longPressDuration)
 
         listener.onKeyDown(key.key.code, key.key.output)
