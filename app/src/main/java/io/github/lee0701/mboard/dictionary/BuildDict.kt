@@ -3,10 +3,10 @@ package io.github.lee0701.mboard.dictionary
 import java.io.File
 
 fun main() {
-    val inFile = File("dict_src/corpus.txt")
+    val inFile = File("dict_src/corpus1.txt")
     val outDictFile = File("dict_src/dict.bin")
     val outVocabFile = File("dict_src/tokens.tsv")
-    val (dictionary, words) = buildDict(inFile, outDictFile, outVocabFile)
+    val (dictionary, words) = buildDict(inFile, outDictFile, outVocabFile, 0)
 
     val searchResult = dictionary.search("우리".map { it.code })
     if(searchResult.isNotEmpty()) {
@@ -14,7 +14,12 @@ fun main() {
     }
 }
 
-fun buildDict(inFile: File, outDictFile: File, outVocabFile: File): Pair<AbstractTrieDictionary, List<Pair<String, Int>>> {
+fun buildDict(
+    inFile: File,
+    outDictFile: File,
+    outVocabFile: File,
+    minFreq: Int = 10,
+): Pair<AbstractTrieDictionary, List<Pair<String, Int>>> {
     val dictionary = MutableTrieDictionary()
     val vocabulary = mutableMapOf<String, Int>()
     val br = inFile.bufferedReader()
@@ -28,7 +33,11 @@ fun buildDict(inFile: File, outDictFile: File, outVocabFile: File): Pair<Abstrac
             i += 1
         }
     }
-    val sorted = vocabulary.entries.sortedByDescending { (k, v) -> v }.map { (k, v) -> k to v }
+    val sorted = vocabulary.entries
+        .sortedByDescending { (k, v) -> v }
+        .map { (k, v) -> k to v }
+        .filter { (k, v) -> v >= minFreq }
+
     sorted.forEachIndexed { index, (k, v) ->
         val result = dictionary.search(k.map { it.code })
         dictionary.put(k.map { it.code }, (result + index).distinct())
