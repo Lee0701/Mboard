@@ -4,12 +4,12 @@ import java.io.InputStream
 import java.lang.StringBuilder
 import java.nio.ByteBuffer
 
-class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<HanjaDictionary.Entry> {
+class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<HanjaDictionaryEntry> {
 
     private val data = ByteBuffer.wrap(input.readBytes())
     private val root get() = data.getInt(data.capacity() - 4)
 
-    override fun search(key: String): List<HanjaDictionary.Entry> {
+    override fun search(key: String): List<HanjaDictionaryEntry> {
         // root
         var p = Node(root)
         for(c in key) {
@@ -18,7 +18,7 @@ class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<
         return p.entries
     }
 
-    override fun predict(key: String): List<Pair<String, HanjaDictionary.Entry>> {
+    override fun predict(key: String): List<Pair<String, HanjaDictionaryEntry>> {
         var p = Node(root)
         for(c in key) {
             p = p.children[c] ?: return listOf()
@@ -26,7 +26,7 @@ class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<
         return getEntriesRecursive(p, key, key.length * 2)
     }
 
-    private fun getEntriesRecursive(p: Node, string: String, depth: Int): List<Pair<String, HanjaDictionary.Entry>> {
+    private fun getEntriesRecursive(p: Node, string: String, depth: Int): List<Pair<String, HanjaDictionaryEntry>> {
         if(depth <= 0) return listOf()
         return p.entries.map { string to it } + p.children.flatMap { getEntriesRecursive(it.value, string + it.key, depth-1) }
     }
@@ -54,7 +54,7 @@ class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<
             val addr = address + 2 + i*6
             data.getChar(addr) to Node(data.getInt(addr + 2))
         }
-        val entries: List<HanjaDictionary.Entry> get() = run {
+        val entries: List<HanjaDictionaryEntry> get() = run {
             var p = entryAddress + 2
             (0 until entryCount).map { i ->
                 val result = getChars(data, p)
@@ -63,7 +63,7 @@ class DiskDictionary(input: InputStream): HanjaDictionary, PredictingDictionary<
                 p += extra.length*2 + 2
                 val frequency = data.getShort(p).toInt()
                 p += 2
-                HanjaDictionary.Entry(result, extra, frequency)
+                HanjaDictionaryEntry(result, extra, frequency)
             }
         }
     }

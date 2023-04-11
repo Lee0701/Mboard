@@ -36,12 +36,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     private fun reload(sharedPreferences: SharedPreferences, force: Boolean = false) {
-        val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
+        val hanjaConversionEnabled = sharedPreferences.getBoolean("input_hanja_conversion", false)
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
+        val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
 
         val engines = listOf(
             InputEnginePresets.of(latinPresetKey, this),
-            InputEnginePresets.of(hangulPresetKey, this),
+            InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled),
             InputEnginePresets.SymbolsG(this),
         ).map { it ?: DirectInputEngine(this) }
 

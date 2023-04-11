@@ -1,9 +1,9 @@
 package io.github.lee0701.mboard.dictionary
 
-interface HanjaDictionary: ListDictionary<HanjaDictionary.Entry> {
-    data class Entry(
-        val result: String,
-        val extra: String?,
-        val frequency: Int,
-    )
-}
+typealias HanjaDictionary = ListDictionary<HanjaDictionaryEntry>
+
+data class HanjaDictionaryEntry(
+    val result: String,
+    val extra: String?,
+    val frequency: Int,
+)

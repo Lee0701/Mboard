@@ -50,6 +50,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        app:title="@string/pref_header_input_title">
+
+        <SwitchPreferenceCompat
+            app:key="input_hanja_conversion"
+            app:defaultValue="false"
+            app:title="@string/pref_input_hanja_conversion_title"
+            android:summary="@string/pref_input_hanja_conversion_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:title="@string/pref_header_behaviour_title">
 
         <SwitchPreferenceCompat

@@ -6,10 +6,11 @@ import android.widget.Toast
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.dictionary.DictionaryManager
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
+import io.github.lee0701.mboard.dictionary.HanjaDictionaryEntry
 import io.github.lee0701.mboard.dictionary.ListDictionary
 
 object HanjaConverter {
-    fun loadDictionary(context: Context): ListDictionary<HanjaDictionary.Entry>? {
+    fun loadDictionary(context: Context): ListDictionary<HanjaDictionaryEntry>? {
         val packageNames = listOf(
             "io.github.lee0701.converter.donation",
             "io.github.lee0701.converter",

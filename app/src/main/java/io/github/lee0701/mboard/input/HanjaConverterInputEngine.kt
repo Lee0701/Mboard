@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
 import io.github.lee0701.mboard.dictionary.HanjaDictionary
+import io.github.lee0701.mboard.dictionary.HanjaDictionaryEntry
 import io.github.lee0701.mboard.dictionary.ListDictionary
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val dictionary: ListDictionary<HanjaDictionary.Entry>,
+    private val dictionary: ListDictionary<HanjaDictionaryEntry>,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener {
 
