@@ -9,7 +9,10 @@ import kotlinx.serialization.Serializable
 data class CodeConvertTable(
     val map: Map<String, Entry> = mapOf(),
 ) {
-    val codeMap: Map<Int, Entry> = map.mapKeys { (k, _) -> KeyEvent.keyCodeFromString(k) }
+    val codeMap: Map<Int, Entry> = map.mapKeys { (k, _) ->
+        val keyCode = KeyEvent.keyCodeFromString(k)
+        if(keyCode > 0) keyCode else k.toIntOrNull() ?: 0
+    }
 
     @Serializable
     data class Entry(
