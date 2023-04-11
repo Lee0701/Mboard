@@ -20,7 +20,7 @@
 
         <ListPreference
             app:key="appearance_theme"
-            app:defaultValue="theme_dynamic"
+            app:defaultValue="@string/pref_appearance_theme_default"
             app:entries="@array/appearance_themes"
             app:entryValues="@array/appearance_theme_values"
             app:title="@string/pref_appearance_theme_title"

@@ -12,10 +12,7 @@ import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
-import io.github.lee0701.mboard.view.keyboard.KeyboardView
-import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
-import io.github.lee0701.mboard.view.keyboard.Themes
+import io.github.lee0701.mboard.view.keyboard.*
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,
@@ -32,6 +29,7 @@ class BasicSoftInputEngine(
 
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
+    private var ignoreCode: Int = 0
     private var inputHappened: Boolean = false
 
     override fun initView(context: Context): View? {
@@ -50,6 +48,10 @@ class BasicSoftInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
         updateView()
+    }
+
+    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+
     }
 
     override fun onDelete() {
@@ -149,6 +151,10 @@ class BasicSoftInputEngine(
 
     override fun onKeyClick(code: Int, output: String?) {
         if(listener.onSystemKey(code)) return
+        if(ignoreCode == code) {
+            ignoreCode = 0
+            return
+        }
         when(code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
             }
@@ -171,6 +177,12 @@ class BasicSoftInputEngine(
             }
         }
         updateView()
+    }
+
+    override fun onKeyLongClick(code: Int, output: String?) {
+        inputEngine.onKey(code, keyboardState.copy(shiftState = ModifierState(pressed = true)))
+        ignoreCode = code
+        inputHappened = true
     }
 
     private fun onPrintingKey(code: Int) {
