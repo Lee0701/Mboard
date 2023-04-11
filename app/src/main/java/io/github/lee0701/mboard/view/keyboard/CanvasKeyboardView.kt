@@ -26,7 +26,7 @@ class CanvasKeyboardView(
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
     private val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    private val keyboardHeight = dipToPixel(keyboard.height)
+    private val keyboardHeight = dipToPixel(sharedPreferences.getInt("appearance_keyboard_height", 55).toFloat() * keyboard.rows.size)
 
     private val rect = Rect()
     private val bitmapPaint = Paint()
@@ -183,10 +183,6 @@ class CanvasKeyboardView(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(keyboardWidth.roundToInt(), keyboardHeight.roundToInt())
-    }
-
-    private fun dipToPixel(dip: Float): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
     }
 
     private fun findKey(x: Int, y: Int): CachedKey? {

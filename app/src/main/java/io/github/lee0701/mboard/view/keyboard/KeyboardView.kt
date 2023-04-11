@@ -84,4 +84,9 @@ abstract class KeyboardView(
     }
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
+
+    protected fun dipToPixel(dip: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
+    }
+
 }

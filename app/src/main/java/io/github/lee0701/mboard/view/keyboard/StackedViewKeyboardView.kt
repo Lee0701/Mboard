@@ -28,6 +28,7 @@ class StackedViewKeyboardView(
     theme: Theme,
     listener: KeyboardListener,
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
+    private val rowHeight = dipToPixel(sharedPreferences.getInt("appearance_keyboard_height", 55).toFloat())
 
     private val keyboardViewWrapper = initKeyboardView(keyboard, theme, listener)
     private var keyPopup: KeyPopup? = null
@@ -103,7 +104,7 @@ class StackedViewKeyboardView(
         val keyViewWrappers = mutableListOf<KeyViewWrapper>()
         val binding = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT, 0
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT, rowHeight.roundToInt()
             ).apply {
                 weight = 1f
             }
