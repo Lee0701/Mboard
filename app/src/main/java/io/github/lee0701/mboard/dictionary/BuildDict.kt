@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.dictionary
 
+import java.io.DataOutputStream
 import java.io.File
 
 fun main() {
@@ -9,9 +10,6 @@ fun main() {
     val (dictionary, words) = buildDict(inFile, outDictFile, outVocabFile, 0)
 
     val searchResult = dictionary.search("우리".map { it.code })
-    if(searchResult.isNotEmpty()) {
-        println(words[searchResult.first()])
-    }
 }
 
 fun buildDict(
@@ -43,9 +41,6 @@ fun buildDict(
         dictionary.put(k.map { it.code }, (result + index).distinct())
     }
 
-    println(sorted.size)
-    println(dictionary.entries().size)
-
     val bw = outVocabFile.bufferedWriter()
     sorted.forEach { (key, value) ->
         bw.appendLine("$key\t$value")
@@ -55,4 +50,32 @@ fun buildDict(
     diskDictionary.write(outDictFile.outputStream())
 
     return diskDictionary to sorted.toList()
+}
+
+fun generateHanjaDictionary(inFile: File, freqHanjaFile: File, freqHanjaeoFile: File, outFile: File) {
+    val dictionary = MutableTrieDictionary()
+    val hanja = inFile.bufferedReader()
+    val freqHanja = freqHanjaFile.bufferedReader().readLines()
+        .map { it.split(":") }.map { it[0] to it[1].toInt() }.toMap()
+    val freqHanjaeo = freqHanjaeoFile.bufferedReader().readLines()
+        .map { it.split(":") }.map { it[0] to it[1].toInt() }.toMap()
+    val comment = mutableListOf<String>()
+    while(true) {
+        val line = hanja.readLine() ?: break
+        if(line.isEmpty()) continue
+        if(line[0] == '#') comment += line
+        else {
+            val items = line.split(':')
+            if(items.size < 3) continue
+            val key = items[0]
+            val result = items[1]
+            val extra = items[2]
+            val frequency = freqHanja[result] ?: freqHanjaeo[result]?.let { it % 10000 } ?: 0
+        }
+    }
+    val outputDir = File("output")
+    outputDir.mkdirs()
+    val dos = DataOutputStream(File(outputDir, "dict.bin").outputStream())
+    dos.write((comment.joinToString("\n") + 0.toChar()).toByteArray())
+
 }
