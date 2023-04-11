@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.view.keyboard
 
+import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.KeyIconType
 import io.github.lee0701.mboard.module.KeyType.*
@@ -50,4 +51,11 @@ object Themes {
         "theme_static" to Static,
         "theme_dynamic" to Dynamic,
     )
+
+    fun ofName(name: String?): Theme {
+        return (map[name] ?: Static).let {
+            if(!DynamicColors.isDynamicColorAvailable() && it == Dynamic) Static
+            else it
+        }
+    }
 }

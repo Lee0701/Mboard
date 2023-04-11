@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.FrameLayout
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.preference.PreferenceManager
@@ -42,7 +43,9 @@ abstract class KeyboardView(
     protected val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
 
     init {
-        val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
+        val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground).let {
+            if(it == context) ContextThemeWrapper(context, theme.keyboardBackground) else it
+        }
         keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
         val background = ContextCompat.getDrawable(keyboardContext, typedValue.resourceId) ?: ColorDrawable(
             Color.WHITE)
@@ -52,7 +55,9 @@ abstract class KeyboardView(
         this.keyboardBackground = background
 
         val keyContexts = theme.keyBackground.mapValues { (_, id) ->
-            DynamicColors.wrapContextIfAvailable(context, id)
+            DynamicColors.wrapContextIfAvailable(context, id).let {
+                if(it == context) ContextThemeWrapper(context, id) else it
+            }
         }
         keyBackgrounds = keyContexts.mapValues { (_, keyContext) ->
             keyContext.theme.resolveAttribute(R.attr.background, typedValue, true)

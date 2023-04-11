@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
@@ -39,7 +40,7 @@ class BasicSoftInputEngine(
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-        val theme = Themes.map[name] ?: Themes.Static
+        val theme = Themes.ofName(name)
         keyboardView = CanvasKeyboardView(context, null, keyboard, theme, this)
         return keyboardView
     }

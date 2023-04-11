@@ -83,7 +83,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             }
             inputViewWrapper.addView(keyboardView)
             val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-            val theme = Themes.map[name] ?: Themes.Static
+            val theme = Themes.ofName(name)
             val context = ContextThemeWrapper(this, theme.keyboardBackground)
             val typedValue = TypedValue()
             val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
