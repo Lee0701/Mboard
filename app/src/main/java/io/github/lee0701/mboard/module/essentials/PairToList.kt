@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module.input.essentials
+package io.github.lee0701.mboard.module.essentials
 
 class PairToList<T>: InputModule<Pair<T, T>, List<T>> {
     override fun process(input: Pair<T, T>): List<T> {

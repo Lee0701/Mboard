@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module.input.essentials
+package io.github.lee0701.mboard.module.essentials
 
 class Both<T, A, B>(
     private val predicateA: (T) -> A,

@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.module.input
 
-import io.github.lee0701.mboard.module.input.essentials.InputModule
+import io.github.lee0701.mboard.module.essentials.InputModule
 
 class Split<T>(
     private val delimiters: Set<T> = setOf(),

@@ -1,7 +1,6 @@
 package io.github.lee0701.mboard.module.table
 
 import android.view.KeyEvent
-import io.github.lee0701.mboard.layout.CustomKeycode
 import io.github.lee0701.mboard.module.serialization.HexIntSerializer
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.serialization.Serializable
@@ -11,12 +10,8 @@ data class CodeConvertTable(
     val map: Map<String, Entry> = mapOf(),
 ) {
     val codeMap: Map<Int, Entry> = map.mapKeys { (k, _) ->
-        try {
-            CustomKeycode.valueOf(k).code
-        } catch(ex: IllegalArgumentException) {
-            val keyCode = KeyEvent.keyCodeFromString(k)
-            if(keyCode > 0) keyCode else k.toIntOrNull() ?: 0
-        }
+        val keyCode = CustomKeyCode.keyCodeFromString(k) ?: KeyEvent.keyCodeFromString(k)
+        if(keyCode > 0) keyCode else k.toIntOrNull() ?: 0
     }
 
     operator fun plus(another: CodeConvertTable): CodeConvertTable {

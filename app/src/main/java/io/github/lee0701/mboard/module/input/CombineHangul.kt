@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.module.input
 
 import io.github.lee0701.mboard.charset.Hangul
-import io.github.lee0701.mboard.module.input.essentials.InputModule
+import io.github.lee0701.mboard.module.essentials.InputModule
 
 class CombineHangul(
     private val jamoCombinationTable: Map<Pair<Int, Int>, Int> = mapOf(),

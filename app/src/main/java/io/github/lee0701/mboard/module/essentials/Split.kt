@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module.input.essentials
+package io.github.lee0701.mboard.module.essentials
 
 object Split {
     class ToPair<T>: InputModule<T, Pair<T, T>> {

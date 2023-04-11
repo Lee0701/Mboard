@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.module.input.essentials
+package io.github.lee0701.mboard.module.essentials
 
 class Each<In, Out>(
     private val inputModule: InputModule<In, Out>,
