@@ -2,13 +2,11 @@ package io.github.lee0701.mboard.input
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.inputmethodservice.InputMethodService
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
@@ -18,7 +16,6 @@ import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
 import io.github.lee0701.mboard.view.keyboard.KeyboardView
 import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
 import io.github.lee0701.mboard.view.keyboard.Themes
-import kotlin.math.roundToInt
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,
@@ -29,6 +26,7 @@ class BasicSoftInputEngine(
     private val inputEngine: InputEngine = getInputEngine(listener)
 
     private var doubleTapGap: Int = 500
+    private var keyboardViewType: String = "canvas"
 
     private var keyboardView: KeyboardView? = null
 
@@ -39,9 +37,13 @@ class BasicSoftInputEngine(
     override fun initView(context: Context): View? {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
+        keyboardViewType = sharedPreferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
         val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
-        keyboardView = CanvasKeyboardView(context, null, keyboard, theme, this)
+        keyboardView = when(keyboardViewType) {
+            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this)
+            else -> CanvasKeyboardView(context, null, keyboard, theme, this)
+        }
         return keyboardView
     }
 

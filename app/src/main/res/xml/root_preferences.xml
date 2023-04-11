@@ -37,6 +37,14 @@
             app:defaultValue="false"
             app:title="@string/pref_appearance_unify_height_title" />
 
+        <ListPreference
+            app:key="appearance_keyboard_view_type"
+            app:defaultValue="canvas"
+            app:entries="@array/appearance_keyboard_view_types"
+            app:entryValues="@array/appearance_keyboard_view_type_values"
+            app:title="@string/pref_appearance_keyboard_view_type_title"
+            app:summary="@string/pref_appearance_keyboard_view_type_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
