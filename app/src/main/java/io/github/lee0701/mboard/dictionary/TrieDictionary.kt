@@ -6,7 +6,7 @@ data class TrieDictionary(
 
     data class Node(
         override val children: Map<Int, Node>,
-        override val entries: List<Int>,
+        override val entries: Map<Int, Int>,
     ): AbstractTrieDictionary.Node {
         companion object {
             fun build(vocabulary: List<CharSequence>, key: CharSequence): Node {
@@ -14,7 +14,7 @@ data class TrieDictionary(
                 val keys = filtered.filter { it.length > key.length }.map { it[key.length] }.toSet()
                 val children = keys.associateWith { c -> build(vocabulary, "$key$c") }
                 val index = vocabulary.indexOf(key)
-                val entries = if(index == -1) emptyList() else listOf(index)
+                val entries = if(index == -1) emptyMap() else mapOf(index to 0)
                 return Node(children.mapKeys { it.key.code }, entries)
             }
         }

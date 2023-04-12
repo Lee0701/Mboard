@@ -4,27 +4,27 @@ abstract class AbstractTrieDictionary: Dictionary {
 
     abstract val root: Node
 
-    override fun search(key: List<Int>): List<Int> {
+    override fun search(key: List<Int>): Map<Int, Int> {
         var p = root
         for(c in key) {
-            p = p.children[c] ?: return emptyList()
+            p = p.children[c] ?: return emptyMap()
         }
         return p.entries
     }
 
-    override fun entries(): Map<CharSequence, List<Int>> {
-        fun recursive(p: Node, key: CharSequence, depth: Int): List<Pair<CharSequence, List<Int>>> {
+    override fun entries(): Map<List<Int>, Map<Int, Int>> {
+        fun recursive(p: Node, key: List<Int>, depth: Int): List<Pair<List<Int>, Map<Int, Int>>> {
             if(depth == 0) return emptyList()
             return listOfNotNull(key to p.entries) + p.children.flatMap { child ->
-                recursive(child.value, "$key${child.key}", depth-1)
-                    .filter { it.first.isNotBlank() && it.second.isNotEmpty() }
+                recursive(child.value, key + child.key, depth-1)
+                    .filter { it.first.isNotEmpty() && it.second.isNotEmpty() }
             }
         }
-        return recursive(root, "", -1).toMap()
+        return recursive(root, listOf(), -1).toMap()
     }
 
     interface Node {
         val children: Map<Int, Node>
-        val entries: List<Int>
+        val entries: Map<Int, Int>
     }
 }

@@ -26,16 +26,18 @@ class DiskTrieDictionary(
             val addr = address + 2 + i*8
             data.getInt(addr) to Node(data.getInt(addr + 4))
         }
-        override val entries: List<Int> get() = (0 until entriesCount).map { i ->
-            val addr = entriesAddress + 2 + i*4
-            data.getInt(addr)
-        }
+        override val entries: Map<Int, Int> get() = (0 until entriesCount).map { i ->
+            val addr = entriesAddress + 2 + i*8
+            data.getInt(addr) to data.getInt(addr + 4)
+        }.toMap()
     }
 
     companion object {
         fun build(dictionary: AbstractTrieDictionary): DiskTrieDictionary {
             val os = ByteArrayOutputStream()
             val dos = DataOutputStream(os)
+
+            "dict1".forEach { dos.writeByte(it.code) }
 
             val rootAddress = dictionary.root.write(dos)
             dos.writeInt(rootAddress)
@@ -52,7 +54,10 @@ class DiskTrieDictionary(
             }
             val entries = this.entries
             dos.writeShort(entries.size)
-            entries.forEach { entry -> dos.writeInt(entry) }
+            entries.forEach { entry ->
+                dos.writeInt(entry.key)
+                dos.writeInt(entry.value)
+            }
             return start
         }
     }

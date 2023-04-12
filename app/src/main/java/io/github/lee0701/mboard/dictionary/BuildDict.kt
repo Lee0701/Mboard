@@ -16,10 +16,10 @@ fun main() {
         val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 0)
     }
     if(genNgramDict) {
-        val inFile = File("dict_src/corpus_10k.txt")
+        val inFile = File("dict_src/corpus_100k.txt")
         val inVocabFile = File("dict_src/vocab.tsv")
         val outFile = File("dict_src/dict-ngram.bin")
-        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 3)
+        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 5)
     }
     if(testSearch) {
         val prefixDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-prefix.bin").readBytes()))
@@ -27,8 +27,9 @@ fun main() {
         val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
             .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
         val revVocab = vocab.map { (k, v) -> v to k }.toMap()
-        val searchResult = ngramDict.search("우리 나라 에 는".split(' ').map { vocab[it] ?: -1 })
-        println(searchResult.map { revVocab[it] })
+        println(prefixDict.search("가능".map { it.code }).map { revVocab[it.key] to it.value })
+        val searchResult = ngramDict.search("이것 은 _".split(' ').map { vocab[it] ?: -1 })
+        println(searchResult.map { (k, v) -> revVocab[k] to v })
     }
 }
 
@@ -57,8 +58,11 @@ fun buildPrefixDict(
         .filter { (k, v) -> v >= minFreq }
 
     sorted.forEachIndexed { index, (k, v) ->
-        val result = dictionary.search(k.map { it.code })
-        dictionary.put(k.map { it.code }, (result + index).distinct())
+        val key = k.map { it.code }
+        val existing = dictionary.search(key)
+        val newValue = existing + (index to (existing[index] ?: 0) + 1)
+        println("$key $existing $newValue")
+        dictionary.put(key, newValue)
     }
 
     val bw = outVocabFile.bufferedWriter()
@@ -91,8 +95,10 @@ fun buildNgramDict(
                 val sliced = tokens.drop(j).take(i)
                 if(sliced.size >= 2) {
                     val key = sliced.dropLast(1)
+                    val value = sliced.last()
                     val existing = ngramDict.search(key)
-                    ngramDict.put(key, (existing + sliced.last()).distinct())
+                    val newValue = existing + (value to (existing[value] ?: 0) + 1)
+                    ngramDict.put(key, newValue)
                 }
             }
         }
