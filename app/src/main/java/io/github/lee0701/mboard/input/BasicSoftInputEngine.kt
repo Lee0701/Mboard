@@ -73,6 +73,10 @@ class BasicSoftInputEngine(
         inputEngine.onDelete()
     }
 
+    override fun onTextAroundCursor(before: String, after: String) {
+        inputEngine.onTextAroundCursor(before, after)
+    }
+
     override fun onReset() {
         inputEngine.onReset()
         keyboardState = KeyboardState()

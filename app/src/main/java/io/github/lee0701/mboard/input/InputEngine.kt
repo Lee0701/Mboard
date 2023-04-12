@@ -8,6 +8,7 @@ interface InputEngine {
 
     fun onKey(code: Int, state: KeyboardState)
     fun onDelete()
+    fun onTextAroundCursor(before: String, after: String)
 
     fun onReset()
 

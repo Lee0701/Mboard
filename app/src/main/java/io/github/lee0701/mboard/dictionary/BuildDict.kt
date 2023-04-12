@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.dictionary
 import java.io.DataOutputStream
 import java.io.File
 import java.nio.ByteBuffer
+import java.text.Normalizer
 
 fun main() {
     val testSearch = true
@@ -16,7 +17,7 @@ fun main() {
         val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 10)
     }
     if(genNgramDict) {
-        val inFile = File("dict_src/corpus2_100k.txt")
+        val inFile = File("dict_src/corpus2_10k.txt")
         val inVocabFile = File("dict_src/vocab.tsv")
         val outFile = File("dict_src/dict-ngram.bin")
         val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 5, 2)
@@ -27,8 +28,8 @@ fun main() {
         val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
             .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
         val revVocab = vocab.map { (k, v) -> v to k }.toMap()
-        println(prefixDict.search("가능".map { it.code }).map { "${it.key} ${revVocab[it.key]} ${it.value}" })
-        val searchResult = ngramDict.search("은 _".split(' ').map { vocab[it] ?: -1 })
+        println(prefixDict.search(getKey("가능")).map { "${it.key} ${revVocab[it.key]} ${it.value}" })
+        val searchResult = ngramDict.search("우리 나라 _".split(' ').map { vocab[it] ?: -1 })
         println(searchResult.map { (k, v) -> revVocab[k] to v })
     }
 }
@@ -58,7 +59,7 @@ fun buildPrefixDict(
         .filter { (k, v) -> v >= minFreq }
 
     sorted.forEachIndexed { index, (k, v) ->
-        val key = k.map { it.code }
+        val key = getKey(k)
         val existing = dictionary.search(key)
         val newValue = existing + (index to (existing[index] ?: 0) + 1)
         dictionary.put(key, newValue)
@@ -86,24 +87,36 @@ fun buildNgramDict(
         .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
     val br = inFile.bufferedReader()
     var i = 0
-    val map = (1..grams).associate { it to mutableMapOf<List<Int>, Map<Int, Int>>() }
+    var map = (2..grams).associateWith { mutableMapOf<List<Int>, Map<Int, Int>>() }
     while(true) {
         val line = br.readLine() ?: break
         val tokens = line.split(' ').map { vocabulary[it] ?: -1 }
-        tokens.forEachIndexed { j, token ->
-            (1 .. grams).map { n ->
+        tokens.indices.forEach { j ->
+            (2 .. grams).map { n ->
                 val sliced = tokens.drop(j).take(n)
                 if(sliced.size >= 2) {
                     val key = sliced.dropLast(1)
                     val value = sliced.last()
-                    val existing = map[n]?.get(key).orEmpty()
-                    val newValue = existing + (value to (existing[value] ?: 0) + 1)
+                    val existing = map[n]?.get(key) ?: mapOf(value to 0)
+                    val newValue = existing + mapOf(value to (existing[value] ?: 0) + 1)
                     map[n]?.put(key, newValue)
                 }
             }
         }
         i += 1
         if(i % 1000 == 0) println(i)
+        if(i % 10000 == 0) {
+            map.forEach { (n, gramMap) ->
+                println("$n: before ${gramMap.size}")
+                val mapped = gramMap.map { (key, value) ->
+                    val values = value.mapValues { (_, v) -> (v.toFloat() / n * 2).toInt() }.filter { (_, v) -> v > 0 }.toMap()
+                    if(values.isEmpty()) null else key to values
+                }.filterNotNull().toMap()
+                println("   after ${mapped.size}")
+                mapped.toMutableMap()
+            }
+            File("dict_src/map.txt").writeBytes(map.toString().toByteArray())
+        }
     }
     val ngramDict = MutableTrieDictionary()
     map.entries.forEach { (n, gramMap) ->
@@ -144,4 +157,8 @@ fun generateHanjaDictionary(inFile: File, freqHanjaFile: File, freqHanjaeoFile: 
     outputDir.mkdirs()
     val dos = DataOutputStream(File(outputDir, "dict.bin").outputStream())
     dos.write((comment.joinToString("\n") + 0.toChar()).toByteArray())
+}
+
+fun getKey(string: String): List<Int> {
+    return Normalizer.normalize(string, Normalizer.Form.NFD).map { it.code }
 }

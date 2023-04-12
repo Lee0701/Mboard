@@ -123,15 +123,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         } else {
             onComposingText(candidate.text)
             onFinishComposing()
-            inputEngineSwitcher?.getCurrentEngine()?.onReset()
+            resetCurrentEngine()
             onCandidates(listOf())
         }
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
-        val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-        inputEngine?.onReset()
+        resetCurrentEngine()
     }
 
     override fun onFinishInput() {
@@ -141,13 +140,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onSystemKey(code: Int): Boolean {
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
-                inputEngineSwitcher?.getCurrentEngine()?.onReset()
+                resetCurrentEngine()
                 inputEngineSwitcher?.nextLanguage()
                 reloadView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
-                inputEngineSwitcher?.getCurrentEngine()?.onReset()
+                resetCurrentEngine()
                 inputEngineSwitcher?.nextExtra()
                 reloadView()
                 true
@@ -168,11 +167,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onFinishComposing() {
         val inputConnection = currentInputConnection ?: return
         inputConnection.finishComposingText()
+        updateTextAroundCursor()
     }
 
     override fun onCommitText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.commitText(text, 1)
+        updateTextAroundCursor()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -189,6 +190,20 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.window?.navigationBarColor = color
         }
+    }
+
+    private fun resetCurrentEngine() {
+        val engine = inputEngineSwitcher?.getCurrentEngine() ?: return
+        engine.onReset()
+        updateTextAroundCursor()
+    }
+
+    private fun updateTextAroundCursor() {
+        val engine = inputEngineSwitcher?.getCurrentEngine() ?: return
+        val inputConnection = currentInputConnection ?: return
+        val before = inputConnection.getTextBeforeCursor(100, 0).toString()
+        val after = inputConnection.getTextAfterCursor(100, 0).toString()
+        engine.onTextAroundCursor(before, after)
     }
 
     private fun reloadView() {

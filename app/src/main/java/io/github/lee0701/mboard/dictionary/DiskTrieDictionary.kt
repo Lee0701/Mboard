@@ -2,12 +2,15 @@ package io.github.lee0701.mboard.dictionary
 
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
+import java.io.InputStream
 import java.io.OutputStream
 import java.nio.ByteBuffer
 
 class DiskTrieDictionary(
     private val data: ByteBuffer,
 ): AbstractTrieDictionary() {
+
+    constructor(inputStream: InputStream): this(ByteBuffer.wrap(inputStream.readBytes()))
 
     override val root get() = Node(data.getInt(data.capacity() - 4))
 
