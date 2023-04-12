@@ -2,17 +2,37 @@ package io.github.lee0701.mboard.dictionary
 
 import java.io.DataOutputStream
 import java.io.File
+import java.nio.ByteBuffer
 
 fun main() {
-    val inFile = File("dict_src/corpus1.txt")
-    val outDictFile = File("dict_src/dict.bin")
-    val outVocabFile = File("dict_src/tokens.tsv")
-    val (dictionary, words) = buildDict(inFile, outDictFile, outVocabFile, 0)
+    val testSearch = true
+    val genPrefixDict = false
+    val genNgramDict = true
 
-    val searchResult = dictionary.search("우리".map { it.code })
+    if(genPrefixDict) {
+        val inFile = File("dict_src/corpus.txt")
+        val outDictFile = File("dict_src/dict-prefix.bin")
+        val outVocabFile = File("dict_src/vocab.tsv")
+        val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 0)
+    }
+    if(genNgramDict) {
+        val inFile = File("dict_src/corpus_10k.txt")
+        val inVocabFile = File("dict_src/vocab.tsv")
+        val outFile = File("dict_src/dict-ngram.bin")
+        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 3)
+    }
+    if(testSearch) {
+        val prefixDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-prefix.bin").readBytes()))
+        val ngramDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-ngram.bin").readBytes()))
+        val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
+            .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
+        val revVocab = vocab.map { (k, v) -> v to k }.toMap()
+        val searchResult = ngramDict.search("우리 나라 에 는".split(' ').map { vocab[it] ?: -1 })
+        println(searchResult.map { revVocab[it] })
+    }
 }
 
-fun buildDict(
+fun buildPrefixDict(
     inFile: File,
     outDictFile: File,
     outVocabFile: File,
@@ -52,6 +72,38 @@ fun buildDict(
     return diskDictionary to sorted.toList()
 }
 
+fun buildNgramDict(
+    inFile: File,
+    inVocabFile: File,
+    outFile: File,
+    grams: Int = 3,
+): Pair<AbstractTrieDictionary, Map<String, Int>> {
+    val vocabulary = inVocabFile.bufferedReader().readLines()
+        .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
+    val ngramDict = MutableTrieDictionary()
+    val br = inFile.bufferedReader()
+    var i = 0
+    while(true) {
+        val line = br.readLine() ?: break
+        val tokens = line.split(' ').map { vocabulary[it] ?: -1 }
+        tokens.forEachIndexed { j, token ->
+            (0 .. grams).map { i ->
+                val sliced = tokens.drop(j).take(i)
+                if(sliced.size >= 2) {
+                    val key = sliced.dropLast(1)
+                    val existing = ngramDict.search(key)
+                    ngramDict.put(key, (existing + sliced.last()).distinct())
+                }
+            }
+        }
+        i += 1
+        if(i % 1000 == 0) println(i)
+    }
+    val diskDictionary = DiskTrieDictionary.build(ngramDict)
+    diskDictionary.write(outFile.outputStream())
+    return diskDictionary to vocabulary
+}
+
 fun generateHanjaDictionary(inFile: File, freqHanjaFile: File, freqHanjaeoFile: File, outFile: File) {
     val dictionary = MutableTrieDictionary()
     val hanja = inFile.bufferedReader()
@@ -77,5 +129,4 @@ fun generateHanjaDictionary(inFile: File, freqHanjaFile: File, freqHanjaeoFile: 
     outputDir.mkdirs()
     val dos = DataOutputStream(File(outputDir, "dict.bin").outputStream())
     dos.write((comment.joinToString("\n") + 0.toChar()).toByteArray())
-
 }
