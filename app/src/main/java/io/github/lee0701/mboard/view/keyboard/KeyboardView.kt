@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
@@ -98,6 +99,7 @@ abstract class KeyboardView(
         val pointer = pointers[pointerId] ?: return
         val dx = abs(pointer.initialX - x)
         val dy = abs(pointer.initialY - y)
+
         val direction = if(dx > flickSensitivity && dx > dy) {
             if(x < pointer.initialX) FlickDirection.Left
             else FlickDirection.Right
@@ -105,13 +107,15 @@ abstract class KeyboardView(
             if(y < pointer.initialY) FlickDirection.Up
             else FlickDirection.Down
         } else FlickDirection.None
+
         if(slideAction == "flick"
             && direction != FlickDirection.None
             && pointer.flickDirection == FlickDirection.None) {
             handler.removeCallbacksAndMessages(null)
             listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
             pointers[pointerId] = pointer.copy(flickDirection = direction)
-        } else if(slideAction == "seek") {
+
+        } else if(slideAction == "seek" && key.key.code !in setOf(KeyEvent.KEYCODE_DEL)) {
             handler.removeCallbacksAndMessages(null)
 
             if(x !in key.x until key.x+key.width
