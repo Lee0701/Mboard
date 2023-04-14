@@ -1,17 +1,20 @@
 package io.github.lee0701.mboard.view.keyboard
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 abstract class KeyboardView(
     context: Context,
@@ -41,6 +44,33 @@ abstract class KeyboardView(
     private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
 
     protected abstract val wrappedKeys: List<KeyWrapper>
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(event == null) return super.onTouchEvent(event)
+        val pointerId = event.getPointerId(event.actionIndex)
+        val x = event.getX(event.actionIndex).roundToInt()
+        val y = event.getY(event.actionIndex).roundToInt()
+
+        when(event.actionMasked) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
+                val key = findKey(x, y) ?: return true
+                onTouchDown(key, pointerId, x, y)
+                postViewChanged()
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
+                onTouchMove(key, pointerId, x, y)
+                postViewChanged()
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
+                onTouchUp(key, pointerId, x, y)
+                postViewChanged()
+            }
+        }
+        return true
+    }
 
     protected fun onTouchDown(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)

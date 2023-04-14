@@ -107,33 +107,6 @@ open class CanvasKeyboardView(
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event == null) return super.onTouchEvent(event)
-        val pointerId = event.getPointerId(event.actionIndex)
-        val x = event.getX(event.actionIndex).roundToInt()
-        val y = event.getY(event.actionIndex).roundToInt()
-
-        when(event.actionMasked) {
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                val key = findKey(x, y) ?: return true
-                onTouchDown(key, pointerId, x, y)
-                postViewChanged()
-            }
-            MotionEvent.ACTION_MOVE -> {
-                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
-                onTouchMove(key, pointerId, x, y)
-                postViewChanged()
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
-                onTouchUp(key, pointerId, x, y)
-                postViewChanged()
-            }
-        }
-        return true
-    }
-
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         if(canvas == null) return
