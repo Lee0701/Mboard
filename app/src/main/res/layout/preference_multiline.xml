@@ -23,12 +23,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:layout_marginVertical="4dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?android:attr/listPreferredItemHeight"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:gravity="center_vertical"
         android:background="?android:attr/selectableItemBackground">
 
@@ -42,8 +43,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dip"
-            android:layout_marginTop="6dip"
-            android:layout_marginBottom="6dip"
+            android:layout_marginVertical="4dp"
             android:layout_weight="1">
 
             <androidx.appcompat.widget.AppCompatTextView
