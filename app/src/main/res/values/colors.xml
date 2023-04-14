@@ -10,6 +10,9 @@
     <color name="gray_100">#FFEEEEEE</color>
     <color name="gray_200">#FFCCCCCC</color>
     <color name="gray_300">#FFAAAAAA</color>
+    <color name="gray_500">#FF888888</color>
+    <color name="gray_700">#FF666666</color>
+    <color name="gray_900">#FF444444</color>
 
     <color name="keyboard_bg_light">#f0f0f3</color>
     <color name="key_bg_light_unpressed">#ffffff</color>
