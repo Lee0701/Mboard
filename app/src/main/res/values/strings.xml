@@ -50,6 +50,7 @@
     <string name="pref_behaviour_slide_action_title">Keyboard Slide Action</string>
     <string name="slide_action_none">None</string>
     <string name="slide_action_flick">Flick</string>
+    <string name="slide_action_seek">Seek</string>
     <string name="pref_behaviour_flick_sensitivity_title">Flick Sensitivity</string>
 
 </resources>

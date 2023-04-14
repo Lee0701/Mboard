@@ -50,6 +50,7 @@
     <string name="pref_behaviour_slide_action_title">키보드 슬라이드 동작</string>
     <string name="slide_action_none">무시</string>
     <string name="slide_action_flick">플릭</string>
+    <string name="slide_action_seek">키 찾아보기</string>
     <string name="pref_behaviour_flick_sensitivity_title">플릭 감도</string>
 
 </resources>

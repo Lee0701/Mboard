@@ -13,10 +13,9 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
+import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Row
-import io.github.lee0701.mboard.module.softkeyboard.Key
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class StackedViewKeyboardView(
@@ -34,15 +33,6 @@ class StackedViewKeyboardView(
         this.addView(keyboardViewWrapper.binding.root)
     }
 
-    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
-        if(key is KeyViewWrapper) popup.apply {
-            val parentX = key.x + key.width/2
-            val row = keyboardViewWrapper.rows.find { key in it.keys } ?: return
-            val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
-            show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun initKeyboardView(keyboard: Keyboard, theme: Theme, listener: KeyboardListener): KeyboardViewWrapper {
         val wrappedContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
@@ -55,7 +45,6 @@ class StackedViewKeyboardView(
                 root.addView(rowViewBinding.binding.root)
             }
         }
-
         return KeyboardViewWrapper(keyboard, binding, rowViewWrappers, rowViewWrappers.flatMap { it.keys })
     }
 
@@ -91,19 +80,19 @@ class StackedViewKeyboardView(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initKeyView(key: Key, theme: Theme): KeyViewWrapper {
-        val wrappedContext = theme.keyBackground[key.type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
+    private fun initKeyView(keyModel: Key, theme: Theme): KeyViewWrapper {
+        val wrappedContext = theme.keyBackground[keyModel.type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
         val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
-            val icon = theme.keyIcon[key.iconType]
-            if(key.label != null) this.label.text = key.label
+            val icon = theme.keyIcon[keyModel.iconType]
+            if(keyModel.label != null) this.label.text = keyModel.label
             if(icon != null) this.icon.setImageResource(icon)
             root.layoutParams = LinearLayoutCompat.LayoutParams(
                 0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
             ).apply {
-                weight = key.width
+                weight = keyModel.width
             }
         }
-        val keyViewWrapper = KeyViewWrapper(key, binding)
+        val keyViewWrapper = KeyViewWrapper(keyModel, binding)
         binding.root.setOnTouchListener { _, event ->
             if(event == null) return@setOnTouchListener false
             val pointerId = event.getPointerId(event.actionIndex)
@@ -112,31 +101,21 @@ class StackedViewKeyboardView(
 
             when(event.actionMasked) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> {
-                    onTouchDown(keyViewWrapper, pointerId, x, y)
+                    val key = findKey(x, y) ?: return@setOnTouchListener true
+                    onTouchDown(key, pointerId, x, y)
+                    keyStates[key.key.code] = true
                     binding.root.isPressed = true
                     postViewChanged()
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val pointer = pointers[pointerId] ?: return@setOnTouchListener true
-                    val dx = abs(pointer.initialX - x)
-                    val dy = abs(pointer.initialY - y)
-                    val direction = if(dx > flickSensitivity && dx > dy) {
-                        if(x < pointer.initialX) FlickDirection.Left
-                        else FlickDirection.Right
-                    } else if(dy > flickSensitivity && dy > dx) {
-                        if(y < pointer.initialY) FlickDirection.Up
-                        else FlickDirection.Down
-                    } else FlickDirection.None
-                    if(slideAction == "flick"
-                        && direction != FlickDirection.None
-                        && pointer.flickDirection == FlickDirection.None) {
-                        handler.removeCallbacksAndMessages(null)
-                        listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
-                        pointers[pointerId] = pointer.copy(flickDirection = direction)
-                    }
+                    val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return@setOnTouchListener true
+                    onTouchMove(key, pointerId, x, y)
+                    postViewChanged()
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                    onTouchUp(keyViewWrapper, pointerId, x, y)
+                    val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return@setOnTouchListener true
+                    onTouchUp(key, pointerId, x, y)
+                    keyStates[key.key.code] = false
                     binding.root.isPressed = false
                     postViewChanged()
                 }
@@ -194,6 +173,15 @@ class StackedViewKeyboardView(
             }
         }
         return null
+    }
+
+    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
+        if(key is KeyViewWrapper) popup.apply {
+            val parentX = key.x + key.width/2
+            val row = keyboardViewWrapper.rows.find { key in it.keys } ?: return
+            val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
+            show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
+        }
     }
 
     override fun postViewChanged() {

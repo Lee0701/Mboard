@@ -75,5 +75,6 @@ class KeyPopup(
 
     fun cancel() {
         animator.cancel()
+        popupWindow.dismiss()
     }
 }

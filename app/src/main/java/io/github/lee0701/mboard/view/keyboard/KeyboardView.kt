@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import kotlin.math.abs
 
 abstract class KeyboardView(
     context: Context,
@@ -43,13 +44,7 @@ abstract class KeyboardView(
 
     protected fun onTouchDown(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-        if(showKeyPopups &&
-            (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
-            val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
-            showPopup(key, keyPopup)
-        } else {
-            keyPopups[pointerId]?.cancel()
-        }
+        maybeShowPopup(key, pointerId)
         fun repeater() {
             listener.onKeyClick(key.key.code, key.key.output)
             handler.postDelayed({ repeater() }, repeatInterval)
@@ -70,7 +65,38 @@ abstract class KeyboardView(
     }
 
     protected fun onTouchMove(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
+        val pointer = pointers[pointerId] ?: return
+        val dx = abs(pointer.initialX - x)
+        val dy = abs(pointer.initialY - y)
+        val direction = if(dx > flickSensitivity && dx > dy) {
+            if(x < pointer.initialX) FlickDirection.Left
+            else FlickDirection.Right
+        } else if(dy > flickSensitivity && dy > dx) {
+            if(y < pointer.initialY) FlickDirection.Up
+            else FlickDirection.Down
+        } else FlickDirection.None
+        if(slideAction == "flick"
+            && direction != FlickDirection.None
+            && pointer.flickDirection == FlickDirection.None) {
+            handler.removeCallbacksAndMessages(null)
+            listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
+            pointers[pointerId] = pointer.copy(flickDirection = direction)
+        } else if(slideAction == "seek") {
+            handler.removeCallbacksAndMessages(null)
 
+            if(x !in key.x until key.x+key.width
+                || y !in key.y until key.y+key.height) {
+
+                val newKey = findKey(x, y) ?: key
+                if(newKey.key.code != key.key.code) {
+                    keyStates[key.key.code] = false
+                    keyStates[newKey.key.code] = true
+                    pointers[pointerId] = pointer.copy(key = newKey)
+                    keyPopups[pointerId]?.cancel()
+                    maybeShowPopup(newKey, pointerId)
+                }
+            }
+        }
     }
 
     protected fun onTouchUp(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
@@ -94,6 +120,16 @@ abstract class KeyboardView(
 
     private fun dipToPixel(dip: Float): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
+    }
+
+    private fun maybeShowPopup(key: KeyWrapper, pointerId: Int) {
+        if(showKeyPopups &&
+            (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
+            val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
+            showPopup(key, keyPopup)
+        } else {
+            keyPopups[pointerId]?.cancel()
+        }
     }
 
     interface KeyWrapper {

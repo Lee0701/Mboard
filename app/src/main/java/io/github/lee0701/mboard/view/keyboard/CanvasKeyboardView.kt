@@ -17,7 +17,6 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
 open class CanvasKeyboardView(
@@ -122,23 +121,9 @@ open class CanvasKeyboardView(
                 postViewChanged()
             }
             MotionEvent.ACTION_MOVE -> {
-                val pointer = pointers[pointerId] ?: return true
-                val dx = abs(pointer.initialX - x)
-                val dy = abs(pointer.initialY - y)
-                val direction = if(dx > flickSensitivity && dx > dy) {
-                    if(x < pointer.initialX) FlickDirection.Left
-                    else FlickDirection.Right
-                } else if(dy > flickSensitivity && dy > dx) {
-                    if(y < pointer.initialY) FlickDirection.Up
-                    else FlickDirection.Down
-                } else FlickDirection.None
-                if(slideAction == "flick"
-                    && direction != FlickDirection.None
-                    && pointer.flickDirection == FlickDirection.None) {
-                    handler.removeCallbacksAndMessages(null)
-                    listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
-                    pointers[pointerId] = pointer.copy(flickDirection = direction)
-                }
+                val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
+                onTouchMove(key, pointerId, x, y)
+                postViewChanged()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 val key = pointers[pointerId]?.key ?: findKey(x, y) ?: return true
@@ -227,7 +212,6 @@ open class CanvasKeyboardView(
         override val height: Int,
         override val icon: Drawable?,
     ): KeyWrapper
-
     data class BitmapCacheKey(
         val width: Int,
         val height: Int,

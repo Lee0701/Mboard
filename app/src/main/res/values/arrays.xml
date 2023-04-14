@@ -42,11 +42,13 @@
     <string-array name="slide_actions">
         <item>@string/slide_action_none</item>
         <item>@string/slide_action_flick</item>
+        <item>@string/slide_action_seek</item>
     </string-array>
 
     <string-array name="slide_action_values">
         <item>none</item>
         <item>flick</item>
+        <item>seek</item>
     </string-array>
 
     <string-array name="layout_hangul_presets">
