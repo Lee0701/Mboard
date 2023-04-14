@@ -16,6 +16,7 @@ import io.github.lee0701.mboard.databinding.KeyboardRowBinding
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Key
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class StackedViewKeyboardView(
@@ -114,6 +115,23 @@ class StackedViewKeyboardView(
                     onTouchDown(keyViewWrapper, pointerId, x, y)
                     binding.root.isPressed = true
                     postViewChanged()
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val pointer = pointers[pointerId] ?: return@setOnTouchListener true
+                    val dx = abs(pointer.initialX - x)
+                    val dy = abs(pointer.initialY - y)
+                    val direction = if(dx > flickSensitivity && dx > dy) {
+                        if(x < pointer.initialX) FlickDirection.Left
+                        else FlickDirection.Right
+                    } else if(dy > flickSensitivity && dy > dx) {
+                        if(y < pointer.initialY) FlickDirection.Up
+                        else FlickDirection.Down
+                    } else FlickDirection.None
+                    if(direction != FlickDirection.None && pointer.flickDirection == FlickDirection.None) {
+                        handler.removeCallbacksAndMessages(null)
+                        listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
+                        pointers[pointerId] = pointer.copy(flickDirection = direction)
+                    }
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                     onTouchUp(keyViewWrapper, pointerId, x, y)
