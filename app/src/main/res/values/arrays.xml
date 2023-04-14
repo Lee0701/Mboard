@@ -39,6 +39,16 @@
         <item>newly-coined</item>
     </string-array>
 
+    <string-array name="slide_actions">
+        <item>@string/slide_action_none</item>
+        <item>@string/slide_action_flick</item>
+    </string-array>
+
+    <string-array name="slide_action_values">
+        <item>none</item>
+        <item>flick</item>
+    </string-array>
+
     <string-array name="layout_hangul_presets">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>

@@ -112,6 +112,20 @@
             app:title="@string/pref_behaviour_repeat_interval_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:key="behaviour_slide_action"
+            app:defaultValue="flick"
+            app:entries="@array/slide_actions"
+            app:entryValues="@array/slide_action_values"
+            app:title="@string/pref_behaviour_slide_action_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.IntEditTextPreference
+            app:key="behaviour_flick_sensitivity"
+            app:defaultValue="60"
+            app:title="@string/pref_behaviour_flick_sensitivity_title"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

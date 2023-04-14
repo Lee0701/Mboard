@@ -31,6 +31,8 @@ abstract class KeyboardView(
     protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
     protected val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
     protected val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
+
+    protected val slideAction = sharedPreferences.getString("behaviour_slide_action", "flick")
     protected val flickSensitivity = dipToPixel(sharedPreferences.getInt("behaviour_flick_sensitivity", 60).toFloat()).toInt()
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()

@@ -132,7 +132,9 @@ open class CanvasKeyboardView(
                     if(y < pointer.initialY) FlickDirection.Up
                     else FlickDirection.Down
                 } else FlickDirection.None
-                if(direction != FlickDirection.None && pointer.flickDirection == FlickDirection.None) {
+                if(slideAction == "flick"
+                    && direction != FlickDirection.None
+                    && pointer.flickDirection == FlickDirection.None) {
                     handler.removeCallbacksAndMessages(null)
                     listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
                     pointers[pointerId] = pointer.copy(flickDirection = direction)
