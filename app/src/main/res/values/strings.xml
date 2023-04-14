@@ -45,12 +45,22 @@
     <string name="pref_header_behaviour_title">Behaviour</string>
     <string name="pref_behaviour_double_tap_gap_title">Double-tap Gap</string>
     <string name="pref_behaviour_long_press_duration_title">Long-press Duration</string>
+    <string name="pref_behaviour_long_press_action_title">Long-press Action</string>
     <string name="pref_behaviour_repeat_interval_title">Key Repeat Interval</string>
     <string name="pref_behaviour_show_popups_title">Show Key Preview Popups</string>
     <string name="pref_behaviour_slide_action_title">Keyboard Slide Action</string>
     <string name="slide_action_none">None</string>
-    <string name="slide_action_flick">Flick</string>
+    <string name="slide_action_flick">Flick (Alternative input)</string>
     <string name="slide_action_seek">Seek</string>
     <string name="pref_behaviour_flick_sensitivity_title">Flick Sensitivity</string>
+    <string name="pref_behaviour_flick_action_up_title">Up Flick Action</string>
+    <string name="pref_behaviour_flick_action_down_title">Down Flick Action</string>
+    <string name="pref_behaviour_flick_action_left_title">Left Flick Action</string>
+    <string name="pref_behaviour_flick_action_right_title">Right Flick Action</string>
+    <string name="flick_action_none">None</string>
+    <string name="flick_action_shift">Input Shifted</string>
+    <string name="flick_action_symbol">Input Symbol</string>
+    <string name="flick_action_shift_symbol">Input Shifted Symbol</string>
+    <string name="flick_action_alternative_language">Input Alternative Language</string>
 
 </resources>

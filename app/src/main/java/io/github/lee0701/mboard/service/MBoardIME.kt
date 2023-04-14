@@ -45,10 +45,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val symbolInputEngine = InputEnginePresets.SymbolsG(this)
 
         if(latinInputEngine is BasicSoftInputEngine) {
-            latinInputEngine.alternativeInputEngine = symbolInputEngine
+            latinInputEngine.symbolsInputEngine = symbolInputEngine
+            latinInputEngine.alternativeInputEngine = hangulInputEngine
         }
         if(hangulInputEngine is BasicSoftInputEngine) {
-            hangulInputEngine.alternativeInputEngine = symbolInputEngine
+            hangulInputEngine.symbolsInputEngine = symbolInputEngine
+            hangulInputEngine.alternativeInputEngine = latinInputEngine
         }
 
         val engines = listOf(

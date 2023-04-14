@@ -45,12 +45,22 @@
     <string name="pref_header_behaviour_title">작동</string>
     <string name="pref_behaviour_double_tap_gap_title">더블클릭 간격</string>
     <string name="pref_behaviour_long_press_duration_title">롱클릭 길이</string>
+    <string name="pref_behaviour_long_press_action_title">롱클릭 동작</string>
     <string name="pref_behaviour_repeat_interval_title">키 반복 간격</string>
     <string name="pref_behaviour_show_popups_title">키 미리보기 팝업 표시</string>
     <string name="pref_behaviour_slide_action_title">키보드 슬라이드 동작</string>
     <string name="slide_action_none">무시</string>
-    <string name="slide_action_flick">플릭</string>
+    <string name="slide_action_flick">플릭 (다른 문자 입력)</string>
     <string name="slide_action_seek">키 찾아보기</string>
     <string name="pref_behaviour_flick_sensitivity_title">플릭 감도</string>
+    <string name="pref_behaviour_flick_action_up_title">위 플릭 동작</string>
+    <string name="pref_behaviour_flick_action_down_title">아래 플릭 동작</string>
+    <string name="pref_behaviour_flick_action_left_title">왼쪽 플릭 동작</string>
+    <string name="pref_behaviour_flick_action_right_title">오른쪽 플릭 동작</string>
+    <string name="flick_action_none">없음</string>
+    <string name="flick_action_shift">윗글쇠 입력</string>
+    <string name="flick_action_symbol">기호 입력</string>
+    <string name="flick_action_shift_symbol">윗글쇠 기호 입력</string>
+    <string name="flick_action_alternative_language">타언어 입력</string>
 
 </resources>

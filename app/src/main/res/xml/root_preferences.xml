@@ -106,6 +106,14 @@
             app:title="@string/pref_behaviour_long_press_duration_title"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:key="behaviour_long_press_action"
+            app:defaultValue="shift"
+            app:entries="@array/flick_actions"
+            app:entryValues="@array/flick_action_values"
+            app:title="@string/pref_behaviour_long_press_action_title"
+            app:useSimpleSummaryProvider="true" />
+
         <io.github.lee0701.mboard.settings.IntEditTextPreference
             app:key="behaviour_repeat_interval"
             app:defaultValue="50"
@@ -124,6 +132,38 @@
             app:key="behaviour_flick_sensitivity"
             app:defaultValue="60"
             app:title="@string/pref_behaviour_flick_sensitivity_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="behaviour_flick_action_up"
+            app:defaultValue="shift"
+            app:entries="@array/flick_actions"
+            app:entryValues="@array/flick_action_values"
+            app:title="@string/pref_behaviour_flick_action_up_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="behaviour_flick_action_down"
+            app:defaultValue="symbol"
+            app:entries="@array/flick_actions"
+            app:entryValues="@array/flick_action_values"
+            app:title="@string/pref_behaviour_flick_action_down_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="behaviour_flick_action_left"
+            app:defaultValue="none"
+            app:entries="@array/flick_actions"
+            app:entryValues="@array/flick_action_values"
+            app:title="@string/pref_behaviour_flick_action_left_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="behaviour_flick_action_right"
+            app:defaultValue="none"
+            app:entries="@array/flick_actions"
+            app:entryValues="@array/flick_action_values"
+            app:title="@string/pref_behaviour_flick_action_right_title"
             app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>

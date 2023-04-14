@@ -22,10 +22,17 @@ class BasicSoftInputEngine(
 ): SoftInputEngine {
     private val inputEngine: InputEngine = getInputEngine(listener)
 
+    var symbolsInputEngine: InputEngine? = null
     var alternativeInputEngine: InputEngine? = null
 
     private var doubleTapGap: Int = 500
     private var keyboardViewType: String = "canvas"
+
+    private var longPressAction: FlickAction = FlickAction.Shifted
+    private var flickUpAction: FlickAction = FlickAction.Shifted
+    private var flickDownAction: FlickAction = FlickAction.Symbols
+    private var flickLeftAction: FlickAction = FlickAction.None
+    private var flickRightAction: FlickAction = FlickAction.None
 
     private var keyboardView: KeyboardView? = null
 
@@ -35,10 +42,16 @@ class BasicSoftInputEngine(
     private var inputHappened: Boolean = false
 
     override fun initView(context: Context): View? {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        doubleTapGap = sharedPreferences.getInt("behaviour_double_tap_gap", 500)
-        keyboardViewType = sharedPreferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
-        val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        doubleTapGap = preferences.getInt("behaviour_double_tap_gap", 500)
+        keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
+        longPressAction = FlickAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
+        flickUpAction = FlickAction.of(preferences.getString("behaviour_flick_action_up", "shift") ?: "shift")
+        flickDownAction = FlickAction.of(preferences.getString("behaviour_flick_action_down", "symbol") ?: "symbol")
+        flickLeftAction = FlickAction.of(preferences.getString("behaviour_flick_action_left", "none") ?: "none")
+        flickRightAction = FlickAction.of(preferences.getString("behaviour_flick_action_", "none") ?: "none")
+
+        val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
         keyboardView = when(keyboardViewType) {
             "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this)
@@ -50,20 +63,6 @@ class BasicSoftInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         onPrintingKey(code)
         updateView()
-    }
-
-    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
-        when(direction) {
-            FlickDirection.Up -> {
-                inputEngine.onKey(code, keyboardState.copy(shiftState = ModifierState(pressed = true)))
-            }
-            FlickDirection.Down -> {
-                alternativeInputEngine?.onKey(code, keyboardState)
-            }
-            else -> {}
-        }
-        ignoreCode = code
-        inputHappened = true
     }
 
     override fun onDelete() {
@@ -192,13 +191,26 @@ class BasicSoftInputEngine(
     }
 
     override fun onKeyLongClick(code: Int, output: String?) {
-        inputEngine.onKey(code, keyboardState.copy(shiftState = ModifierState(pressed = true)))
+        longPressAction.onKey(code, keyboardState, this)
         ignoreCode = code
         inputHappened = true
     }
 
     private fun onPrintingKey(code: Int) {
         inputEngine.onKey(code, keyboardState)
+        inputHappened = true
+    }
+
+    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+        val action = when(direction) {
+            FlickDirection.Up -> flickUpAction
+            FlickDirection.Down -> flickDownAction
+            FlickDirection.Left -> flickLeftAction
+            FlickDirection.Right -> flickRightAction
+            else -> FlickAction.None
+        }
+        action.onKey(code, keyboardState, this)
+        ignoreCode = code
         inputHappened = true
     }
 

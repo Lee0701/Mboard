@@ -51,6 +51,22 @@
         <item>seek</item>
     </string-array>
 
+    <string-array name="flick_actions">
+        <item>@string/flick_action_none</item>
+        <item>@string/flick_action_shift</item>
+        <item>@string/flick_action_symbol</item>
+        <item>@string/flick_action_shift_symbol</item>
+        <item>@string/flick_action_alternative_language</item>
+    </string-array>
+
+    <string-array name="flick_action_values">
+        <item>none</item>
+        <item>shift</item>
+        <item>symbol</item>
+        <item>shift_symbol</item>
+        <item>alternative_language</item>
+    </string-array>
+
     <string-array name="layout_hangul_presets">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>
