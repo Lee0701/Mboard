@@ -137,8 +137,8 @@ abstract class KeyboardView(
         handler.removeCallbacksAndMessages(null)
         keyPopups[pointerId]?.hide()
         keyStates[key.key.code] = false
-        listener.onKeyUp(key.key.code, key.key.output)
         listener.onKeyClick(key.key.code, key.key.output)
+        listener.onKeyUp(key.key.code, key.key.output)
         performClick()
         pointers -= pointerId
     }
