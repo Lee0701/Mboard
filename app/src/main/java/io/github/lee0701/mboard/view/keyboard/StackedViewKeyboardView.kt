@@ -135,7 +135,7 @@ class StackedViewKeyboardView(
             if(y in rowY until rowY+rowHeight) {
                 row.keys.forEach { key ->
                     val keyX = key.binding.root.x.toInt()
-                    val keyWidth = key.binding.root.height
+                    val keyWidth = key.binding.root.width
                     if(x in keyX until keyX+keyWidth) {
                         return key
                     }
