@@ -56,7 +56,7 @@
         <item>@string/flick_action_shift</item>
         <item>@string/flick_action_symbol</item>
         <item>@string/flick_action_shift_symbol</item>
-        <item>@string/flick_action_alternative_language</item>
+<!--        <item>@string/flick_action_alternative_language</item>-->
     </string-array>
 
     <string-array name="flick_action_values">
@@ -64,7 +64,7 @@
         <item>shift</item>
         <item>symbol</item>
         <item>shift_symbol</item>
-        <item>alternative_language</item>
+<!--        <item>alternative_language</item>-->
     </string-array>
 
     <string-array name="layout_hangul_presets">
