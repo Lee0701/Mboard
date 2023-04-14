@@ -22,6 +22,8 @@ class BasicSoftInputEngine(
 ): SoftInputEngine {
     private val inputEngine: InputEngine = getInputEngine(listener)
 
+    var alternativeInputEngine: InputEngine? = null
+
     private var doubleTapGap: Int = 500
     private var keyboardViewType: String = "canvas"
 
@@ -51,7 +53,17 @@ class BasicSoftInputEngine(
     }
 
     override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
-
+        when(direction) {
+            FlickDirection.Up -> {
+                inputEngine.onKey(code, keyboardState.copy(shiftState = ModifierState(pressed = true)))
+            }
+            FlickDirection.Down -> {
+                alternativeInputEngine?.onKey(code, keyboardState)
+            }
+            else -> {}
+        }
+        ignoreCode = code
+        inputHappened = true
     }
 
     override fun onDelete() {

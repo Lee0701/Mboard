@@ -31,6 +31,7 @@ abstract class KeyboardView(
     protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
     protected val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
     protected val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
+    protected val flickSensitivity = dipToPixel(sharedPreferences.getInt("behaviour_flick_sensitivity", 60).toFloat()).toInt()
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
@@ -80,6 +81,10 @@ abstract class KeyboardView(
         pointers -= pointerId
     }
 
+    protected fun onFlick(key: KeyWrapper, flickDirection: FlickDirection, pointerId: Int, x: Int, y: Int) {
+        listener.onKeyFlick(flickDirection, key.key.code, key.key.output)
+    }
+
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
     protected abstract fun findKey(x: Int, y: Int): KeyWrapper?
     protected abstract fun showPopup(key: KeyWrapper, popup: KeyPopup)
@@ -102,6 +107,7 @@ abstract class KeyboardView(
         val initialX: Int,
         val initialY: Int,
         val key: KeyWrapper,
+        val flickDirection: FlickDirection = FlickDirection.None,
     )
 
 }

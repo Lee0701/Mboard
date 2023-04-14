@@ -40,10 +40,21 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
         val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
 
+        val latinInputEngine = InputEnginePresets.of(latinPresetKey, this)
+        val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled)
+        val symbolInputEngine = InputEnginePresets.SymbolsG(this)
+
+        if(latinInputEngine is BasicSoftInputEngine) {
+            latinInputEngine.alternativeInputEngine = symbolInputEngine
+        }
+        if(hangulInputEngine is BasicSoftInputEngine) {
+            hangulInputEngine.alternativeInputEngine = symbolInputEngine
+        }
+
         val engines = listOf(
-            InputEnginePresets.of(latinPresetKey, this),
-            InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled),
-            InputEnginePresets.SymbolsG(this),
+            latinInputEngine,
+            hangulInputEngine,
+            symbolInputEngine,
         ).map { it ?: DirectInputEngine(this) }
 
         val table = arrayOf(

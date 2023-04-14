@@ -2,7 +2,6 @@ package io.github.lee0701.mboard.service
 
 import android.content.Context
 import android.view.View
-import io.github.lee0701.mboard.input.BasicSoftInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.SoftInputEngine
 
