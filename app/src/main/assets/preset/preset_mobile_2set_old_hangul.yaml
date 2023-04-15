@@ -1,9 +1,8 @@
 ---
 !<hanja-hangul>
 softKeyboard:
-- "common/soft_mobile_num.yaml"
 - "common/soft_qwerty_mobile.yaml"
 hangulTable:
-- "hangul_2set/table_ks5002.yaml"
+- "hangul_2set/table_old_hangul_2set.yaml"
 combinationTable:
-- "hangul_2set/comb_ks5002.yaml"
+- "hangul/comb_full.yaml"

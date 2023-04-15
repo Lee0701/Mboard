@@ -1,0 +1,6 @@
+---
+!<latin>
+softKeyboard:
+- "latin/soft_qwerty_mobile_dvorak_custom.yaml"
+codeConvertTable:
+- "latin/table_latin_dvorak.yaml"
