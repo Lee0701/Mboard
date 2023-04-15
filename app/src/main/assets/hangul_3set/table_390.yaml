@@ -134,3 +134,9 @@ map:
   "KEYCODE_SEBEOL_390_3":
     base: 0x1110
     shift: 0x0033
+  "KEYCODE_SEBEOL_390_10":
+    base: 0x1111
+    shift: 0x0032
+  "KEYCODE_SEBEOL_390_11":
+    base: 0x1169
+    shift: 0x0033

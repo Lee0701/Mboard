@@ -1,0 +1,28 @@
+rows:
+- keys:
+  - code: "KEYCODE_1"
+    output: "1"
+  - code: "KEYCODE_2"
+    output: "2"
+  - code: "KEYCODE_3"
+    output: "3"
+  - code: "KEYCODE_4"
+    output: "4"
+  - code: "KEYCODE_5"
+    output: "5"
+  - code: "KEYCODE_6"
+    output: "6"
+  - code: "KEYCODE_7"
+    output: "7"
+  - code: "KEYCODE_8"
+    output: "8"
+  - code: "KEYCODE_9"
+    output: "9"
+  - code: "KEYCODE_0"
+    output: "0"
+  - code: "KEYCODE_DEL"
+    iconType: "Backspace"
+    repeatable: true
+    type: "Modifier"
+  padding: 0.5
+height: 55.0
