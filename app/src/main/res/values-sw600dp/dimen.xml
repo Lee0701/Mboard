@@ -5,5 +5,5 @@
     <dimen name="key_margin_vertical">5dp</dimen>
     <dimen name="key_margin_horizontal">5dp</dimen>
 
-    <dimen name="pref_appearance_keyboard_height_default">55dp</dimen>
+    <dimen name="pref_appearance_keyboard_height_default">65dp</dimen>
 </resources>

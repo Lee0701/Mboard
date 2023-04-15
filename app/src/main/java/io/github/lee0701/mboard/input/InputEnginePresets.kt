@@ -13,7 +13,7 @@ import io.github.lee0701.mboard.service.MBoardIME
 object InputEnginePresets {
 
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_tablet.yaml")
         val convertTable = CodeConvertTable(mapOf())
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
