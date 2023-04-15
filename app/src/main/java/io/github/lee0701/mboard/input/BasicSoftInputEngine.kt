@@ -177,7 +177,9 @@ class BasicSoftInputEngine(
                 inputEngine.onDelete()
             }
             KeyEvent.KEYCODE_SPACE -> {
+                val state = keyboardState.copy()
                 onReset()
+                keyboardState = state
                 listener.onCommitText(" ")
                 autoUnlockShift()
             }
