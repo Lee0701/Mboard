@@ -3,15 +3,20 @@ package io.github.lee0701.mboard.service
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
+import kotlinx.serialization.modules.EmptySerializersModule
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
 class ImportExportActivity: AppCompatActivity() {
+
+    private val config = YamlConfiguration(encodeDefaults = false)
+    private val yaml = Yaml(EmptySerializersModule(), config)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +31,15 @@ class ImportExportActivity: AppCompatActivity() {
             "table_latin_dvorak.yaml",
             "table_symbol_g.yaml",
         )
-        upgradeTables(tables)
+//        upgradeTables(tables)
 
         val keyboards = listOf(
-            "soft_qwerty_mobile.yaml"
+            "soft_qwerty_mobile.yaml",
+            "soft_qwerty_mobile_3set_390.yaml",
+            "soft_qwerty_mobile_3set_391.yaml",
+            "soft_qwerty_mobile_dvorak_custom.yaml",
+            "soft_qwerty_mobile_with_num.yaml",
+            "soft_qwerty_mobile_with_semicolon.yaml",
         )
         upgradeKeyboards(keyboards)
     }
@@ -44,10 +54,10 @@ class ImportExportActivity: AppCompatActivity() {
     }
 
     private fun upgradeTable(input: InputStream, output: OutputStream) {
-        val table = Yaml.default.decodeFromStream<CodeConvertTable>(input)
+        val table = yaml.decodeFromStream<CodeConvertTable>(input)
 //        val newTable = CodeConvertTable(map2 = table.map.map { (k, v) -> KeyEvent.keyCodeToString(k) to v.convert() }.toMap())
         val newTable = table
-        Yaml.default.encodeToStream(newTable, output)
+        yaml.encodeToStream(newTable, output)
     }
 
     private fun upgradeKeyboards(names: List<String>) {
@@ -59,8 +69,8 @@ class ImportExportActivity: AppCompatActivity() {
     }
 
     private fun upgradeKeyboard(input: InputStream, output: OutputStream) {
-        val keyboard = Yaml.default.decodeFromStream<Keyboard>(input)
-        Yaml.default.encodeToStream(keyboard, output)
+        val keyboard = yaml.decodeFromStream<Keyboard>(input)
+        yaml.encodeToStream(keyboard, output)
     }
 
 }

@@ -1,183 +1,111 @@
----
 rows:
 - keys:
-  - code: 8
+  - code: "KEYCODE_1"
     output: "1"
-    label: "1"
-  - code: 9
+  - code: "KEYCODE_2"
     output: "2"
-    label: "2"
-  - code: 10
+  - code: "KEYCODE_3"
     output: "3"
-    label: "3"
-  - code: 11
+  - code: "KEYCODE_4"
     output: "4"
-    label: "4"
-  - code: 12
+  - code: "KEYCODE_5"
     output: "5"
-    label: "5"
-  - code: 13
+  - code: "KEYCODE_6"
     output: "6"
-    label: "6"
-  - code: 14
+  - code: "KEYCODE_7"
     output: "7"
-    label: "7"
-  - code: 15
+  - code: "KEYCODE_8"
     output: "8"
-    label: "8"
-  - code: 16
+  - code: "KEYCODE_9"
     output: "9"
-    label: "9"
-  - code: 7
+  - code: "KEYCODE_0"
     output: "0"
-    label: "0"
-  padding: 0.0
 - keys:
-  - code: 45
+  - code: "KEYCODE_Q"
     output: "Q"
-    label: "Q"
-  - code: 51
+  - code: "KEYCODE_W"
     output: "W"
-    label: "W"
-  - code: 33
+  - code: "KEYCODE_E"
     output: "E"
-    label: "E"
-  - code: 46
+  - code: "KEYCODE_R"
     output: "R"
-    label: "R"
-  - code: 48
+  - code: "KEYCODE_T"
     output: "T"
-    label: "T"
-  - code: 53
+  - code: "KEYCODE_Y"
     output: "Y"
-    label: "Y"
-  - code: 49
+  - code: "KEYCODE_U"
     output: "U"
-    label: "U"
-  - code: 37
+  - code: "KEYCODE_I"
     output: "I"
-    label: "I"
-  - code: 43
+  - code: "KEYCODE_O"
     output: "O"
-    label: "O"
-  - code: 44
+  - code: "KEYCODE_P"
     output: "P"
-    label: "P"
-  padding: 0.0
 - keys:
-  - code: 29
+  - code: "KEYCODE_A"
     output: "A"
-    label: "A"
-  - code: 47
+  - code: "KEYCODE_S"
     output: "S"
-    label: "S"
-  - code: 32
+  - code: "KEYCODE_D"
     output: "D"
-    label: "D"
-  - code: 34
+  - code: "KEYCODE_F"
     output: "F"
-    label: "F"
-  - code: 35
+  - code: "KEYCODE_G"
     output: "G"
-    label: "G"
-  - code: 36
+  - code: "KEYCODE_H"
     output: "H"
-    label: "H"
-  - code: 38
+  - code: "KEYCODE_J"
     output: "J"
-    label: "J"
-  - code: 39
+  - code: "KEYCODE_K"
     output: "K"
-    label: "K"
-  - code: 40
+  - code: "KEYCODE_L"
     output: "L"
-    label: "L"
-  - code: 74
+  - code: "KEYCODE_SEMICOLON"
     output: ";"
-    label: ";"
-  padding: 0.0
 - keys:
-  - code: 59
-    output: null
-    label: null
+  - code: "KEYCODE_SHIFT_LEFT"
     iconType: "Shift"
-    width: 1.0
-    repeatable: false
     type: "Modifier"
-  - code: 54
+  - code: "KEYCODE_Z"
     output: "Z"
-    label: "Z"
-  - code: 52
+  - code: "KEYCODE_X"
     output: "X"
-    label: "X"
-  - code: 31
+  - code: "KEYCODE_C"
     output: "C"
-    label: "C"
-  - code: 50
+  - code: "KEYCODE_V"
     output: "V"
-    label: "V"
-  - code: 4144
+  - code: "KEYCODE_SEBEOL_390_0"
     output: ""
-    label: ""
-  - code: 4145
+  - code: "KEYCODE_SEBEOL_390_1"
     output: ""
-    label: ""
-  - code: 4146
+  - code: "KEYCODE_SEBEOL_390_2"
     output: ""
-    label: ""
-  - code: 4147
+  - code: "KEYCODE_SEBEOL_390_3"
     output: ""
-    label: ""
-  - code: 67
-    output: null
-    label: null
+  - code: "KEYCODE_DEL"
     iconType: "Backspace"
-    width: 1.0
     repeatable: true
     type: "Modifier"
-  padding: 0.0
 - keys:
-  - code: 63
-    output: null
+  - code: "KEYCODE_SYM"
     label: "?12"
-    iconType: null
     width: 1.5
-    repeatable: false
     type: "Modifier"
-  - code: 4140
+  - code: "KEYCODE_COMMA_PERIOD"
     output: ","
-    label: ","
-    iconType: null
-    width: 1.0
-    repeatable: false
     type: "AlphanumericAlt"
-  - code: 204
-    output: null
-    label: null
+  - code: "KEYCODE_LANGUAGE_SWITCH"
     iconType: "Language"
-    width: 1.0
-    repeatable: false
     type: "ModifierAlt"
-  - code: 62
-    output: null
+  - code: "KEYCODE_SPACE"
     label: ""
-    iconType: null
     width: 4.0
-    repeatable: false
     type: "Space"
-  - code: 76
+  - code: "KEYCODE_SLASH"
     output: "/"
-    label: "/"
-    iconType: null
-    width: 1.0
-    repeatable: false
     type: "AlphanumericAlt"
-  - code: 66
-    output: null
-    label: null
+  - code: "KEYCODE_ENTER"
     iconType: "Return"
     width: 1.5
-    repeatable: false
     type: "Action"
-  padding: 0.0
 height: 275.0
