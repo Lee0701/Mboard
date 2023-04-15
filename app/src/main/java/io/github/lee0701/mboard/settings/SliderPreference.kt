@@ -2,7 +2,12 @@ package io.github.lee0701.mboard.settings
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.slider.Slider
@@ -19,9 +24,11 @@ class SliderPreference(
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference)
+
         valueFrom = a.getFloat(R.styleable.SliderPreference_valueFrom, 0f)
         valueTo = a.getFloat(R.styleable.SliderPreference_valueTo, 1f)
         stepSize = a.getFloat(R.styleable.SliderPreference_stepSize, 0f)
+
         a.recycle()
 
         layoutResource = R.layout.preference_multiline
@@ -31,14 +38,18 @@ class SliderPreference(
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        val slider = holder.itemView.findViewById<Slider>(R.id.slider)
-        slider.valueFrom = this.valueFrom
-        slider.valueTo = this.valueTo
-        slider.stepSize = this.stepSize
-
-        slider.value = getPersistedFloat(slider.valueFrom)
-        slider.addOnChangeListener { _, value, _ ->
-            persistFloat(value)
+        val widgetView = holder.itemView.findViewById<LinearLayoutCompat>(android.R.id.widget_frame)
+        if(widgetView is ViewGroup) {
+            widgetView.removeAllViews()
+            val slider = LayoutInflater.from(context).inflate(R.layout.pref_slider_widget_content, null, false) as Slider
+            slider.valueFrom = this.valueFrom
+            slider.valueTo = this.valueTo
+            slider.stepSize = this.stepSize
+            slider.value = getPersistedFloat(valueFrom)
+            slider.addOnChangeListener { _, value, _ ->
+                persistFloat(value)
+            }
+            widgetView.addView(slider)
         }
     }
 
@@ -56,4 +67,5 @@ class SliderPreference(
     override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
         return a.getFloat(index, 0f)
     }
+
 }

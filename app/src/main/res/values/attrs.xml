@@ -32,5 +32,6 @@
         <attr name="valueFrom" format="float" />
         <attr name="stepSize" format="float" />
         <attr name="valueTo" format="float" />
+        <attr name="useSimpleSummaryProvider" format="boolean" />
     </declare-styleable>
 </resources>

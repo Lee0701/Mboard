@@ -17,6 +17,7 @@
     <string name="theme_dynamic">Dynamic</string>
     <string name="pref_appearance_keyboard_height_title">Keyboard Height</string>
     <string name="pref_appearance_unify_height_title">Unify Keyboard Heights</string>
+    <string name="pref_appearance_unify_height_summary">Keep entire keyboard height always the same.</string>
     <string name="pref_appearance_keyboard_view_type_title">Keyboard View Type</string>
     <string name="pref_appearance_keyboard_view_type_summary">Try changing this if you have performance issues.</string>
     <string name="keybaord_view_type_canvas">Canvas</string>

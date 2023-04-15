@@ -31,13 +31,15 @@
             app:valueFrom="20.0"
             app:valueTo="80.0"
             app:stepSize="5.0"
-            app:defaultValue="55.0"
-            app:title="@string/pref_appearance_keyboard_height_title" />
+            app:defaultValue="50.0"
+            app:title="@string/pref_appearance_keyboard_height_title"
+            app:useSimpleSummaryProvider="true"/>
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="appearance_unify_height"
             app:defaultValue="false"
-            app:title="@string/pref_appearance_unify_height_title" />
+            app:title="@string/pref_appearance_unify_height_title"
+            app:summary="@string/pref_appearance_unify_height_summary" />
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="appearance_keyboard_view_type"
@@ -141,9 +143,9 @@
 
         <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_flick_sensitivity"
-            app:valueFrom="10"
-            app:valueTo="200"
-            app:stepSize="10"
+            app:valueFrom="10.0"
+            app:valueTo="200.0"
+            app:stepSize="10.0"
             app:defaultValue="60"
             app:title="@string/pref_behaviour_flick_sensitivity_title"
             app:useSimpleSummaryProvider="true" />
