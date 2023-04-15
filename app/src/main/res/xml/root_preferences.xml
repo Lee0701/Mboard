@@ -101,7 +101,7 @@
         <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_double_tap_gap"
             app:valueFrom="100.0"
-            app:valueTo="2000.0"
+            app:valueTo="1000.0"
             app:stepSize="100.0"
             app:defaultValue="500.0"
             app:title="@string/pref_behaviour_double_tap_gap_title"
@@ -110,7 +110,7 @@
         <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_long_press_duration"
             app:valueFrom="100.0"
-            app:valueTo="2000.0"
+            app:valueTo="1000.0"
             app:stepSize="100.0"
             app:defaultValue="500.0"
             app:title="@string/pref_behaviour_long_press_duration_title"
