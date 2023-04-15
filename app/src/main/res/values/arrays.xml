@@ -21,18 +21,6 @@
         <item>stacked_view</item>
     </string-array>
 
-    <string-array name="layout_screen_modes">
-        <item>@string/screen_mode_mobile</item>
-        <item>@string/screen_mode_tablet</item>
-        <item>@string/screen_mode_full</item>
-    </string-array>
-
-    <string-array name="layout_screen_mode_values">
-        <item>mobile</item>
-        <item>tablet</item>
-        <item>full</item>
-    </string-array>
-
     <string-array name="additional_dictionaries">
         <item>@string/person_name</item>
         <item>@string/metro_station</item>
@@ -97,7 +85,20 @@
 <!--        <item>alternative_language</item>-->
     </string-array>
 
-    <string-array name="layout_hangul_presets">
+
+    <string-array name="layout_screen_modes">
+        <item>@string/screen_mode_mobile</item>
+        <item>@string/screen_mode_tablet</item>
+        <item>@string/screen_mode_full</item>
+    </string-array>
+
+    <string-array name="layout_screen_mode_values">
+        <item>mobile</item>
+        <item>tablet</item>
+        <item>full</item>
+    </string-array>
+
+    <string-array name="preset_hangul">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>
         <item>@string/layout_3set_391</item>
@@ -105,24 +106,24 @@
         <item>@string/layout_2set_old_hangul</item>
     </string-array>
 
-    <string-array name="layout_hangul_preset_values">
-        <item>layout_2set_ks5002</item>
-        <item>layout_3set_390</item>
-        <item>layout_3set_391</item>
-        <item>layout_3set_391_strict</item>
-        <item>layout_2set_old_hangul</item>
+    <string-array name="preset_hangul_values">
+        <item>preset/preset_%s_2set_ks5002.yaml</item>
+        <item>preset/preset_%s_3set_390.yaml</item>
+        <item>preset/preset_%s_3set_391.yaml</item>
+        <item>preset/preset_%s_3set_391_strict.yaml</item>
+        <item>preset/preset_%s_2set_old_hangul.yaml</item>
     </string-array>
 
-    <string-array name="layout_latin_presets">
+    <string-array name="preset_latin">
         <item>@string/layout_latin_qwerty</item>
         <item>@string/layout_latin_dvorak</item>
         <item>@string/layout_latin_colemak</item>
     </string-array>
 
-    <string-array name="layout_latin_preset_values">
-        <item>layout_latin_qwerty</item>
-        <item>layout_latin_dvorak</item>
-        <item>layout_latin_colemak</item>
+    <string-array name="preset_latin_values">
+        <item>preset/preset_%s_latin_qwerty.yaml</item>
+        <item>preset/preset_%s_latin_dvorak.yaml</item>
+        <item>preset/preset_%s_latin_colemak.yaml</item>
     </string-array>
 
 </resources>

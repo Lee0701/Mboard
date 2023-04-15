@@ -65,16 +65,16 @@
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="layout_hangul_preset"
             app:defaultValue="layout_3set_390"
-            app:entries="@array/layout_hangul_presets"
-            app:entryValues="@array/layout_hangul_preset_values"
+            app:entries="@array/preset_hangul"
+            app:entryValues="@array/preset_hangul_values"
             app:title="@string/pref_layout_hangul_preset_title"
             app:useSimpleSummaryProvider="true" />
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="layout_latin_preset"
             app:defaultValue="layout_latin_qwerty"
-            app:entries="@array/layout_latin_presets"
-            app:entryValues="@array/layout_latin_preset_values"
+            app:entries="@array/preset_latin"
+            app:entryValues="@array/preset_latin_values"
             app:title="@string/pref_layout_latin_preset_title"
             app:useSimpleSummaryProvider="true" />
 

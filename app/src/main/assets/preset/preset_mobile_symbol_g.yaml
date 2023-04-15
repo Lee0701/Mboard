@@ -1,0 +1,6 @@
+---
+!<latin>
+softKeyboard:
+- "common/soft_qwerty_mobile_with_semicolon.yaml"
+codeConvertTable:
+- "symbol/table_symbol_g.yaml"

@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.input
 
 import android.content.res.AssetManager
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.dictionary.EmptyDictionary
 import io.github.lee0701.mboard.module.table.CodeConvertTable
@@ -9,8 +10,12 @@ import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.external.HanjaConverter
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
+import kotlinx.serialization.modules.EmptySerializersModule
 
 object InputEnginePresets {
+
+    val yamlConfig = YamlConfiguration(encodeDefaults = false)
+    val yaml = Yaml(EmptySerializersModule(), yamlConfig)
 
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
@@ -44,7 +49,7 @@ object InputEnginePresets {
 
     fun Hangul2SetOldHangul(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_hangul_2set_old_hangul.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_old_hangul_2set.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul/comb_hangul_full.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
