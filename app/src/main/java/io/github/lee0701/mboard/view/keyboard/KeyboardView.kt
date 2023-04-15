@@ -28,17 +28,18 @@ abstract class KeyboardView(
 
     protected val unifyHeight: Boolean = sharedPreferences.getBoolean("appearance_unify_height", false)
     protected val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    protected val rowHeight = dipToPixel(sharedPreferences.getInt("appearance_keyboard_height", 55).toFloat())
-    protected val keyboardHeight = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    protected val rowHeight: Int = dipToPixel(sharedPreferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    protected val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 
     protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
-    protected val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
-    protected val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
+    protected val longPressDuration = sharedPreferences.getFloat("behaviour_long_press_duration", 100f).toLong()
+    protected val repeatOnLongPress = sharedPreferences.getString("behaviour_long_press_action", "shift") == "repeat"
+    protected val repeatInterval = sharedPreferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
     protected val slideAction = sharedPreferences.getString("behaviour_slide_action", "flick")
-    protected val flickSensitivity = dipToPixel(sharedPreferences.getInt("behaviour_flick_sensitivity", 60).toFloat()).toInt()
+    protected val flickSensitivity = dipToPixel(sharedPreferences.getFloat("behaviour_flick_sensitivity", 100f)).toInt()
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
@@ -81,7 +82,7 @@ abstract class KeyboardView(
             handler.postDelayed({ repeater() }, repeatInterval)
         }
         handler.postDelayed({
-            if(key.key.repeatable) {
+            if(key.key.repeatable || repeatOnLongPress) {
                 repeater()
             } else {
                 this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -112,7 +113,7 @@ abstract class KeyboardView(
             && direction != FlickDirection.None
             && pointer.flickDirection == FlickDirection.None) {
             handler.removeCallbacksAndMessages(null)
-            listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
+            onFlick(direction, pointer.key, pointerId, x, y)
             pointers[pointerId] = pointer.copy(flickDirection = direction)
 
         } else if(slideAction == "seek" && key.key.code !in setOf(KeyEvent.KEYCODE_DEL)) {
@@ -143,7 +144,7 @@ abstract class KeyboardView(
         pointers -= pointerId
     }
 
-    protected fun onFlick(key: KeyWrapper, flickDirection: FlickDirection, pointerId: Int, x: Int, y: Int) {
+    protected fun onFlick(flickDirection: FlickDirection, key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         listener.onKeyFlick(flickDirection, key.key.code, key.key.output)
     }
 

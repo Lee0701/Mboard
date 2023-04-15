@@ -52,7 +52,7 @@ class StackedViewKeyboardView(
         val keyViewWrappers = mutableListOf<KeyViewWrapper>()
         val binding = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT, rowHeight.roundToInt()
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT, rowHeight
             ).apply {
                 weight = 1f
             }

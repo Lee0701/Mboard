@@ -17,6 +17,7 @@
     <string name="theme_dynamic">Dynamic</string>
     <string name="pref_appearance_keyboard_height_title">Keyboard Height</string>
     <string name="pref_appearance_unify_height_title">Unify Keyboard Heights</string>
+    <string name="pref_appearance_unify_height_summary">Keep entire keyboard height always the same.</string>
     <string name="pref_appearance_keyboard_view_type_title">Keyboard View Type</string>
     <string name="pref_appearance_keyboard_view_type_summary">Try changing this if you have performance issues.</string>
     <string name="keybaord_view_type_canvas">Canvas</string>
@@ -58,6 +59,7 @@
     <string name="pref_behaviour_flick_action_left_title">Left Flick Action</string>
     <string name="pref_behaviour_flick_action_right_title">Right Flick Action</string>
     <string name="flick_action_none">None</string>
+    <string name="long_press_action_repeat">Repeat</string>
     <string name="flick_action_shift">Input Shifted</string>
     <string name="flick_action_symbol">Input Symbol</string>
     <string name="flick_action_shift_symbol">Input Shifted Symbol</string>

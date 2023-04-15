@@ -28,11 +28,11 @@ class BasicSoftInputEngine(
     private var doubleTapGap: Int = 500
     private var keyboardViewType: String = "canvas"
 
-    private var longPressAction: FlickAction = FlickAction.Shifted
-    private var flickUpAction: FlickAction = FlickAction.Shifted
-    private var flickDownAction: FlickAction = FlickAction.Symbols
-    private var flickLeftAction: FlickAction = FlickAction.None
-    private var flickRightAction: FlickAction = FlickAction.None
+    private var longPressAction: FlickLongPressAction = FlickLongPressAction.Shifted
+    private var flickUpAction: FlickLongPressAction = FlickLongPressAction.Shifted
+    private var flickDownAction: FlickLongPressAction = FlickLongPressAction.Symbols
+    private var flickLeftAction: FlickLongPressAction = FlickLongPressAction.None
+    private var flickRightAction: FlickLongPressAction = FlickLongPressAction.None
 
     private var keyboardView: KeyboardView? = null
 
@@ -43,13 +43,13 @@ class BasicSoftInputEngine(
 
     override fun initView(context: Context): View? {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        doubleTapGap = preferences.getInt("behaviour_double_tap_gap", 500)
+        doubleTapGap = preferences.getFloat("behaviour_double_tap_gap", 500f).toInt()
         keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
-        longPressAction = FlickAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
-        flickUpAction = FlickAction.of(preferences.getString("behaviour_flick_action_up", "shift") ?: "shift")
-        flickDownAction = FlickAction.of(preferences.getString("behaviour_flick_action_down", "symbol") ?: "symbol")
-        flickLeftAction = FlickAction.of(preferences.getString("behaviour_flick_action_left", "none") ?: "none")
-        flickRightAction = FlickAction.of(preferences.getString("behaviour_flick_action_", "none") ?: "none")
+        longPressAction = FlickLongPressAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
+        flickUpAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_up", "shift") ?: "shift")
+        flickDownAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_down", "symbol") ?: "symbol")
+        flickLeftAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_left", "none") ?: "none")
+        flickRightAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_", "none") ?: "none")
 
         val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
@@ -63,6 +63,10 @@ class BasicSoftInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         onPrintingKey(code, state)
         updateView()
+    }
+
+    fun onKeyRepeat(code: Int, state: KeyboardState) {
+
     }
 
     override fun onDelete() {
@@ -207,7 +211,7 @@ class BasicSoftInputEngine(
             FlickDirection.Down -> flickDownAction
             FlickDirection.Left -> flickLeftAction
             FlickDirection.Right -> flickRightAction
-            else -> FlickAction.None
+            else -> FlickLongPressAction.None
         }
         action.onKey(code, keyboardState, this)
         ignoreCode = code

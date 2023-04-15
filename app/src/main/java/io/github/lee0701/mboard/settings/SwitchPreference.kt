@@ -1,20 +1,16 @@
 package io.github.lee0701.mboard.settings
 
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import android.util.AttributeSet
 import androidx.preference.Preference
+import androidx.preference.SwitchPreferenceCompat
 import io.github.lee0701.mboard.R
 
-class EnableInputMethodPreference(
+class SwitchPreference(
     context: Context,
-    attrs: AttributeSet?,
-): Preference(context, attrs) {
+    atts: AttributeSet?,
+): SwitchPreferenceCompat(context, atts) {
     init {
         layoutResource = R.layout.preference_inline
-    }
-    override fun onClick() {
-        context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
     }
 }

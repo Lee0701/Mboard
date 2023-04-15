@@ -2,21 +2,27 @@ package io.github.lee0701.mboard.input
 
 import io.github.lee0701.mboard.service.KeyboardState
 
-sealed interface FlickAction {
+sealed interface FlickLongPressAction {
     fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine)
 
-    object None: FlickAction {
+    object None: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
         }
     }
 
-    object Shifted: FlickAction {
+    object Repeat: FlickLongPressAction {
+        override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
+            // This action will be intercepted and be processed by Soft Keyboard
+        }
+    }
+
+    object Shifted: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             inputEngine.onKey(code, makeShiftOn(keyboardState))
         }
     }
 
-    object Symbols: FlickAction {
+    object Symbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
                 inputEngine.symbolsInputEngine?.onKey(code, keyboardState)
@@ -24,7 +30,7 @@ sealed interface FlickAction {
         }
     }
 
-    object ShiftedSymbols: FlickAction {
+    object ShiftedSymbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
                 inputEngine.symbolsInputEngine?.onKey(code, makeShiftOn(keyboardState))
@@ -32,7 +38,7 @@ sealed interface FlickAction {
         }
     }
 
-    object AlternativeLanguage: FlickAction {
+    object AlternativeLanguage: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
                 inputEngine.alternativeInputEngine?.onKey(code, keyboardState)
@@ -41,8 +47,9 @@ sealed interface FlickAction {
     }
 
     companion object {
-        fun of(value: String): FlickAction {
+        fun of(value: String): FlickLongPressAction {
             return when(value) {
+                "repeat" -> Repeat
                 "symbol" -> Symbols
                 "shift" -> Shifted
                 "shift_symbol" -> ShiftedSymbols

@@ -17,6 +17,7 @@
     <string name="theme_dynamic">다이나믹</string>
     <string name="pref_appearance_keyboard_height_title">키보드 높이</string>
     <string name="pref_appearance_unify_height_title">키보드 높이 통일</string>
+    <string name="pref_appearance_unify_height_summary">전체 키보드 높이를 항상 같게 합니다.</string>
     <string name="pref_appearance_keyboard_view_type_title">키보드 뷰 유형</string>
     <string name="pref_appearance_keyboard_view_type_summary">성능 문제가 있을 경우 이 설정을 변경해 보세요.</string>
     <string name="keybaord_view_type_canvas">캔버스</string>
@@ -58,6 +59,7 @@
     <string name="pref_behaviour_flick_action_left_title">왼쪽 플릭 동작</string>
     <string name="pref_behaviour_flick_action_right_title">오른쪽 플릭 동작</string>
     <string name="flick_action_none">없음</string>
+    <string name="long_press_action_repeat">반복</string>
     <string name="flick_action_shift">윗글쇠 입력</string>
     <string name="flick_action_symbol">기호 입력</string>
     <string name="flick_action_shift_symbol">윗글쇠 기호 입력</string>

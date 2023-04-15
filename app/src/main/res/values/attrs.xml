@@ -20,4 +20,18 @@
         <attr name="background" />
         <attr name="backgroundTint" />
     </declare-styleable>
+
+    <declare-styleable name="Preference">
+        <attr name="android:textSize" format="dimension" />
+        <attr name="android:textColor" format="color" />
+        <attr name="titleTextAppearance" format="reference" />
+        <attr name="summaryTextAppearance" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SliderPreference">
+        <attr name="valueFrom" format="float" />
+        <attr name="stepSize" format="float" />
+        <attr name="valueTo" format="float" />
+        <attr name="useSimpleSummaryProvider" format="boolean" />
+    </declare-styleable>
 </resources>

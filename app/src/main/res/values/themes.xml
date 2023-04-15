@@ -46,4 +46,29 @@
         <item name="android:textSize">@dimen/candidates_text_size</item>
     </style>
 
+    <style name="Theme.MBoard.PreferenceCategory" parent="Preference.Category">
+        <item name="titleTextAppearance">@style/Theme.MBoard.PreferenceCategory.Title</item>
+    </style>
+
+    <style name="Theme.MBoard.Preference" parent="Preference">
+        <item name="titleTextAppearance">@style/Theme.MBoard.Preference.Title</item>
+        <item name="summaryTextAppearance">@style/Theme.MBoard.Preference.Summary</item>
+    </style>
+
+    <style name="Theme.MBoard.PreferenceCategory.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Theme.MBoard.Preference.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Theme.MBoard.Preference.Summary">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/gray_900</item>
+    </style>
+
 </resources>
