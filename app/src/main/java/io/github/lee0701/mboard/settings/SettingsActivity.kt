@@ -1,17 +1,13 @@
 package io.github.lee0701.mboard.settings
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.color.DynamicColors
 import com.google.android.material.elevation.SurfaceColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.service.ImportExportActivity
 
 class SettingsActivity: AppCompatActivity() {
 
@@ -34,6 +30,7 @@ class SettingsActivity: AppCompatActivity() {
         }
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
     }
+
 
     class SettingsFragment: PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

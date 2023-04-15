@@ -2,8 +2,6 @@ package io.github.lee0701.mboard.settings
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,13 +20,15 @@ class SliderPreference(
     private val valueTo: Float
     private val stepSize: Float
 
+    private var value: Float = 0f
+    private var valueSet: Boolean = false
+    private lateinit var slider: Slider
+
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference)
-
         valueFrom = a.getFloat(R.styleable.SliderPreference_valueFrom, 0f)
         valueTo = a.getFloat(R.styleable.SliderPreference_valueTo, 1f)
         stepSize = a.getFloat(R.styleable.SliderPreference_stepSize, 0f)
-
         a.recycle()
 
         layoutResource = R.layout.preference_multiline
@@ -42,25 +42,41 @@ class SliderPreference(
         if(widgetView is ViewGroup) {
             widgetView.removeAllViews()
             val slider = LayoutInflater.from(context).inflate(R.layout.pref_slider_widget_content, null, false) as Slider
-            slider.valueFrom = this.valueFrom
-            slider.valueTo = this.valueTo
-            slider.stepSize = this.stepSize
-            slider.value = getPersistedFloat(valueFrom)
-            slider.addOnChangeListener { _, value, _ ->
-                persistFloat(value)
+            try {
+                slider.valueFrom = this.valueFrom
+                slider.valueTo = this.valueTo
+                slider.stepSize = this.stepSize
+                slider.value = getPersistedFloat(valueFrom)
+                slider.addOnChangeListener { _, value, _ ->
+                    persistFloat(value)
+                }
+            } catch(ex: IllegalStateException) {
+                ex.printStackTrace()
             }
             widgetView.addView(slider)
+            this.slider = slider
         }
     }
 
-    override fun getPersistedFloat(defaultReturnValue: Float): Float {
-        val v = super.getPersistedFloat(defaultReturnValue)
-        if(v !in valueFrom .. valueTo) return defaultReturnValue
-        return v
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
+        return a.getFloat(index, 0f)
     }
 
-    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
-        return a.getFloat(a.getIndex(index), 0f)
+    override fun onSetInitialValue(defaultValue: Any?) {
+        setValue(getPersistedFloat(defaultValue as? Float ?: 0f))
+    }
+
+    fun setValue(value: Float) {
+        // Always persist/notify the first time.
+        val changed = this.value != value
+        if(changed || !this.valueSet) {
+            this.value = value
+            this.valueSet = true
+            persistFloat(value)
+            if(changed) {
+                notifyChanged()
+            }
+        }
     }
 
 }

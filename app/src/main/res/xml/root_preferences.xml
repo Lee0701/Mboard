@@ -32,8 +32,7 @@
             app:valueTo="80.0"
             app:stepSize="5.0"
             app:defaultValue="50.0"
-            app:title="@string/pref_appearance_keyboard_height_title"
-            app:useSimpleSummaryProvider="true"/>
+            app:title="@string/pref_appearance_keyboard_height_title" />
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="appearance_unify_height"
