@@ -118,19 +118,24 @@ open class CanvasKeyboardView(
 
         // Draw key backgrounds
         cachedKeys.forEach { key ->
+            val keyBackgroundOverride = key.key.backgroundType?.resId?.let { ContextCompat.getDrawable(context, it) }
             val keyBackgroundInfo = keyBackgrounds[key.key.type]
             val pressed = keyStates[key.key.code] == true
             if(keyBackgroundInfo != null) {
-                val background = keyBackgroundInfo.first.mutate().constantState?.newDrawable()?.apply {
+                val drawable = keyBackgroundOverride ?: keyBackgroundInfo.first.mutate().constantState?.newDrawable()
+                val background = drawable?.apply {
                     val keyState = intArrayOf(if(pressed) android.R.attr.state_pressed else -android.R.attr.state_pressed)
                     DrawableCompat.setTint(this, keyBackgroundInfo.second.getColorForState(keyState, keyBackgroundInfo.second.defaultColor))
                 } ?: keyBackgroundInfo.first
+                val extendAmount = context.resources.getDimension(R.dimen.key_bg_radius)*2 + context.resources.getDimension(R.dimen.key_margin_horizontal)*2
+                val extendTop = if(key.key.backgroundType?.extendTop == true) extendAmount else 0f
+                val extendBottom = if(key.key.backgroundType?.extendBottom == true) extendAmount else 0f
                 val x = key.x + keyMarginHorizontal
-                val y = key.y + keyMarginVertical
-                val width = (key.width - keyMarginHorizontal*2).roundToInt()
-                val height = (key.height - keyMarginVertical*2).roundToInt()
-                val bitmap = bitmapCache.getOrPut(BitmapCacheKey(width, height, pressed, key.key.type)) {
-                    background.toBitmap(width, height)
+                val y = key.y + keyMarginVertical - extendTop
+                val width = (key.width - keyMarginHorizontal*2)
+                val height = (key.height - keyMarginVertical*2) + extendTop + extendBottom
+                val bitmap = bitmapCache.getOrPut(BitmapCacheKey(width.roundToInt(), height.roundToInt(), pressed, key.key.type)) {
+                    background.toBitmap(width.roundToInt(), height.roundToInt())
                 }
                 canvas.drawBitmap(bitmap, x, y, bitmapPaint)
             }

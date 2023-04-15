@@ -55,6 +55,7 @@ rows:
   - code: "KEYCODE_ENTER"
     width: 0.75
     type: "Action"
+    backgroundType: "MergeUp"
 - keys:
   - code: "KEYCODE_SHIFT_LEFT"
     iconType: "Shift"
