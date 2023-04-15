@@ -7,8 +7,8 @@ import io.github.lee0701.mboard.R
 
 class ListPreference(
     context: Context,
-    atts: AttributeSet?,
-): ListPreference(context, atts) {
+    attrs: AttributeSet?,
+): ListPreference(context, attrs) {
     init {
         layoutResource = R.layout.preference_inline
     }

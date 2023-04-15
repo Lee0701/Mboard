@@ -184,4 +184,21 @@
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
+    <io.github.lee0701.mboard.settings.PreferenceCategory
+        app:title="@string/pref_header_about_title">
+
+        <io.github.lee0701.mboard.settings.Preference
+            android:title="@string/pref_about_app_info_title"
+            android:summary="@string/pref_about_app_info_summary" />
+
+        <io.github.lee0701.mboard.settings.OpenStorePreference
+            android:title="@string/pref_about_more_apps_title"
+            android:summary="@string/pref_about_more_apps_summary"
+            uri="https://play.google.com/store/search?q=pub:%E6%9D%8E%EF%BC%81&amp;c=apps"/>
+
+        <io.github.lee0701.mboard.settings.OssLicensesMenuPreference
+            android:title="@string/pref_about_oss_licenses_title" />
+
+    </io.github.lee0701.mboard.settings.PreferenceCategory>
+
 </PreferenceScreen>

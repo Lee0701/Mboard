@@ -65,4 +65,10 @@
     <string name="flick_action_shift_symbol">Input Shifted Symbol</string>
     <string name="flick_action_alternative_language">Input Alternative Language</string>
 
+    <string name="pref_header_about_title">About</string>
+    <string name="pref_about_app_info_title">mBoard</string>
+    <string name="pref_about_app_info_summary">Developer contact: hgl1002@naver.com</string>
+    <string name="pref_about_more_apps_title">More Apps</string>
+    <string name="pref_about_more_apps_summary">Discover more apps from this app\'s developer.</string>
+    <string name="pref_about_oss_licenses_title">Open source Licenses</string>
 </resources>

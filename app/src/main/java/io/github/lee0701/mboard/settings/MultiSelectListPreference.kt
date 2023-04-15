@@ -7,8 +7,8 @@ import io.github.lee0701.mboard.R
 
 class MultiSelectListPreference(
     context: Context,
-    atts: AttributeSet?,
-): MultiSelectListPreference(context, atts) {
+    attrs: AttributeSet?,
+): MultiSelectListPreference(context, attrs) {
     init {
         layoutResource = R.layout.preference_inline
     }
