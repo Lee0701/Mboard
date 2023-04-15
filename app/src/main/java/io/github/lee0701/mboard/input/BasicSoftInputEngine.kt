@@ -61,7 +61,7 @@ class BasicSoftInputEngine(
     }
 
     override fun onKey(code: Int, state: KeyboardState) {
-        onPrintingKey(code)
+        onPrintingKey(code, state)
         updateView()
     }
 
@@ -183,7 +183,7 @@ class BasicSoftInputEngine(
                 autoUnlockShift()
             }
             else -> {
-                onPrintingKey(code)
+                onPrintingKey(code, keyboardState)
                 autoUnlockShift()
             }
         }
@@ -196,7 +196,7 @@ class BasicSoftInputEngine(
         inputHappened = true
     }
 
-    private fun onPrintingKey(code: Int) {
+    private fun onPrintingKey(code: Int, keyboardState: KeyboardState) {
         inputEngine.onKey(code, keyboardState)
         inputHappened = true
     }
