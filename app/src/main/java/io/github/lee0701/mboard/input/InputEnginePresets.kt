@@ -13,27 +13,27 @@ import io.github.lee0701.mboard.service.MBoardIME
 object InputEnginePresets {
 
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
         val convertTable = CodeConvertTable(mapOf())
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
 
     fun LatinDvorak(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_dvorak_custom.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_latin_dvorak.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "latin/soft_qwerty_mobile_dvorak_custom.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "latin/table_latin_dvorak.yaml")
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
 
     fun LatinColemak(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_with_semicolon.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_latin_colemak.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile_with_semicolon.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "latin/table_latin_colemak.yaml")
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_ks5002.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_2set/comb_hangul_2set_ks5002.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_2set/comb_ks5002.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)
@@ -43,9 +43,9 @@ object InputEnginePresets {
     }
 
     fun Hangul2SetOldHangul(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_old_hangul.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_full.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_hangul_2set_old_hangul.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul/comb_hangul_full.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)
@@ -55,9 +55,9 @@ object InputEnginePresets {
     }
 
     private fun Hangul3Set390(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_390.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_390.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_390.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "hangul_3set/soft_mobile_390.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_3set/table_390.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_3set/comb_390.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)
@@ -67,9 +67,9 @@ object InputEnginePresets {
     }
 
     private fun Hangul3Set391(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_391.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "hangul_3set/soft_mobile_391.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_3set/table_391.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_3set/comb_391.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)
@@ -79,9 +79,9 @@ object InputEnginePresets {
     }
 
     private fun Hangul3Set391Strict(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_391.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391_strict.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391_strict.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "hangul_3set/soft_mobile_391.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_3set/table_391_strict.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_3set/comb_391_strict.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)
@@ -91,8 +91,8 @@ object InputEnginePresets {
     }
 
     fun SymbolsG(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_with_semicolon.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_symbol_g.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile_with_semicolon.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "symbol/table_symbol_g.yaml")
         return InputEnginePreset.Symbol(keyboard, convertTable).create(mBoardIME)
     }
 
@@ -101,7 +101,7 @@ object InputEnginePresets {
     }
 
     private fun loadConvertTable(assets: AssetManager, name: String): CodeConvertTable {
-        val customKeysTable: CodeConvertTable = Yaml.default.decodeFromStream(assets.open("table_custom_keys.yaml"))
+        val customKeysTable: CodeConvertTable = Yaml.default.decodeFromStream(assets.open("symbol/table_custom_keys.yaml"))
         return customKeysTable + Yaml.default.decodeFromStream(assets.open(name))
     }
 

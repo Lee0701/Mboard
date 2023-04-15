@@ -25,22 +25,22 @@ class ImportExportActivity: AppCompatActivity() {
         val tables = listOf(
             "hangul_2set/table_ks5002.yaml",
             "table_old_hangul.yaml",
-            "table_hangul_3set_390.yaml",
-            "table_hangul_3set_391.yaml",
-            "table_hangul_3set_391_strict.yaml",
-            "table_latin_colemak.yaml",
-            "table_latin_dvorak.yaml",
-            "table_symbol_g.yaml",
+            "hangul_3set/table_390.yaml",
+            "hangul_3set/table_391.yaml",
+            "hangul_3set/table_391_strict.yaml",
+            "latin/table_latin_colemak.yaml",
+            "latin/table_latin_dvorak.yaml",
+            "symbol/table_symbol_g.yaml",
         )
 //        upgradeTables(tables)
 
         val keyboards = listOf(
-            "soft_qwerty_mobile.yaml",
-            "soft_qwerty_mobile_3set_390.yaml",
-            "soft_qwerty_mobile_3set_391.yaml",
-            "soft_qwerty_mobile_dvorak_custom.yaml",
+            "common/soft_qwerty_mobile.yaml",
+            "hangul_3set/soft_mobile_390.yaml",
+            "hangul_3set/soft_mobile_391.yaml",
+            "latin/soft_qwerty_mobile_dvorak_custom.yaml",
             "soft_qwerty_mobile_with_num.yaml",
-            "soft_qwerty_mobile_with_semicolon.yaml",
+            "common/soft_qwerty_mobile_with_semicolon.yaml",
         )
 //        upgradeKeyboards(keyboards)
 
