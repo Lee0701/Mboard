@@ -49,18 +49,18 @@
             app:title="@string/pref_appearance_keyboard_view_type_title"
             app:summary="@string/pref_appearance_keyboard_view_type_summary" />
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="appearance_screen_mode"
-            app:defaultValue="@string/pref_appearance_screen_mode_default"
-            app:entries="@array/appearance_screen_modes"
-            app:entryValues="@array/appearance_screen_mode_values"
-            app:title="@string/pref_appearance_screen_mode_title"
-            app:useSimpleSummaryProvider="true" />
-
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
         app:title="@string/pref_header_layout_title">
+
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="layout_screen_mode"
+            app:defaultValue="@string/pref_layout_screen_mode_default"
+            app:entries="@array/layout_screen_modes"
+            app:entryValues="@array/layout_screen_mode_values"
+            app:title="@string/pref_layout_screen_mode_title"
+            app:useSimpleSummaryProvider="true" />
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="layout_hangul_preset"
