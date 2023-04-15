@@ -91,7 +91,7 @@ object InputEnginePresets {
     }
 
     fun SymbolsG(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_with_semicolon.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_symbol_g.yaml")
         return InputEnginePreset.Symbol(keyboard, convertTable).create(mBoardIME)
     }
