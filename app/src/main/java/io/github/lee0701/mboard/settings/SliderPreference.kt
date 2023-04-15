@@ -59,11 +59,11 @@ class SliderPreference(
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
-        return a.getFloat(index, 0f)
+        return a.getFloat(index, valueFrom)
     }
 
     override fun onSetInitialValue(defaultValue: Any?) {
-        setValue(getPersistedFloat(defaultValue as? Float ?: 0f))
+        setValue(getPersistedFloat(defaultValue as? Float ?: valueFrom))
     }
 
     fun setValue(value: Float) {
