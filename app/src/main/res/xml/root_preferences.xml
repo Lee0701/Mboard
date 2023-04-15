@@ -119,8 +119,8 @@
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="behaviour_long_press_action"
             app:defaultValue="shift"
-            app:entries="@array/flick_actions"
-            app:entryValues="@array/flick_action_values"
+            app:entries="@array/long_press_actions"
+            app:entryValues="@array/long_press_action_values"
             app:title="@string/pref_behaviour_long_press_action_title"
             app:useSimpleSummaryProvider="true" />
 

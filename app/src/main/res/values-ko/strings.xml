@@ -59,6 +59,7 @@
     <string name="pref_behaviour_flick_action_left_title">왼쪽 플릭 동작</string>
     <string name="pref_behaviour_flick_action_right_title">오른쪽 플릭 동작</string>
     <string name="flick_action_none">없음</string>
+    <string name="long_press_action_repeat">반복</string>
     <string name="flick_action_shift">윗글쇠 입력</string>
     <string name="flick_action_symbol">기호 입력</string>
     <string name="flick_action_shift_symbol">윗글쇠 기호 입력</string>

@@ -59,6 +59,7 @@
     <string name="pref_behaviour_flick_action_left_title">Left Flick Action</string>
     <string name="pref_behaviour_flick_action_right_title">Right Flick Action</string>
     <string name="flick_action_none">None</string>
+    <string name="long_press_action_repeat">Repeat</string>
     <string name="flick_action_shift">Input Shifted</string>
     <string name="flick_action_symbol">Input Symbol</string>
     <string name="flick_action_shift_symbol">Input Shifted Symbol</string>

@@ -11,7 +11,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
@@ -36,6 +35,7 @@ abstract class KeyboardView(
 
     protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
     protected val longPressDuration = sharedPreferences.getFloat("behaviour_long_press_duration", 100f).toLong()
+    protected val repeatOnLongPress = sharedPreferences.getString("behaviour_long_press_action", "shift") == "repeat"
     protected val repeatInterval = sharedPreferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
     protected val slideAction = sharedPreferences.getString("behaviour_slide_action", "flick")
@@ -82,7 +82,7 @@ abstract class KeyboardView(
             handler.postDelayed({ repeater() }, repeatInterval)
         }
         handler.postDelayed({
-            if(key.key.repeatable) {
+            if(key.key.repeatable || repeatOnLongPress) {
                 repeater()
             } else {
                 this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -113,7 +113,7 @@ abstract class KeyboardView(
             && direction != FlickDirection.None
             && pointer.flickDirection == FlickDirection.None) {
             handler.removeCallbacksAndMessages(null)
-            listener.onKeyFlick(direction, pointer.key.key.code, pointer.key.key.output)
+            onFlick(direction, pointer.key, pointerId, x, y)
             pointers[pointerId] = pointer.copy(flickDirection = direction)
 
         } else if(slideAction == "seek" && key.key.code !in setOf(KeyEvent.KEYCODE_DEL)) {
@@ -144,7 +144,7 @@ abstract class KeyboardView(
         pointers -= pointerId
     }
 
-    protected fun onFlick(key: KeyWrapper, flickDirection: FlickDirection, pointerId: Int, x: Int, y: Int) {
+    protected fun onFlick(flickDirection: FlickDirection, key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         listener.onKeyFlick(flickDirection, key.key.code, key.key.output)
     }
 

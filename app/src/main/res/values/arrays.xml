@@ -51,6 +51,24 @@
         <item>seek</item>
     </string-array>
 
+    <string-array name="long_press_actions">
+        <item>@string/flick_action_none</item>
+        <item>@string/long_press_action_repeat</item>
+        <item>@string/flick_action_shift</item>
+        <item>@string/flick_action_symbol</item>
+        <item>@string/flick_action_shift_symbol</item>
+        <!--        <item>@string/flick_action_alternative_language</item>-->
+    </string-array>
+
+    <string-array name="long_press_action_values">
+        <item>none</item>
+        <item>repeat</item>
+        <item>shift</item>
+        <item>symbol</item>
+        <item>shift_symbol</item>
+        <!--        <item>alternative_language</item>-->
+    </string-array>
+
     <string-array name="flick_actions">
         <item>@string/flick_action_none</item>
         <item>@string/flick_action_shift</item>
