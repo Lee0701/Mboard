@@ -25,6 +25,7 @@ sealed interface FlickLongPressAction {
     object Symbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
+                inputEngine.onReset()
                 inputEngine.symbolsInputEngine?.onKey(code, keyboardState)
             }
         }
@@ -33,6 +34,7 @@ sealed interface FlickLongPressAction {
     object ShiftedSymbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
+                inputEngine.onReset()
                 inputEngine.symbolsInputEngine?.onKey(code, makeShiftOn(keyboardState))
             }
         }
@@ -41,6 +43,7 @@ sealed interface FlickLongPressAction {
     object AlternativeLanguage: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             if(inputEngine is BasicSoftInputEngine) {
+                inputEngine.onReset()
                 inputEngine.alternativeInputEngine?.onKey(code, keyboardState)
             }
         }
