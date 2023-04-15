@@ -11,7 +11,7 @@ class ChooseInputMethodPreference(
     attrs: AttributeSet?,
 ): Preference(context, attrs) {
     init {
-        layoutResource = R.layout.preference_multiline
+        layoutResource = R.layout.preference_inline
     }
     override fun onClick() {
         val inputMethodManager =

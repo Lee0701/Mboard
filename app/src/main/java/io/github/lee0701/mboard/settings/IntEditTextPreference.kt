@@ -10,7 +10,7 @@ class IntEditTextPreference(
     attrs: AttributeSet?,
 ): EditTextPreference(context, attrs) {
     init {
-        layoutResource = R.layout.preference_multiline
+        layoutResource = R.layout.preference_inline
     }
 
     override fun getPersistedString(defaultReturnValue: String?): String {
