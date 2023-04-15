@@ -12,7 +12,7 @@ android {
         applicationId "io.github.lee0701.mboard"
         minSdk 14
         targetSdk 33
-        versionCode 15
+        versionCode 16
         versionName "0.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
