@@ -31,7 +31,7 @@
             app:valueFrom="20.0"
             app:valueTo="80.0"
             app:stepSize="5.0"
-            app:defaultValue="@string/pref_appearance_theme_default"
+            app:defaultValue="@string/pref_appearance_keyboard_height_default"
             app:title="@string/pref_appearance_keyboard_height_title"
             app:useSimpleSummaryProvider="true"/>
 
@@ -48,6 +48,14 @@
             app:entryValues="@array/appearance_keyboard_view_type_values"
             app:title="@string/pref_appearance_keyboard_view_type_title"
             app:summary="@string/pref_appearance_keyboard_view_type_summary" />
+
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="appearance_screen_mode"
+            app:defaultValue="@string/pref_appearance_screen_mode_default"
+            app:entries="@array/appearance_screen_modes"
+            app:entryValues="@array/appearance_screen_mode_values"
+            app:title="@string/pref_appearance_screen_mode_title"
+            app:useSimpleSummaryProvider="true" />
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 

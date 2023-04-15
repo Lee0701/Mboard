@@ -13,7 +13,7 @@ import io.github.lee0701.mboard.service.MBoardIME
 object InputEnginePresets {
 
     fun LatinQWERTY(mBoardIME: MBoardIME): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_tablet.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
         val convertTable = CodeConvertTable(mapOf())
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
@@ -31,8 +31,8 @@ object InputEnginePresets {
     }
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_hangul_2set_ks5002.yaml")
+        val keyboard = loadKeyboard(mBoardIME.assets, "common/soft_qwerty_mobile.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_ks5002.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_2set/comb_hangul_2set_ks5002.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()

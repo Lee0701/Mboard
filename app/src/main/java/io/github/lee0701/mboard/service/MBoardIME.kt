@@ -14,12 +14,15 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.*
-import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.input.BasicSoftInputEngine
+import io.github.lee0701.mboard.input.Candidate
+import io.github.lee0701.mboard.input.DefaultHanjaCandidate
+import io.github.lee0701.mboard.input.DirectInputEngine
+import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.input.InputEnginePresets
+import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import io.github.lee0701.mboard.view.keyboard.Themes
 import kotlin.math.roundToInt
@@ -39,6 +42,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     private fun reload(sharedPreferences: SharedPreferences, force: Boolean = false) {
+        val screenMode: String = sharedPreferences.getString("appearance_keyboard_view_type", "mobile") ?: "mobile"
+
         val hanjaConversionEnabled = sharedPreferences.getBoolean("input_hanja_conversion", false)
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
         val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!

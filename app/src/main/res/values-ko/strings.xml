@@ -22,6 +22,10 @@
     <string name="pref_appearance_keyboard_view_type_summary">성능 문제가 있을 경우 이 설정을 변경해 보세요.</string>
     <string name="keybaord_view_type_canvas">캔버스</string>
     <string name="keybaord_view_type_stacked_view">뷰 쌓기</string>
+    <string name="pref_appearance_screen_mode_title">화면 모드</string>
+    <string name="screen_mode_mobile">모바일</string>
+    <string name="screen_mode_tablet">태블릿</string>
+    <string name="screen_mode_full">풀사이즈</string>
 
     <string name="pref_header_layout_title">키보드 배열</string>
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>

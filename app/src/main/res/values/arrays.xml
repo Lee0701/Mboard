@@ -21,6 +21,18 @@
         <item>stacked_view</item>
     </string-array>
 
+    <string-array name="appearance_screen_modes">
+        <item>@string/screen_mode_mobile</item>
+        <item>@string/screen_mode_tablet</item>
+        <item>@string/screen_mode_full</item>
+    </string-array>
+
+    <string-array name="appearance_screen_mode_values">
+        <item>mobile</item>
+        <item>tablet</item>
+        <item>full</item>
+    </string-array>
+
     <string-array name="additional_dictionaries">
         <item>@string/person_name</item>
         <item>@string/metro_station</item>

@@ -23,8 +23,8 @@ class ImportExportActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val tables = listOf(
-            "hangul_2set/table_hangul_2set_ks5002.yaml",
-            "table_hangul_2set_old_hangul.yaml",
+            "hangul_2set/table_ks5002.yaml",
+            "table_old_hangul.yaml",
             "table_hangul_3set_390.yaml",
             "table_hangul_3set_391.yaml",
             "table_hangul_3set_391_strict.yaml",
