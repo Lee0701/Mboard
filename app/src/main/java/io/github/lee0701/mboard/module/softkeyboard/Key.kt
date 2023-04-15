@@ -1,10 +1,11 @@
 package io.github.lee0701.mboard.module.softkeyboard
 
+import io.github.lee0701.mboard.module.serialization.KeyCodeSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Key(
-    val code: Int = 0,
+    @Serializable(with = KeyCodeSerializer::class) val code: Int = 0,
     val output: String? = null,
     val label: String? = output,
     val iconType: KeyIconType? = null,

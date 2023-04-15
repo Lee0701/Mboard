@@ -1,96 +1,95 @@
----
 rows:
 - keys:
-  - code: 45
+  - code: "KEYCODE_Q"
     output: "Q"
     label: "Q"
-  - code: 51
+  - code: "KEYCODE_W"
     output: "W"
     label: "W"
-  - code: 33
+  - code: "KEYCODE_E"
     output: "E"
     label: "E"
-  - code: 46
+  - code: "KEYCODE_R"
     output: "R"
     label: "R"
-  - code: 48
+  - code: "KEYCODE_T"
     output: "T"
     label: "T"
-  - code: 53
+  - code: "KEYCODE_Y"
     output: "Y"
     label: "Y"
-  - code: 49
+  - code: "KEYCODE_U"
     output: "U"
     label: "U"
-  - code: 37
+  - code: "KEYCODE_I"
     output: "I"
     label: "I"
-  - code: 43
+  - code: "KEYCODE_O"
     output: "O"
     label: "O"
-  - code: 44
+  - code: "KEYCODE_P"
     output: "P"
     label: "P"
   padding: 0.0
 - keys:
-  - code: 29
+  - code: "KEYCODE_A"
     output: "A"
     label: "A"
-  - code: 47
+  - code: "KEYCODE_S"
     output: "S"
     label: "S"
-  - code: 32
+  - code: "KEYCODE_D"
     output: "D"
     label: "D"
-  - code: 34
+  - code: "KEYCODE_F"
     output: "F"
     label: "F"
-  - code: 35
+  - code: "KEYCODE_G"
     output: "G"
     label: "G"
-  - code: 36
+  - code: "KEYCODE_H"
     output: "H"
     label: "H"
-  - code: 38
+  - code: "KEYCODE_J"
     output: "J"
     label: "J"
-  - code: 39
+  - code: "KEYCODE_K"
     output: "K"
     label: "K"
-  - code: 40
+  - code: "KEYCODE_L"
     output: "L"
     label: "L"
   padding: 0.5
 - keys:
-  - code: 59
+  - code: "KEYCODE_SHIFT_LEFT"
     output: null
     label: null
     iconType: "Shift"
     width: 1.5
     repeatable: false
     type: "Modifier"
-  - code: 54
+  - code: "KEYCODE_Z"
     output: "Z"
     label: "Z"
-  - code: 52
+  - code: "KEYCODE_X"
     output: "X"
     label: "X"
-  - code: 31
+  - code: "KEYCODE_C"
     output: "C"
     label: "C"
-  - code: 50
+  - code: "KEYCODE_V"
     output: "V"
     label: "V"
-  - code: 30
+  - code: "KEYCODE_B"
     output: "B"
     label: "B"
-  - code: 42
+  - code: "KEYCODE_N"
     output: "N"
     label: "N"
-  - code: 41
+  - code: "KEYCODE_M"
     output: "M"
     label: "M"
-  - code: 67
+  - code: "KEYCODE_DEL"
     output: null
     label: null
     iconType: "Backspace"
@@ -99,42 +98,42 @@ rows:
     type: "Modifier"
   padding: 0.0
 - keys:
-  - code: 63
+  - code: "KEYCODE_SYM"
     output: null
     label: "?12"
     iconType: null
     width: 1.5
     repeatable: false
     type: "Modifier"
-  - code: 55
+  - code: "KEYCODE_COMMA"
     output: ","
     label: ","
     iconType: null
     width: 1.0
     repeatable: false
     type: "AlphanumericAlt"
-  - code: 204
+  - code: "KEYCODE_LANGUAGE_SWITCH"
     output: null
     label: null
     iconType: "Language"
     width: 1.0
     repeatable: false
     type: "ModifierAlt"
-  - code: 62
+  - code: "KEYCODE_SPACE"
     output: null
     label: ""
     iconType: null
     width: 4.0
     repeatable: false
     type: "Space"
-  - code: 56
+  - code: "KEYCODE_PERIOD"
     output: "."
     label: "."
     iconType: null
     width: 1.0
     repeatable: false
     type: "AlphanumericAlt"
-  - code: 66
+  - code: "KEYCODE_ENTER"
     output: null
     label: null
     iconType: "Return"

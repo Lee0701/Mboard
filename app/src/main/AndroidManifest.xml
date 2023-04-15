@@ -28,11 +28,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".service.ImportExportActivity"
-            android:exported="false">
-        </activity>
-
         <service
             android:name="io.github.lee0701.mboard.service.MBoardIME"
             android:label="@string/app_name"
@@ -46,6 +41,19 @@
                 android:name="android.view.im"
                 android:resource="@xml/method" />
         </service>
+
+        <activity
+            android:name=".service.ImportExportActivity"
+            android:enabled="@bool/enableImportExportActivity"
+            android:label="Import/Export"
+            android:icon="@color/white"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
     </application>
 
