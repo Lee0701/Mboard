@@ -14,9 +14,12 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.*
+import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import io.github.lee0701.mboard.view.keyboard.Themes
 import kotlin.math.roundToInt
@@ -40,8 +43,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
         val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
 
+        // TODO: complete input engine.
         val latinInputEngine = InputEnginePresets.of(latinPresetKey, this)
+//        val latinInputEngine = Yaml.default.decodeFromStream<InputEnginePreset>(assets.open("preset/preset_tablet_latin_qwerty.yaml")).inflate(this)
         val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled)
+//        val hangulInputEngine = Yaml.default.decodeFromStream<InputEnginePreset>(assets.open("preset/preset_tablet_2set_ks5002.yaml")).inflate(this)
+//        val hangulInputEngine = Yaml.default.decodeFromStream<InputEnginePreset>(assets.open("preset/preset_mobile_2set_ks5002_with_num.yaml")).inflate(this)
         val symbolInputEngine = InputEnginePresets.SymbolsG(this)
 
         if(latinInputEngine is BasicSoftInputEngine) {

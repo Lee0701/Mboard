@@ -25,7 +25,6 @@ object KeyCodeSerializer: KSerializer<Int> {
             val keyCode = KeyEvent.keyCodeFromString(string)
             if(keyCode > 0) keyCode else string.toIntOrNull() ?: 0
         }
-    println(keyCode)
         return keyCode
     }
 

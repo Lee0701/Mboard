@@ -6,6 +6,7 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
+import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -22,7 +23,7 @@ class ImportExportActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val tables = listOf(
-            "table_hangul_2set_ks5002.yaml",
+            "hangul_2set/table_hangul_2set_ks5002.yaml",
             "table_hangul_2set_old_hangul.yaml",
             "table_hangul_3set_390.yaml",
             "table_hangul_3set_391.yaml",
@@ -41,7 +42,9 @@ class ImportExportActivity: AppCompatActivity() {
             "soft_qwerty_mobile_with_num.yaml",
             "soft_qwerty_mobile_with_semicolon.yaml",
         )
-        upgradeKeyboards(keyboards)
+//        upgradeKeyboards(keyboards)
+
+        generatePreset()
     }
 
     private fun upgradeTables(names: List<String>) {
@@ -71,6 +74,15 @@ class ImportExportActivity: AppCompatActivity() {
     private fun upgradeKeyboard(input: InputStream, output: OutputStream) {
         val keyboard = yaml.decodeFromStream<Keyboard>(input)
         yaml.encodeToStream(keyboard, output)
+    }
+
+    private fun generatePreset() {
+        val h2 = InputEnginePreset.HanjaHangul(
+            softKeyboard = listOf("common/soft_qwerty_tablet.yaml"),
+            hangulTable = listOf("hangul_2set/table_ks5002.yaml"),
+            combinationTable = listOf("hangul_2set/comb_ks5002.yaml"),
+        )
+        Yaml.default.encodeToStream(h2, File(filesDir, "test.yaml").outputStream())
     }
 
 }

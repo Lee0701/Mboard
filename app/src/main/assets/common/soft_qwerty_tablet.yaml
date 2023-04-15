@@ -1,26 +1,9 @@
 rows:
 - keys:
-  - code: "KEYCODE_1"
-    output: "1"
-  - code: "KEYCODE_2"
-    output: "2"
-  - code: "KEYCODE_3"
-    output: "3"
-  - code: "KEYCODE_4"
-    output: "4"
-  - code: "KEYCODE_5"
-    output: "5"
-  - code: "KEYCODE_6"
-    output: "6"
-  - code: "KEYCODE_7"
-    output: "7"
-  - code: "KEYCODE_8"
-    output: "8"
-  - code: "KEYCODE_9"
-    output: "9"
-  - code: "KEYCODE_0"
-    output: "0"
-- keys:
+  - code: "KEYCODE_TAB"
+    iconType: "Tab"
+    repeatable: false
+    type: "Modifier"
   - code: "KEYCODE_Q"
     output: "Q"
   - code: "KEYCODE_W"
@@ -41,7 +24,15 @@ rows:
     output: "O"
   - code: "KEYCODE_P"
     output: "P"
+  - code: "KEYCODE_DEL"
+    iconType: "Backspace"
+    repeatable: true
+    type: "Modifier"
 - keys:
+  - code: "KEYCODE_CAPS_LOCK"
+    iconType: "Caps"
+    width: 1.25
+    type: "Modifier"
   - code: "KEYCODE_A"
     output: "A"
   - code: "KEYCODE_S"
@@ -60,12 +51,15 @@ rows:
     output: "K"
   - code: "KEYCODE_L"
     output: "L"
-  padding: 0.5
+  - code: "KEYCODE_ENTER"
+    iconType: "Return"
+    width: 1.75
+    type: "Action"
 - keys:
   - code: "KEYCODE_SHIFT_LEFT"
     iconType: "Shift"
-    width: 1.5
     type: "Modifier"
+    width: 1.75
   - code: "KEYCODE_Z"
     output: "Z"
   - code: "KEYCODE_X"
@@ -80,31 +74,28 @@ rows:
     output: "N"
   - code: "KEYCODE_M"
     output: "M"
-  - code: "KEYCODE_DEL"
-    iconType: "Backspace"
-    width: 1.5
-    repeatable: true
+  - code: "KEYCODE_COMMA"
+    output: ","
+  - code: "KEYCODE_PERIOD"
+    output: "."
+  - code: "KEYCODE_SHIFT_RIGHT"
+    iconType: "Shift"
     type: "Modifier"
+    width: 1.25
 - keys:
   - code: "KEYCODE_SYM"
     label: "?12"
     width: 1.5
     type: "Modifier"
-  - code: "KEYCODE_COMMA"
-    output: ","
-    type: "AlphanumericAlt"
   - code: "KEYCODE_LANGUAGE_SWITCH"
     iconType: "Language"
     type: "ModifierAlt"
   - code: "KEYCODE_SPACE"
     label: ""
-    width: 4.0
+    width: 8.0
     type: "Space"
-  - code: "KEYCODE_PERIOD"
-    output: "."
-    type: "AlphanumericAlt"
-  - code: "KEYCODE_ENTER"
-    iconType: "Return"
+  - code: "KEYCODE_SYM"
+    label: "?12"
     width: 1.5
-    type: "Action"
-height: 275.0
+    type: "Modifier"
+height: 220.0

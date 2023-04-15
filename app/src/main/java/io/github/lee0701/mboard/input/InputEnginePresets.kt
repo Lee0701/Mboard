@@ -32,8 +32,8 @@ object InputEnginePresets {
 
     fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_ks5002.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_2set_ks5002.yaml")
+        val convertTable = loadConvertTable(mBoardIME.assets, "hangul_2set/table_hangul_2set_ks5002.yaml")
+        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "hangul_2set/comb_hangul_2set_ks5002.yaml")
         return if(hanja) {
             val dictionary = HanjaConverter.loadDictionary(mBoardIME) ?: EmptyDictionary()
             InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, dictionary).create(mBoardIME)

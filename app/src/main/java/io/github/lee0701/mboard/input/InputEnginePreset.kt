@@ -44,7 +44,7 @@ sealed interface InputEnginePreset {
         }
     }
 
-    data class Hanja(
+data class Hanja(
         val keyboard: Keyboard,
         val codeConvertTable: CodeConvertTable,
         val combinationTable: JamoCombinationTable,
