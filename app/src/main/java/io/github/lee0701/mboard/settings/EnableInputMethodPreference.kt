@@ -12,7 +12,7 @@ class EnableInputMethodPreference(
     attrs: AttributeSet?,
 ): Preference(context, attrs) {
     init {
-        layoutResource = R.layout.preference_multiline
+        layoutResource = R.layout.preference_inline
     }
     override fun onClick() {
         context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))

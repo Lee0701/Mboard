@@ -101,7 +101,7 @@ open class CanvasKeyboardView(
                 val height = rowHeight
                 val label = key.label
                 val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
-                cachedKeys += CachedKey(key, x.roundToInt(), y.roundToInt(), width.roundToInt(), height.roundToInt(), icon)
+                cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon)
                 x += width
             }
         }
@@ -174,7 +174,7 @@ open class CanvasKeyboardView(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(keyboardWidth.roundToInt(), keyboardHeight.roundToInt())
+        setMeasuredDimension(keyboardWidth.roundToInt(), keyboardHeight)
     }
 
     data class CachedKey(

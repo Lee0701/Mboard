@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.settings
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
@@ -12,9 +13,9 @@ class SliderPreference(
     attrs: AttributeSet?,
 ): Preference(context, attrs) {
 
-    val valueFrom: Float
-    val valueTo: Float
-    val stepSize: Float
+    private val valueFrom: Float
+    private val valueTo: Float
+    private val stepSize: Float
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference)
@@ -35,15 +36,24 @@ class SliderPreference(
         slider.valueTo = this.valueTo
         slider.stepSize = this.stepSize
 
-        slider.value = getPersistedFloat(55f)
-        slider.addOnChangeListener { slider, value, fromUser ->
+        slider.value = getPersistedFloat(slider.valueFrom)
+        slider.addOnChangeListener { _, value, _ ->
             persistFloat(value)
         }
     }
 
     override fun getPersistedFloat(defaultReturnValue: Float): Float {
         val v = super.getPersistedFloat(defaultReturnValue)
-        if(v !in valueFrom..valueTo) return defaultReturnValue
+        if(v !in valueFrom .. valueTo) return defaultReturnValue
         return v
+    }
+
+    override fun onSetInitialValue(defaultValue: Any?) {
+        super.onSetInitialValue(defaultValue)
+        if(defaultValue is Float) persistFloat(defaultValue)
+    }
+
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
+        return a.getFloat(index, 0f)
     }
 }

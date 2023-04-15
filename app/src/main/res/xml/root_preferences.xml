@@ -28,10 +28,10 @@
 
         <io.github.lee0701.mboard.settings.SliderPreference
             app:key="appearance_keyboard_height"
-            app:valueFrom="20"
-            app:valueTo="80"
-            app:stepSize="5"
-            app:defaultValue="55"
+            app:valueFrom="20.0"
+            app:valueTo="80.0"
+            app:stepSize="5.0"
+            app:defaultValue="55.0"
             app:title="@string/pref_appearance_keyboard_height_title" />
 
         <io.github.lee0701.mboard.settings.SwitchPreference
@@ -96,15 +96,21 @@
             app:defaultValue="true"
             app:title="@string/pref_behaviour_show_popups_title" />
 
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
+        <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_double_tap_gap"
-            app:defaultValue="500"
+            app:valueFrom="100.0"
+            app:valueTo="2000.0"
+            app:stepSize="100.0"
+            app:defaultValue="500.0"
             app:title="@string/pref_behaviour_double_tap_gap_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
+        <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_long_press_duration"
-            app:defaultValue="500"
+            app:valueFrom="100.0"
+            app:valueTo="2000.0"
+            app:stepSize="100.0"
+            app:defaultValue="500.0"
             app:title="@string/pref_behaviour_long_press_duration_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -116,9 +122,12 @@
             app:title="@string/pref_behaviour_long_press_action_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
+        <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_repeat_interval"
-            app:defaultValue="50"
+            app:defaultValue="50.0"
+            app:valueFrom="10.0"
+            app:valueTo="200.0"
+            app:stepSize="10.0"
             app:title="@string/pref_behaviour_repeat_interval_title"
             app:useSimpleSummaryProvider="true" />
 
@@ -130,8 +139,11 @@
             app:title="@string/pref_behaviour_slide_action_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.IntEditTextPreference
+        <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_flick_sensitivity"
+            app:valueFrom="10"
+            app:valueTo="200"
+            app:stepSize="10"
             app:defaultValue="60"
             app:title="@string/pref_behaviour_flick_sensitivity_title"
             app:useSimpleSummaryProvider="true" />

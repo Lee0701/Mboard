@@ -11,6 +11,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
@@ -28,17 +29,17 @@ abstract class KeyboardView(
 
     protected val unifyHeight: Boolean = sharedPreferences.getBoolean("appearance_unify_height", false)
     protected val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    protected val rowHeight = dipToPixel(sharedPreferences.getFloat("appearance_keyboard_height", 55f))
-    protected val keyboardHeight = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    protected val rowHeight: Int = dipToPixel(sharedPreferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    protected val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 
     protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
-    protected val longPressDuration = sharedPreferences.getInt("behaviour_long_press_duration", 500).toLong()
-    protected val repeatInterval = sharedPreferences.getInt("behaviour_repeat_interval", 50).toLong()
+    protected val longPressDuration = sharedPreferences.getFloat("behaviour_long_press_duration", 100f).toLong()
+    protected val repeatInterval = sharedPreferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
     protected val slideAction = sharedPreferences.getString("behaviour_slide_action", "flick")
-    protected val flickSensitivity = dipToPixel(sharedPreferences.getInt("behaviour_flick_sensitivity", 60).toFloat()).toInt()
+    protected val flickSensitivity = dipToPixel(sharedPreferences.getFloat("behaviour_flick_sensitivity", 100f)).toInt()
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()

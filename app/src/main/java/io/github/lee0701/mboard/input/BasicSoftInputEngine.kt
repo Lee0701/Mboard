@@ -43,7 +43,7 @@ class BasicSoftInputEngine(
 
     override fun initView(context: Context): View? {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        doubleTapGap = preferences.getInt("behaviour_double_tap_gap", 500)
+        doubleTapGap = preferences.getFloat("behaviour_double_tap_gap", 500f).toInt()
         keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
         longPressAction = FlickAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
         flickUpAction = FlickAction.of(preferences.getString("behaviour_flick_action_up", "shift") ?: "shift")
