@@ -29,22 +29,6 @@ object InputEnginePresets {
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
 
-    fun Hangul2SetPredictingKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
-        val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
-        val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_ks5002.yaml")
-        val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_2set_ks5002.yaml")
-        val prefixDict = DiskTrieDictionary(mBoardIME.assets.open("dict/dict-prefix.bin"))
-        val ngramDict = DiskTrieDictionary(mBoardIME.assets.open("dict/dict-ngram.bin"))
-        val vocab = mBoardIME.assets.open("dict/vocab.tsv").bufferedReader().readLines()
-            .map { line -> line.split('\t') }.filter { it.size == 2 }
-            .map { (key, value) -> key to value.toInt() }
-        return BasicSoftInputEngine(keyboard, { listener ->
-            PredictingInputEngine({ l ->
-                HangulInputEngine(convertTable, combinationTable, l)
-            }, prefixDict, ngramDict, vocab, listener)
-        }, true, mBoardIME)
-    }
-
     fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_ks5002.yaml")
@@ -129,7 +113,7 @@ object InputEnginePresets {
             "layout_latin_qwerty" -> LatinQWERTY(ime)
             "layout_latin_dvorak" -> LatinDvorak(ime)
             "layout_latin_colemak" -> LatinColemak(ime)
-            "layout_2set_ks5002" -> Hangul2SetPredictingKS5002(ime, hanja)
+            "layout_2set_ks5002" -> Hangul2SetKS5002(ime, hanja)
             "layout_2set_old_hangul" -> Hangul2SetOldHangul(ime, hanja)
             "layout_3set_390" -> Hangul3Set390(ime, hanja)
             "layout_3set_391" -> Hangul3Set391(ime, hanja)

@@ -18,6 +18,8 @@ class HanjaConverterInputEngine(
     private val inputEngine: InputEngine = getInputEngine(this)
     private val composingWordStack: MutableList<String> = mutableListOf()
     private var composingChar: String = ""
+    private var beforeText = ""
+
     private val currentComposing: String get() = composingWordStack.lastOrNull().orEmpty() + composingChar
 
     override fun onKey(code: Int, state: KeyboardState) {
@@ -29,6 +31,7 @@ class HanjaConverterInputEngine(
     }
 
     override fun onTextAroundCursor(before: String, after: String) {
+        this.beforeText = before
     }
 
     override fun onComposingText(text: CharSequence) {
@@ -48,6 +51,7 @@ class HanjaConverterInputEngine(
         if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
+        convert()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -92,12 +96,15 @@ class HanjaConverterInputEngine(
     }
 
     private fun convert() = CoroutineScope(Dispatchers.IO).launch {
-        val text = currentComposing
-        val composingText = ComposingText(text = text, 0, text.length)
-        val candidates = if(text.isNotBlank()) {
+        val text = beforeText + currentComposing
+        val from = beforeText.length
+        val to = text.length
+        val composingText = ComposingText(text = text, from = from, to = to)
+        val candidates = if(currentComposing.isNotBlank()) {
             hanjaConverter.convertPrefix(composingText).flatten()
                 .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
         } else {
+            println("$predictor $composingText")
             predictor?.predict(composingText)?.top(10).orEmpty()
                 .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
         }
