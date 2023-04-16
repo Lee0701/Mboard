@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.input
 import android.content.Context
 import android.os.Build
 import androidx.preference.PreferenceManager
+import engine.DictionaryPredictor
 import io.github.lee0701.converter.library.dictionary.HanjaDictionary
 import io.github.lee0701.converter.library.dictionary.ListDictionary
 import io.github.lee0701.converter.library.engine.CachingTFLitePredictor
@@ -11,10 +12,12 @@ import io.github.lee0701.converter.library.engine.ContextSortingHanjaConverter
 import io.github.lee0701.converter.library.engine.DictionaryHanjaConverter
 import io.github.lee0701.converter.library.engine.DictionaryManager
 import io.github.lee0701.converter.library.engine.HanjaConverter
+import io.github.lee0701.converter.library.engine.Predictor
+import io.github.lee0701.converter.library.engine.ResortingPredictor
 import io.github.lee0701.converter.library.engine.TFLitePredictor
 
 object HanjaConverterBuilder {
-    fun build(context: Context): HanjaConverter {
+    fun build(context: Context): Pair<HanjaConverter, Predictor?> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val converterContext = context.createPackageContext("io.github.lee0701.converter.donation", 0)
 
@@ -33,7 +36,7 @@ object HanjaConverterBuilder {
 
         // Add Converter with Main Compound Dictionary
         val additional = preferences.getStringSet("input_hanja_additional_dictionaries", setOf()).orEmpty()
-        val dictionaries: ListDictionary<HanjaDictionary.Entry> =
+        val dictionaries =
             DictionaryManager.loadCompoundDictionary(converterContext.assets, listOf("base") + additional)
         val dictionaryHanjaConverter: HanjaConverter =
             DictionaryHanjaConverter(dictionaries)
@@ -69,7 +72,14 @@ object HanjaConverterBuilder {
         val hanjaConverter: HanjaConverter =
             CompoundHanjaConverter(converters.toList())
 
-        return hanjaConverter
+        val predictor = if(tfLitePredictor != null) {
+            ResortingPredictor(
+                DictionaryPredictor(dictionaries),
+                CachingTFLitePredictor(tfLitePredictor),
+            )
+        } else null
+
+        return hanjaConverter to predictor
     }
 
 }

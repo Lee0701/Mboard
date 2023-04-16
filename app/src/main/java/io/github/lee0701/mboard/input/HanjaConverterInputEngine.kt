@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.input
 import android.graphics.drawable.Drawable
 import io.github.lee0701.converter.library.engine.ComposingText
 import io.github.lee0701.converter.library.engine.HanjaConverter
+import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import kotlinx.coroutines.*
@@ -10,6 +11,7 @@ import kotlinx.coroutines.*
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
     private val hanjaConverter: HanjaConverter,
+    private val predictor: Predictor?,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
 
@@ -36,6 +38,7 @@ class HanjaConverterInputEngine(
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
+        convert()
     }
 
     override fun onCommitText(text: CharSequence) {
@@ -88,8 +91,14 @@ class HanjaConverterInputEngine(
     private fun convert() = CoroutineScope(Dispatchers.IO).launch {
         val text = currentComposing
         val composingText = ComposingText(text = text, 0, text.length)
-        val candidates = hanjaConverter.convertPrefix(composingText).flatten()
-        launch(Dispatchers.Main) { onCandidates(candidates.map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }) }
+        val candidates = if(text.isNotBlank()) {
+            hanjaConverter.convertPrefix(composingText).flatten()
+                .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
+        } else {
+            predictor?.predict(composingText)?.top(10).orEmpty()
+                .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
+        }
+        launch(Dispatchers.Main) { onCandidates(candidates) }
     }
 
     private fun updateView() {
@@ -100,6 +109,7 @@ class HanjaConverterInputEngine(
         inputEngine.onReset()
         listener.onCandidates(listOf())
         updateView()
+        convert()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

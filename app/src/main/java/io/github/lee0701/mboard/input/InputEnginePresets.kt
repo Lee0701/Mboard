@@ -34,8 +34,8 @@ object InputEnginePresets {
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_ks5002.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_2set_ks5002.yaml")
         return if(hanja) {
-            val converter = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
@@ -46,8 +46,8 @@ object InputEnginePresets {
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_old_hangul.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_full.yaml")
         return if(hanja) {
-            val converter = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
@@ -58,8 +58,8 @@ object InputEnginePresets {
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_390.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_390.yaml")
         return if(hanja) {
-            val converter = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
@@ -70,8 +70,8 @@ object InputEnginePresets {
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391.yaml")
         return if(hanja) {
-            val converter = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
@@ -82,8 +82,8 @@ object InputEnginePresets {
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391_strict.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391_strict.yaml")
         return if(hanja) {
-            val converter = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
