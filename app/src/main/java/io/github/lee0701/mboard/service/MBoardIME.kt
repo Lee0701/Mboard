@@ -55,7 +55,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val yaml = InputEnginePreset.yaml
 
         val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
-        val hanjaPredictionEnabled = sharedPreferences.getBoolean("input_hanja_prediction", false)
+        val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
 
         fun modHangul(preset: InputEnginePreset): InputEnginePreset {
             if(preset !is InputEnginePreset.Hangul) return preset

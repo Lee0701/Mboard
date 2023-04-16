@@ -29,9 +29,9 @@ abstract class KeyboardView(
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     protected val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
-    protected val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    protected val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
-    protected val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
+    val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 

@@ -116,7 +116,6 @@ sealed interface InputEnginePreset {
             val convertTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, predictor) = createHanjaConverter(ime, prediction = true)
-            println("$converter $predictor")
             return BasicSoftInputEngine(keyboard, { listener ->
                 HanjaConverterInputEngine({ l ->
                     HangulInputEngine(convertTable, combinationTable, l)

@@ -244,9 +244,6 @@ class BasicSoftInputEngine(
     }
 
     override fun getHeight(): Int {
-        val displayMetrics = keyboardView?.context?.resources?.displayMetrics
-        return if(displayMetrics != null)
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, keyboard.height, displayMetrics).toInt()
-        else 0
+        return keyboardView?.keyboardHeight ?: 0
     }
 }

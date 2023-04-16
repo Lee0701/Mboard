@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
@@ -32,6 +34,9 @@ class StackedViewKeyboardView(
 
     init {
         this.addView(keyboardViewWrapper.binding.root)
+        this.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -40,6 +45,9 @@ class StackedViewKeyboardView(
 
         val rowViewWrappers = mutableListOf<RowViewWrapper>()
         val binding = KeyboardBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
+            root.layoutParams = LayoutParams(
+                LayoutParams.MATCH_PARENT, keyboardHeight
+            )
             keyboard.rows.forEach { row ->
                 val rowViewBinding = initRowView(row, theme)
                 rowViewWrappers += rowViewBinding
@@ -53,7 +61,7 @@ class StackedViewKeyboardView(
         val wrappers = mutableListOf<KeyLikeViewWrapper>()
         val binding = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT, rowHeight
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT, 0
             ).apply {
                 weight = 1f
             }
