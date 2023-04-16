@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -45,7 +46,7 @@ abstract class KeyboardView(
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
     private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
 
-    protected abstract val wrappedKeys: List<KeyWrapper>
+    protected abstract val wrappedKeys: List<KeyLikeWrapper>
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -167,13 +168,20 @@ abstract class KeyboardView(
         }
     }
 
-    interface KeyWrapper {
-        val key: Key
+    interface KeyLikeWrapper {
         val x: Int
         val y: Int
         val width: Int
         val height: Int
+    }
+
+    interface KeyWrapper: KeyLikeWrapper {
+        val key: Key
         val icon: Drawable?
+    }
+
+    interface SpacerWrapper: KeyLikeWrapper {
+        val spacer: Spacer
     }
 
     data class TouchPointer(

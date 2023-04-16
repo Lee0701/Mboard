@@ -7,7 +7,6 @@ import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.MotionEvent
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -15,8 +14,10 @@ import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
+import io.github.lee0701.mboard.module.softkeyboard.KeyLike
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
 open class CanvasKeyboardView(
@@ -92,17 +93,25 @@ open class CanvasKeyboardView(
     fun cacheKeys() {
         val rowHeight = keyboardHeight / keyboard.rows.size
         keyboard.rows.forEachIndexed { j, row ->
-            val keyWidths = row.keys.map { it.width }.sum() + row.padding*2
+            val keyWidths = row.keys.map { it.width }.sum()
             val keyWidthUnit = keyboardWidth / keyWidths
-            var x = row.padding * keyWidthUnit
+            var x = 0f
             val y = j * rowHeight
             row.keys.forEachIndexed { i, key ->
-                val width = keyWidthUnit * key.width
-                val height = rowHeight
-                val label = key.label
-                val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
-                cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon)
-                x += width
+                when(key) {
+                    is Key -> {
+                        val width = keyWidthUnit * key.width
+                        val height = rowHeight
+                        val label = key.label
+                        val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
+                        cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon)
+                        x += width
+                    }
+                    else -> {
+                        val width = keyWidthUnit * key.width
+                        x += width
+                    }
+                }
             }
         }
     }
@@ -190,6 +199,15 @@ open class CanvasKeyboardView(
         override val height: Int,
         override val icon: Drawable?,
     ): KeyWrapper
+
+    data class CachedSpacer(
+        override val spacer: Spacer,
+        override val x: Int,
+        override val y: Int,
+        override val width: Int,
+        override val height: Int,
+    ): SpacerWrapper
+
     data class BitmapCacheKey(
         val width: Int,
         val height: Int,

@@ -1,102 +1,141 @@
 rows:
 - keys:
-  - code: "KEYCODE_TAB"
+  - !<key>
+    code: "KEYCODE_TAB"
     iconType: "Tab"
     repeatable: false
     type: "Modifier"
-  - code: "KEYCODE_Q"
+  - !<key>
+    code: "KEYCODE_Q"
     output: "Q"
-  - code: "KEYCODE_W"
+  - !<key>
+    code: "KEYCODE_W"
     output: "W"
-  - code: "KEYCODE_E"
+  - !<key>
+    code: "KEYCODE_E"
     output: "E"
-  - code: "KEYCODE_R"
+  - !<key>
+    code: "KEYCODE_R"
     output: "R"
-  - code: "KEYCODE_T"
+  - !<key>
+    code: "KEYCODE_T"
     output: "T"
-  - code: "KEYCODE_Y"
+  - !<key>
+    code: "KEYCODE_Y"
     output: "Y"
-  - code: "KEYCODE_U"
+  - !<key>
+    code: "KEYCODE_U"
     output: "U"
-  - code: "KEYCODE_I"
+  - !<key>
+    code: "KEYCODE_I"
     output: "I"
-  - code: "KEYCODE_O"
+  - !<key>
+    code: "KEYCODE_O"
     output: "O"
-  - code: "KEYCODE_P"
+  - !<key>
+    code: "KEYCODE_P"
     output: "P"
-  - code: "KEYCODE_DEL"
+  - !<key>
+    code: "KEYCODE_DEL"
     iconType: "Backspace"
     repeatable: true
     type: "Modifier"
 - keys:
-  - code: "KEYCODE_CAPS_LOCK"
+  - !<key>
+    code: "KEYCODE_CAPS_LOCK"
     iconType: "Caps"
     width: 1.25
     type: "Modifier"
-  - code: "KEYCODE_A"
+  - !<key>
+    code: "KEYCODE_A"
     output: "A"
-  - code: "KEYCODE_S"
+  - !<key>
+    code: "KEYCODE_S"
     output: "S"
-  - code: "KEYCODE_D"
+  - !<key>
+    code: "KEYCODE_D"
     output: "D"
-  - code: "KEYCODE_F"
+  - !<key>
+    code: "KEYCODE_F"
     output: "F"
-  - code: "KEYCODE_G"
+  - !<key>
+    code: "KEYCODE_G"
     output: "G"
-  - code: "KEYCODE_H"
+  - !<key>
+    code: "KEYCODE_H"
     output: "H"
-  - code: "KEYCODE_J"
+  - !<key>
+    code: "KEYCODE_J"
     output: "J"
-  - code: "KEYCODE_K"
+  - !<key>
+    code: "KEYCODE_K"
     output: "K"
-  - code: "KEYCODE_L"
+  - !<key>
+    code: "KEYCODE_L"
     output: "L"
-  - code: "KEYCODE_SEMICOLON"
+  - !<key>
+    code: "KEYCODE_SEMICOLON"
     output: ";"
-  - code: "KEYCODE_ENTER"
+  - !<key>
+    code: "KEYCODE_ENTER"
     iconType: "Return"
     width: 0.75
     type: "Action"
 - keys:
-  - code: "KEYCODE_SHIFT_LEFT"
+  - !<key>
+    code: "KEYCODE_SHIFT_LEFT"
     iconType: "Shift"
     type: "Modifier"
     width: 1.75
-  - code: "KEYCODE_X"
+  - !<key>
+    code: "KEYCODE_X"
     output: "X"
-  - code: "KEYCODE_C"
+  - !<key>
+    code: "KEYCODE_C"
     output: "C"
-  - code: "KEYCODE_V"
+  - !<key>
+    code: "KEYCODE_V"
     output: "V"
-  - code: "KEYCODE_B"
+  - !<key>
+    code: "KEYCODE_B"
     output: "B"
-  - code: "KEYCODE_N"
+  - !<key>
+    code: "KEYCODE_N"
     output: "N"
-  - code: "KEYCODE_M"
+  - !<key>
+    code: "KEYCODE_M"
     output: "M"
-  - code: "KEYCODE_COMMA"
+  - !<key>
+    code: "KEYCODE_COMMA"
     output: ","
-  - code: "KEYCODE_PERIOD"
+  - !<key>
+    code: "KEYCODE_PERIOD"
     output: "."
-  - code: "KEYCODE_SLASH"
+  - !<key>
+    code: "KEYCODE_SLASH"
     output: "/"
-  - code: "KEYCODE_SHIFT_RIGHT"
+  - !<key>
+    code: "KEYCODE_SHIFT_RIGHT"
     iconType: "Shift"
     type: "Modifier"
     width: 1.25
 - keys:
-  - code: "KEYCODE_SYM"
+  - !<key>
+    code: "KEYCODE_SYM"
     label: "?12"
     width: 1.5
     type: "Modifier"
-  - code: "KEYCODE_LANGUAGE_SWITCH"
+  - !<key>
+    code: "KEYCODE_LANGUAGE_SWITCH"
     iconType: "Language"
     type: "ModifierAlt"
-  - code: "KEYCODE_SPACE"
+  - !<key>
+    code: "KEYCODE_SPACE"
     label: ""
     width: 8.0
     type: "Space"
-  - code: "KEYCODE_SYM"
+  - !<key>
+    code: "KEYCODE_SYM"
     label: "?12"
     width: 1.5
     type: "Modifier"

@@ -25,6 +25,7 @@ sealed interface InputEnginePreset {
 
     fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
         val resolved = names.map { filename ->
+            println(filename)
             Yaml.default.decodeFromStream<Keyboard>(context.assets.open(filename))
         }
         return resolved.reduce { acc, input -> acc + input }

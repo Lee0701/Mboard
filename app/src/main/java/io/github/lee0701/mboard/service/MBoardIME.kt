@@ -76,7 +76,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             latinInputEngine,
             hangulInputEngine,
             symbolInputEngine,
-        ).map { it ?: DirectInputEngine(this) }
+        )
 
         val table = arrayOf(
             intArrayOf(0, 2),

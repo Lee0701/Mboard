@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
@@ -105,7 +106,9 @@ class BasicSoftInputEngine(
         fun label(label: String) =
             if(keyboardState.shiftState.pressed || keyboardState.shiftState.locked) label.uppercase()
             else label.lowercase()
-        return keyboard.rows.flatMap { it.keys }.associate { it.code to label(it.label.orEmpty()) }
+        return keyboard.rows.flatMap { it.keys }
+            .filterIsInstance<Key>()
+            .associate { it.code to label(it.label.orEmpty()) }
     }
 
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
