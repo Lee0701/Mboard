@@ -1,19 +1,30 @@
 package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
+import io.github.lee0701.converter.library.engine.ComposingText
+import io.github.lee0701.converter.library.engine.HanjaConverter
+import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val hanjaConverter: DictionaryHanjaConverter,
+    private val hanjaConverter: HanjaConverter,
+    private val predictor: Predictor?,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
+    private var job: Job? = null
 
     private val inputEngine: InputEngine = getInputEngine(this)
     private val composingWordStack: MutableList<String> = mutableListOf()
     private var composingChar: String = ""
+    private var beforeText = ""
+
     private val currentComposing: String get() = composingWordStack.lastOrNull().orEmpty() + composingChar
 
     override fun onKey(code: Int, state: KeyboardState) {
@@ -22,6 +33,10 @@ class HanjaConverterInputEngine(
 
     override fun onDelete() {
         inputEngine.onDelete()
+    }
+
+    override fun onTextAroundCursor(before: String, after: String) {
+        this.beforeText = before
     }
 
     override fun onComposingText(text: CharSequence) {
@@ -34,12 +49,14 @@ class HanjaConverterInputEngine(
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
+        convert()
     }
 
     override fun onCommitText(text: CharSequence) {
         if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
+        convert()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -59,9 +76,9 @@ class HanjaConverterInputEngine(
     override fun onItemClicked(candidate: Candidate) {
         if(candidate is DefaultHanjaCandidate) {
             listener.onCommitText(candidate.text)
-            val currentComposing = currentComposing
+            composingWordStack += currentComposing
             composingChar = ""
-            onReset()
+
             val newComposingText = currentComposing.drop(candidate.text.length)
             composingWordStack.clear()
             newComposingText.indices.forEach { i ->
@@ -83,9 +100,26 @@ class HanjaConverterInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private fun convert() = CoroutineScope(Dispatchers.IO).launch {
-        val candidates = hanjaConverter.convertPrefix(currentComposing).flatten()
-        launch(Dispatchers.Main) { onCandidates(candidates) }
+    private fun convert() {
+        val job = job
+        if(job != null && job.isActive) return
+        this.job = CoroutineScope(Dispatchers.IO).launch {
+            val text = beforeText + currentComposing
+            val from = beforeText.length
+            val to = text.length
+            val composingText = ComposingText(text = text, from = from, to = to)
+            val candidates = if(currentComposing.isNotBlank()) {
+                hanjaConverter.convertPrefix(composingText).flatten()
+                    .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
+            } else {
+                predictor?.predict(composingText)?.top(10).orEmpty()
+                    .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
+            }
+            delay(100)
+            launch(Dispatchers.Main) {
+                onCandidates(candidates)
+            }
+        }
     }
 
     private fun updateView() {
@@ -96,6 +130,7 @@ class HanjaConverterInputEngine(
         inputEngine.onReset()
         listener.onCandidates(listOf())
         updateView()
+        convert()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

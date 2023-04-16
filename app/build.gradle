@@ -15,7 +15,11 @@ android {
         versionCode 17
         versionName "0.0.5"
 
+        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        missingDimensionStrategy 'version', 'donation'
     }
 
     buildTypes {
@@ -26,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = 17
     }
     viewBinding {
         enabled = true
@@ -42,6 +46,15 @@ android {
 }
 
 dependencies {
+//    implementation (project(':Converter:app')) {
+//        exclude group: 'com.github.skydoves', module: 'colorpickerpreference'
+//        exclude group: 'com.google.android.odml', module: 'image'
+//    }
+    implementation (project(':Converter:library')) {
+        exclude group: 'com.github.skydoves', module: 'colorpickerpreference'
+        exclude group: 'com.google.android.odml', module: 'image'
+    }
+
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
     implementation 'com.charleskorn.kaml:kaml:0.53.0'

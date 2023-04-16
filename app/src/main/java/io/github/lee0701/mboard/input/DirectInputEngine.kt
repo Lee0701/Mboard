@@ -19,6 +19,9 @@ class DirectInputEngine(
         listener.onDeleteText(1, 0)
     }
 
+    override fun onTextAroundCursor(before: String, after: String) {
+    }
+
     override fun onReset() {
         listener.onFinishComposing()
     }

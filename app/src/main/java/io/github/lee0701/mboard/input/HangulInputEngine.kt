@@ -42,6 +42,9 @@ class HangulInputEngine(
         else listener.onDeleteText(1, 0)
     }
 
+    override fun onTextAroundCursor(before: String, after: String) {
+    }
+
     override fun onReset() {
         listener.onFinishComposing()
         stateStack.clear()
