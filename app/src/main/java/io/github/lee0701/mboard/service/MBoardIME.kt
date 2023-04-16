@@ -171,6 +171,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                 reloadView()
                 true
             }
+            KeyEvent.KEYCODE_TAB -> {
+                sendDownUpKeyEvents(code)
+                true
+            }
             else -> false
         }
     }
