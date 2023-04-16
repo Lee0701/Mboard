@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.preference.PreferenceManager
 import engine.DictionaryPredictor
-import io.github.lee0701.converter.library.dictionary.HanjaDictionary
-import io.github.lee0701.converter.library.dictionary.ListDictionary
 import io.github.lee0701.converter.library.engine.CachingTFLitePredictor
 import io.github.lee0701.converter.library.engine.CompoundHanjaConverter
 import io.github.lee0701.converter.library.engine.ContextSortingHanjaConverter
@@ -17,12 +15,20 @@ import io.github.lee0701.converter.library.engine.ResortingPredictor
 import io.github.lee0701.converter.library.engine.TFLitePredictor
 
 object HanjaConverterBuilder {
-    fun build(context: Context): Pair<HanjaConverter, Predictor?> {
+    private const val commonPackageName = "io.github.lee0701.converter"
+    private const val donationPackageName = "io.github.lee0701.converter.donation"
+
+    fun build(context: Context): Pair<HanjaConverter?, Predictor?> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val converterContext = context.createPackageContext("io.github.lee0701.converter.donation", 0)
+
+        val list = listOf(commonPackageName, donationPackageName)
+        val converterContext = list.map { name -> kotlin.runCatching {
+            context.createPackageContext(name, 0)
+        } }.filter { it.isSuccess }.firstOrNull()?.getOrNull() ?: return null to null
+        println(converterContext)
 
         val converters: MutableList<HanjaConverter> = mutableListOf()
-        val isDonation = true
+        val isDonation = converterContext.packageName == donationPackageName
         val usePrediction = true
         val sortByContext = true
 
