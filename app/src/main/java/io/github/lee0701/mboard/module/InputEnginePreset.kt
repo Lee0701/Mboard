@@ -29,7 +29,6 @@ sealed interface InputEnginePreset {
 
     fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
         val resolved = names.map { filename ->
-            println(filename)
             Yaml.default.decodeFromStream<Keyboard>(context.assets.open(filename))
         }
         return resolved.reduce { acc, input -> acc + input }
@@ -96,7 +95,7 @@ sealed interface InputEnginePreset {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
             val hangulTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
-            val (converter, predictor) = createHanjaConverter(ime, prediction = true)
+            val (converter, _) = createHanjaConverter(ime, prediction = false)
             return BasicSoftInputEngine(keyboard, { listener ->
                 HanjaConverterInputEngine({ l ->
                     HangulInputEngine(hangulTable, combinationTable, l)
@@ -117,6 +116,7 @@ sealed interface InputEnginePreset {
             val convertTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, predictor) = createHanjaConverter(ime, prediction = true)
+            println("$converter $predictor")
             return BasicSoftInputEngine(keyboard, { listener ->
                 HanjaConverterInputEngine({ l ->
                     HangulInputEngine(convertTable, combinationTable, l)

@@ -25,7 +25,6 @@ object HanjaConverterBuilder {
         val converterContext = list.map { name -> kotlin.runCatching {
             context.createPackageContext(name, 0)
         } }.filter { it.isSuccess }.firstOrNull()?.getOrNull() ?: return null to null
-        println(converterContext)
 
         val converters: MutableList<HanjaConverter> = mutableListOf()
         val isDonation = converterContext.packageName == donationPackageName

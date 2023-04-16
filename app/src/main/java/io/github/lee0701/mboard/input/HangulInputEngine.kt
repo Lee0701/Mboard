@@ -27,7 +27,7 @@ class HangulInputEngine(
             if(char > 0) listener.onCommitText(char.toChar().toString())
         } else {
             val (text, hangulStates) = hangulCombiner.combine(hangulState, converted)
-            if(text.isNotEmpty()) this.stateStack.clear()
+            if(text.isNotEmpty()) clearStack()
             this.stateStack += hangulStates
             listener.onCommitText(text)
             listener.onComposingText(hangulStates.lastOrNull()?.composed ?: "")
@@ -47,6 +47,10 @@ class HangulInputEngine(
 
     override fun onReset() {
         listener.onFinishComposing()
+        clearStack()
+    }
+
+    fun clearStack() {
         stateStack.clear()
     }
 

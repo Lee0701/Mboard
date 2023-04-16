@@ -78,6 +78,7 @@ class HanjaConverterInputEngine(
             listener.onCommitText(candidate.text)
             composingWordStack += currentComposing
             composingChar = ""
+            if(inputEngine is HangulInputEngine) inputEngine.clearStack()
 
             val newComposingText = currentComposing.drop(candidate.text.length)
             composingWordStack.clear()
