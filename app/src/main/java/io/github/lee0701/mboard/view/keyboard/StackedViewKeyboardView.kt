@@ -5,9 +5,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
@@ -174,12 +172,12 @@ class StackedViewKeyboardView(
         return null
     }
 
-    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
+    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup) {
         if(key is KeyViewWrapper) popup.apply {
             val parentX = key.x + key.width/2
             val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
             val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
-            show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
+            show(this@StackedViewKeyboardView, parentX, parentY.roundToInt())
         }
     }
 

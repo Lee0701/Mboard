@@ -48,7 +48,7 @@ abstract class KeyboardView(
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
-    private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
+    private var popups: MutableMap<Int, KeyboardPopup> = mutableMapOf()
 
     protected abstract val wrappedKeys: List<KeyLikeWrapper>
 
@@ -133,7 +133,7 @@ abstract class KeyboardView(
                     keyStates[key.key.code] = false
                     keyStates[newKey.key.code] = true
                     pointers[pointerId] = pointer.copy(key = newKey)
-                    keyPopups[pointerId]?.cancel()
+                    popups[pointerId]?.cancel()
                     maybeShowPopup(newKey, pointerId)
                 }
             }
@@ -142,7 +142,7 @@ abstract class KeyboardView(
 
     protected fun onTouchUp(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         handler.removeCallbacksAndMessages(null)
-        keyPopups[pointerId]?.hide()
+        popups[pointerId]?.dismiss()
         keyStates[key.key.code] = false
         listener.onKeyClick(key.key.code, key.key.output)
         listener.onKeyUp(key.key.code, key.key.output)
@@ -156,7 +156,7 @@ abstract class KeyboardView(
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
     protected abstract fun findKey(x: Int, y: Int): KeyWrapper?
-    protected abstract fun showPopup(key: KeyWrapper, popup: KeyPopup)
+    protected abstract fun showPopup(key: KeyWrapper, popup: KeyboardPopup)
     protected abstract fun postViewChanged()
 
     private fun performSoundFeedback(keyCode: Int) {
@@ -177,10 +177,10 @@ abstract class KeyboardView(
     private fun maybeShowPopup(key: KeyWrapper, pointerId: Int) {
         if(showKeyPopups &&
             (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
-            val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
+            val keyPopup = popups.getOrPut(pointerId) { KeyPreviewPopup(context, key) }
             showPopup(key, keyPopup)
         } else {
-            keyPopups[pointerId]?.cancel()
+            popups[pointerId]?.cancel()
         }
     }
 

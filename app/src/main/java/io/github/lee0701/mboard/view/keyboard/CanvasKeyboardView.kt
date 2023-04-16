@@ -14,7 +14,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
-import io.github.lee0701.mboard.module.softkeyboard.KeyLike
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
@@ -226,12 +225,10 @@ open class CanvasKeyboardView(
         return null
     }
 
-    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
-        popup.apply {
-            val parentX = key.x + key.width/2
-            val parentY = key.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + key.height/2
-            show(this@CanvasKeyboardView, key.key.label, key.icon, parentX, parentY)
-        }
+    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup) {
+        val parentX = key.x + key.width/2
+        val parentY = key.y + context.resources.getDimension(R.dimen.candidates_view_height).toInt() + key.height/2
+        popup.show(this, parentX, parentY)
     }
 
     override fun postViewChanged() {
