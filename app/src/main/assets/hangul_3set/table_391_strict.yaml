@@ -1,0 +1,7 @@
+map:
+  "KEYCODE_9":
+    base: 0x100116e
+    shift: 0x0027
+  "KEYCODE_SLASH":
+    base: 0x1001169
+    shift: 0x0021

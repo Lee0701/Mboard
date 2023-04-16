@@ -1,0 +1,6 @@
+---
+!<latin>
+softKeyboard:
+- "common/soft_qwerty_mobile.yaml"
+codeConvertTable:
+- "latin/table_latin_blank.yaml"

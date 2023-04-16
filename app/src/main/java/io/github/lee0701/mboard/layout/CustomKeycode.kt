@@ -10,4 +10,7 @@ enum class CustomKeycode(val code: Int) {
     KEYCODE_SEBEOL_390_2(0x1032),
     KEYCODE_SEBEOL_390_3(0x1033),
 
+    KEYCODE_SEBEOL_390_10(0x1030),
+    KEYCODE_SEBEOL_390_11(0x1031),
+
 }

@@ -1,0 +1,6 @@
+---
+!<latin>
+softKeyboard:
+- "common/soft_qwerty_tablet_with_semicolon.yaml"
+codeConvertTable:
+- "latin/table_latin_colemak.yaml"

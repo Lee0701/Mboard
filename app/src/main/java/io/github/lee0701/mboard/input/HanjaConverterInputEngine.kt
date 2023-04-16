@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val hanjaConverter: HanjaConverter,
+    private val hanjaConverter: HanjaConverter?,
     private val predictor: Predictor?,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
@@ -109,7 +109,7 @@ class HanjaConverterInputEngine(
             val to = text.length
             val composingText = ComposingText(text = text, from = from, to = to)
             val candidates = if(currentComposing.isNotBlank()) {
-                hanjaConverter.convertPrefix(composingText).flatten()
+                hanjaConverter?.convertPrefix(composingText)?.flatten().orEmpty()
                     .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
             } else {
                 predictor?.predict(composingText)?.top(10).orEmpty()

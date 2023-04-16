@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="key_bg_radius">8dp</dimen>
+    <dimen name="key_text_size">24sp</dimen>
+    <dimen name="key_margin_vertical">5dp</dimen>
+    <dimen name="key_margin_horizontal">5dp</dimen>
+
+    <dimen name="key_popup_text_size">28sp</dimen>
+    <dimen name="key_popup_width">28dp</dimen>
+    <dimen name="key_popup_height">28dp</dimen>
+
+    <dimen name="pref_appearance_keyboard_height_default">65dp</dimen>
+</resources>

@@ -14,9 +14,16 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.*
+import io.github.lee0701.mboard.input.BasicSoftInputEngine
+import io.github.lee0701.mboard.input.Candidate
+import io.github.lee0701.mboard.input.DefaultHanjaCandidate
+import io.github.lee0701.mboard.input.DirectInputEngine
+import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.input.SoftInputEngine
+import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import io.github.lee0701.mboard.view.keyboard.Themes
 import kotlin.math.roundToInt
@@ -35,15 +42,24 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         reload(sharedPreferences)
     }
 
-    private fun reload(sharedPreferences: SharedPreferences, force: Boolean = false) {
-        val hanjaConversionEnabled = sharedPreferences.getBoolean("input_hanja_conversion", false)
+    private fun reload(pref: SharedPreferences, force: Boolean = false) {
+        val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
         val hanjaPredictionEnabled = sharedPreferences.getBoolean("input_hanja_prediction", false)
-        val latinPresetKey = sharedPreferences.getString("layout_latin_preset", "layout_qwerty")!!
-        val hangulPresetKey = sharedPreferences.getString("layout_hangul_preset", "layout_3set_390")!!
 
-        val latinInputEngine = InputEnginePresets.of(latinPresetKey, this, hanjaConversionEnabled, hanjaPredictionEnabled)
-        val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled, hanjaPredictionEnabled)
-        val symbolInputEngine = InputEnginePresets.SymbolsG(this)
+        // TODO: complete input engine.
+//        val latinInputEngine = InputEnginePresets.of(latinPresetKey, this)
+//        val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled)
+//        val symbolInputEngine = InputEnginePresets.SymbolsG(this)
+
+        val screenMode = pref.getString("layout_screen_mode", "mobile")
+        val latinFilename = pref.getString("layout_latin_preset", null)?.format(screenMode) ?: "preset/preset_mobile_latin_qwerty.yaml"
+        val hangulFilename = pref.getString("layout_hangul_preset", null)?.format(screenMode) ?: "preset/preset_mobile_2set_ks5002.yaml"
+        val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
+
+        val yaml = InputEnginePreset.yaml
+        val latinInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename)).inflate(this) }.getOrNull()
+        val hangulInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)).inflate(this) }.getOrNull()
+        val symbolInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename)).inflate(this) }.getOrNull()
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = symbolInputEngine
@@ -54,11 +70,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             hangulInputEngine.alternativeInputEngine = latinInputEngine
         }
 
+        val empty = DirectInputEngine(this)
+
         val engines = listOf(
-            latinInputEngine,
-            hangulInputEngine,
-            symbolInputEngine,
-        ).map { it ?: DirectInputEngine(this) }
+            latinInputEngine ?: empty,
+            hangulInputEngine ?: empty,
+            symbolInputEngine ?: empty,
+        )
 
         val table = arrayOf(
             intArrayOf(0, 2),
@@ -150,6 +168,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                 resetCurrentEngine()
                 inputEngineSwitcher?.nextExtra()
                 reloadView()
+                true
+            }
+            KeyEvent.KEYCODE_TAB -> {
+                sendDownUpKeyEvents(code)
                 true
             }
             else -> false

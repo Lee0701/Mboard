@@ -27,6 +27,10 @@
     <string name="pref_appearance_sound_feedback_title">키 소리 효과</string>
 
     <string name="pref_header_layout_title">키보드 배열</string>
+    <string name="pref_layout_screen_mode_title">화면 모드</string>
+    <string name="screen_mode_mobile">모바일</string>
+    <string name="screen_mode_tablet">태블릿</string>
+    <string name="screen_mode_full">풀사이즈</string>
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>
     <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
     <string name="layout_2set_ks5002">두벌식 KS 표준</string>

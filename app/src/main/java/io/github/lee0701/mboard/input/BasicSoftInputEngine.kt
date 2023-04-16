@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
@@ -109,7 +110,9 @@ class BasicSoftInputEngine(
         fun label(label: String) =
             if(keyboardState.shiftState.pressed || keyboardState.shiftState.locked) label.uppercase()
             else label.lowercase()
-        return keyboard.rows.flatMap { it.keys }.associate { it.code to label(it.label.orEmpty()) }
+        return keyboard.rows.flatMap { it.keys }
+            .filterIsInstance<Key>()
+            .associate { it.code to label(it.label.orEmpty()) }
     }
 
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
@@ -176,6 +179,12 @@ class BasicSoftInputEngine(
         }
         when(code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
+            }
+            KeyEvent.KEYCODE_CAPS_LOCK -> {
+                val currentCapsLockState = keyboardState.shiftState.locked
+                val newShiftState = keyboardState.shiftState.copy(pressed = !currentCapsLockState, locked = !currentCapsLockState)
+                keyboardState = keyboardState.copy(shiftState = newShiftState)
+                updateView()
             }
             KeyEvent.KEYCODE_DEL -> {
                 inputEngine.onDelete()

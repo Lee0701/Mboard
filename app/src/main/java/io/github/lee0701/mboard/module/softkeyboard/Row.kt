@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Row(
-    val keys: List<Key> = listOf(),
-    val padding: Float = 0f,
+    @Serializable val keys: List<KeyLike> = listOf(),
 )

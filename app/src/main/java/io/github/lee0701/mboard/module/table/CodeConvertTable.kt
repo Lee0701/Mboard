@@ -20,7 +20,7 @@ data class CodeConvertTable(
     }
 
     operator fun plus(another: CodeConvertTable): CodeConvertTable {
-        return CodeConvertTable(map + another.map)
+        return CodeConvertTable(this.map + another.map)
     }
 
     @Serializable

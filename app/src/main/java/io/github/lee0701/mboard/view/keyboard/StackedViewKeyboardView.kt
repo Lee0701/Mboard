@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
@@ -13,9 +12,11 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
+import io.github.lee0701.mboard.databinding.KeyboardSpacerBinding
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Row
+import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
 class StackedViewKeyboardView(
@@ -49,34 +50,38 @@ class StackedViewKeyboardView(
     }
 
     private fun initRowView(row: Row, theme: Theme): RowViewWrapper {
-        val keyViewWrappers = mutableListOf<KeyViewWrapper>()
+        val wrappers = mutableListOf<KeyLikeViewWrapper>()
         val binding = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT, rowHeight
             ).apply {
                 weight = 1f
             }
-            if(row.padding > 0) root.addView(View(context, null).apply {
-                layoutParams = LinearLayoutCompat.LayoutParams(
-                    0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
-                ).apply {
-                    weight = row.padding
+            row.keys.forEach { keyLike ->
+                when(keyLike) {
+                    is Key -> {
+                        val keyViewWrapper = initKeyView(keyLike, theme)
+                        wrappers += keyViewWrapper
+                        root.addView(keyViewWrapper.binding.root)
+                    }
+                    is Spacer -> {
+                        wrappers += initSpacerView(keyLike)
+                    }
                 }
-            })
-            row.keys.forEach { key ->
-                val keyViewWrapper = initKeyView(key, theme)
-                keyViewWrappers += keyViewWrapper
-                root.addView(keyViewWrapper.binding.root)
             }
-            if(row.padding > 0) root.addView(View(context, null).apply {
-                layoutParams = LinearLayoutCompat.LayoutParams(
-                    0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
-                ).apply {
-                    weight = row.padding
-                }
-            })
         }
-        return RowViewWrapper(row, binding, keyViewWrappers)
+        return RowViewWrapper(row, binding, wrappers)
+    }
+
+    private fun initSpacerView(spacerModel: Spacer): SpacerViewWrapper {
+        val binding = KeyboardSpacerBinding.inflate(LayoutInflater.from(context), null, false).apply {
+            root.layoutParams = LinearLayoutCompat.LayoutParams(
+                0, LinearLayoutCompat.LayoutParams.MATCH_PARENT
+            ).apply {
+                weight = spacerModel.width
+            }
+        }
+        return SpacerViewWrapper(spacerModel, binding)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -105,18 +110,32 @@ class StackedViewKeyboardView(
     data class RowViewWrapper(
         val row: Row,
         val binding: KeyboardRowBinding,
-        val keys: List<KeyViewWrapper>,
-    )
+        val keyLikes: List<KeyLikeViewWrapper>,
+    ) {
+        val keys: List<KeyViewWrapper> = keyLikes.filterIsInstance<KeyViewWrapper>()
+    }
+
+    interface KeyLikeViewWrapper
 
     data class KeyViewWrapper(
         override val key: Key,
         val binding: KeyboardKeyBinding,
-    ): KeyWrapper {
+    ): KeyLikeViewWrapper, KeyWrapper {
         override val x: Int get() = binding.root.x.roundToInt()
         override val y: Int get() = binding.root.y.roundToInt()
         override val width: Int get() = binding.root.width
         override val height: Int get() = binding.root.height
         override val icon: Drawable? get() = binding.icon.drawable
+    }
+
+    data class SpacerViewWrapper(
+        override val spacer: Spacer,
+        val binding: KeyboardSpacerBinding,
+    ): KeyLikeViewWrapper, SpacerWrapper {
+        override val x: Int get() = binding.root.x.roundToInt()
+        override val y: Int get() = binding.root.y.roundToInt()
+        override val width: Int get() = binding.root.width
+        override val height: Int get() = binding.root.height
     }
 
     override fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
@@ -148,7 +167,7 @@ class StackedViewKeyboardView(
     override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
         if(key is KeyViewWrapper) popup.apply {
             val parentX = key.x + key.width/2
-            val row = keyboardViewWrapper.rows.find { key in it.keys } ?: return
+            val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
             val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
             show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
         }

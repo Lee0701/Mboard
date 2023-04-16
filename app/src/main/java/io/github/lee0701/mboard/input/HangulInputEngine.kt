@@ -52,7 +52,7 @@ class HangulInputEngine(
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         val codeMap = table.codeMap.mapValues { (_, entry) ->
-            val ch = entry.withKeyboardState(state)
+            val ch = entry.withKeyboardState(state)?.let { it and 0xffffff }
             if(ch != null && Hangul.isModernJamo(ch)) {
                 if(Hangul.isCho(ch)) Hangul.choToCompatConsonant(ch.toChar()).toString()
                 else if(Hangul.isJung(ch)) Hangul.jungToCompatVowel(ch.toChar()).toString()

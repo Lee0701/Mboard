@@ -1,0 +1,10 @@
+---
+!<hanja-hangul>
+softKeyboard:
+- "hangul_3set/soft_qwerty_mobile_391.yaml"
+hangulTable:
+- "hangul_3set/table_391.yaml"
+combinationTable:
+- "hangul_3set/comb_3set_cho.yaml"
+- "hangul_3set/comb_3set_jung.yaml"
+- "hangul_3set/comb_3set_jong.yaml"
