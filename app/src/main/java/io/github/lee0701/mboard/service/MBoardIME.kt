@@ -20,9 +20,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.BasicSoftInputEngine
 import io.github.lee0701.mboard.input.Candidate
 import io.github.lee0701.mboard.input.DefaultHanjaCandidate
-import io.github.lee0701.mboard.input.DirectInputEngine
 import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.InputEnginePresets
 import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
@@ -58,7 +56,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hangulFilename = pref.getString("layout_hangul_preset", null)?.format(screenMode) ?: "preset/preset_mobile_2set_ks5002.yaml"
         val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
 
-        val yaml = InputEnginePresets.yaml
+        val yaml = InputEnginePreset.yaml
         val latinInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename)).inflate(this)
         val hangulInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)).inflate(this)
         val symbolInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename)).inflate(this)

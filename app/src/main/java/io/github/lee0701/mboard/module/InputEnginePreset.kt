@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.module
 
 import android.content.Context
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.dictionary.EmptyDictionary
 import io.github.lee0701.mboard.input.BasicSoftInputEngine
@@ -17,6 +18,7 @@ import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.modules.EmptySerializersModule
 
 @Serializable
 sealed interface InputEnginePreset {
@@ -107,4 +109,8 @@ sealed interface InputEnginePreset {
         }
     }
 
+    companion object {
+        val yamlConfig = YamlConfiguration(encodeDefaults = false)
+        val yaml = Yaml(EmptySerializersModule(), yamlConfig)
+    }
 }
