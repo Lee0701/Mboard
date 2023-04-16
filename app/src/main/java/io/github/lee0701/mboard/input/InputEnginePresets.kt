@@ -1,9 +1,11 @@
 package io.github.lee0701.mboard.input
 
 import android.content.res.AssetManager
+import android.widget.Toast
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
+import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
@@ -75,10 +77,12 @@ object InputEnginePresets {
         if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
             if(converter != null && predictor != null) return InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            else Toast.makeText(mBoardIME, R.string.msg_hanja_converter_donation_not_found, Toast.LENGTH_LONG).show()
         }
         if(hanja) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
             if(converter != null) return InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
+            else Toast.makeText(mBoardIME, R.string.msg_hanja_converter_not_found, Toast.LENGTH_LONG).show()
         }
         return InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
     }

@@ -2,6 +2,7 @@
     <string name="app_name">mBoard</string>
 
     <string name="msg_hanja_converter_not_found">한자 변환 기능을 사용하려면 사용하려면 漢字變換器를 설치해 주세요.</string>
+    <string name="msg_hanja_converter_donation_not_found">한자 예측 기능을 사용하려면 사용하려면 漢字變換器 후원판을 설치해 주세요.</string>
 
     <string name="title_activity_settings">mBoard 설정</string>
 
