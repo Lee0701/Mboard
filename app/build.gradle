@@ -46,10 +46,6 @@ android {
 }
 
 dependencies {
-//    implementation (project(':Converter:app')) {
-//        exclude group: 'com.github.skydoves', module: 'colorpickerpreference'
-//        exclude group: 'com.google.android.odml', module: 'image'
-//    }
     implementation (project(':Converter:library')) {
         exclude group: 'com.github.skydoves', module: 'colorpickerpreference'
         exclude group: 'com.google.android.odml', module: 'image'
