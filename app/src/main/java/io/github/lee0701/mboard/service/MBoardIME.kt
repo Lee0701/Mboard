@@ -20,6 +20,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.BasicSoftInputEngine
 import io.github.lee0701.mboard.input.Candidate
 import io.github.lee0701.mboard.input.DefaultHanjaCandidate
+import io.github.lee0701.mboard.input.DirectInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
@@ -57,9 +58,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
 
         val yaml = InputEnginePreset.yaml
-        val latinInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename)).inflate(this)
-        val hangulInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)).inflate(this)
-        val symbolInputEngine: InputEngine = yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename)).inflate(this)
+        val latinInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename)).inflate(this) }.getOrNull()
+        val hangulInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)).inflate(this) }.getOrNull()
+        val symbolInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename)).inflate(this) }.getOrNull()
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = symbolInputEngine
@@ -70,10 +71,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             hangulInputEngine.alternativeInputEngine = latinInputEngine
         }
 
+        val empty = DirectInputEngine(this)
+
         val engines = listOf(
-            latinInputEngine,
-            hangulInputEngine,
-            symbolInputEngine,
+            latinInputEngine ?: empty,
+            hangulInputEngine ?: empty,
+            symbolInputEngine ?: empty,
         )
 
         val table = arrayOf(
