@@ -48,6 +48,16 @@
             app:title="@string/pref_appearance_keyboard_view_type_title"
             app:summary="@string/pref_appearance_keyboard_view_type_summary" />
 
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="appearance_haptic_feedback"
+            app:defaultValue="true"
+            app:title="@string/pref_appearance_haptic_feedback_title" />
+
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="appearance_sound_feedback"
+            app:defaultValue="true"
+            app:title="@string/pref_appearance_sound_feedback_title" />
+
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
     <io.github.lee0701.mboard.settings.PreferenceCategory

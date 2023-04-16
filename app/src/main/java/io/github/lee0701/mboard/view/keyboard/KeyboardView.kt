@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.HapticFeedbackConstants
@@ -24,22 +25,25 @@ abstract class KeyboardView(
     protected val theme: Theme,
     protected val listener: KeyboardListener,
 ): FrameLayout(context, attrs) {
-    protected val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    protected val unifyHeight: Boolean = sharedPreferences.getBoolean("appearance_unify_height", false)
+    protected val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
     protected val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    protected val rowHeight: Int = dipToPixel(sharedPreferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    protected val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
     protected val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 
-    protected val showKeyPopups = sharedPreferences.getBoolean("behaviour_show_popups", true)
-    protected val longPressDuration = sharedPreferences.getFloat("behaviour_long_press_duration", 100f).toLong()
-    protected val repeatOnLongPress = sharedPreferences.getString("behaviour_long_press_action", "shift") == "repeat"
-    protected val repeatInterval = sharedPreferences.getFloat("behaviour_repeat_interval", 50f).toLong()
+    protected val showKeyPopups = preferences.getBoolean("behaviour_show_popups", true)
+    protected val longPressDuration = preferences.getFloat("behaviour_long_press_duration", 100f).toLong()
+    protected val repeatOnLongPress = preferences.getString("behaviour_long_press_action", "shift") == "repeat"
+    protected val repeatInterval = preferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
-    protected val slideAction = sharedPreferences.getString("behaviour_slide_action", "flick")
-    protected val flickSensitivity = dipToPixel(sharedPreferences.getFloat("behaviour_flick_sensitivity", 100f)).toInt()
+    protected val slideAction = preferences.getString("behaviour_slide_action", "flick")
+    protected val flickSensitivity = dipToPixel(preferences.getFloat("behaviour_flick_sensitivity", 100f)).toInt()
+
+    protected val hapticFeedback = preferences.getBoolean("appearance_haptic_feedback", true)
+    protected val soundFeedback = preferences.getBoolean("appearance_sound_feedback", true)
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
     protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
@@ -75,7 +79,8 @@ abstract class KeyboardView(
     }
 
     protected fun onTouchDown(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
-        this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        if(this.soundFeedback) this.performSoundFeedback(key.key.code)
         maybeShowPopup(key, pointerId)
         fun repeater() {
             listener.onKeyClick(key.key.code, key.key.output)
@@ -85,7 +90,7 @@ abstract class KeyboardView(
             if(key.key.repeatable || repeatOnLongPress) {
                 repeater()
             } else {
-                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 listener.onKeyLongClick(key.key.code, key.key.output)
             }
         }, longPressDuration)
@@ -152,6 +157,17 @@ abstract class KeyboardView(
     protected abstract fun findKey(x: Int, y: Int): KeyWrapper?
     protected abstract fun showPopup(key: KeyWrapper, popup: KeyPopup)
     protected abstract fun postViewChanged()
+
+    private fun performSoundFeedback(keyCode: Int) {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val fx = when(keyCode) {
+            KeyEvent.KEYCODE_DEL -> AudioManager.FX_KEYPRESS_DELETE
+            KeyEvent.KEYCODE_ENTER -> AudioManager.FX_KEYPRESS_RETURN
+            KeyEvent.KEYCODE_SPACE -> AudioManager.FX_KEYPRESS_SPACEBAR
+            else -> AudioManager.FX_KEYPRESS_STANDARD
+        }
+        audioManager.playSoundEffect(fx, 1f)
+    }
 
     private fun dipToPixel(dip: Float): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
