@@ -43,9 +43,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     private fun reload(pref: SharedPreferences, force: Boolean = false) {
-        val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
-        val hanjaPredictionEnabled = sharedPreferences.getBoolean("input_hanja_prediction", false)
-
         // TODO: complete input engine.
 //        val latinInputEngine = InputEnginePresets.of(latinPresetKey, this)
 //        val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled)
@@ -55,11 +52,32 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val latinFilename = pref.getString("layout_latin_preset", null)?.format(screenMode) ?: "preset/preset_mobile_latin_qwerty.yaml"
         val hangulFilename = pref.getString("layout_hangul_preset", null)?.format(screenMode) ?: "preset/preset_mobile_2set_ks5002.yaml"
         val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
-
         val yaml = InputEnginePreset.yaml
-        val latinInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename)).inflate(this) }.getOrNull()
-        val hangulInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)).inflate(this) }.getOrNull()
-        val symbolInputEngine = kotlin.runCatching { yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename)).inflate(this) }.getOrNull()
+
+        val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
+        val hanjaPredictionEnabled = sharedPreferences.getBoolean("input_hanja_prediction", false)
+
+        fun modHangul(preset: InputEnginePreset): InputEnginePreset {
+            if(preset !is InputEnginePreset.Hangul) return preset
+            if(hanjaConversionEnabled && hanjaPredictionEnabled) {
+                return InputEnginePreset.PredictingHangulHanja(
+                    preset.softKeyboard, preset.hangulTable, preset.combinationTable)
+            }
+            if(hanjaConversionEnabled) {
+                return InputEnginePreset.HangulHanja(
+                    preset.softKeyboard, preset.hangulTable, preset.combinationTable
+                )
+            }
+            return preset
+        }
+
+        val latinModule = yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename))
+        val hangulModule = modHangul(yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)))
+        val symbolModule = yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename))
+
+        val latinInputEngine = kotlin.runCatching { latinModule.inflate(this) }.getOrNull()
+        val hangulInputEngine = kotlin.runCatching { hangulModule.inflate(this) }.getOrNull()
+        val symbolInputEngine = kotlin.runCatching { symbolModule.inflate(this) }.getOrNull()
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = symbolInputEngine

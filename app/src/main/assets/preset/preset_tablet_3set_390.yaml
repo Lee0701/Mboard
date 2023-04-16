@@ -1,5 +1,5 @@
 ---
-!<hangul-hanja>
+!<hangul>
 softKeyboard:
 - "common/soft_tablet_num.yaml"
 - "hangul_3set/soft_qwerty_tablet_390.yaml"
