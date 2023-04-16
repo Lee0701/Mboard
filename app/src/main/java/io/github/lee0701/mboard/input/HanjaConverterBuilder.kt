@@ -21,7 +21,7 @@ object HanjaConverterBuilder {
     fun build(context: Context): Pair<HanjaConverter?, Predictor?> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val list = listOf(commonPackageName, donationPackageName)
+        val list = listOf(donationPackageName, commonPackageName)
         val converterContext = list.map { name -> kotlin.runCatching {
             context.createPackageContext(name, 0)
         } }.filter { it.isSuccess }.firstOrNull()?.getOrNull() ?: return null to null
