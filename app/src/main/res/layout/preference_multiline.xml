@@ -19,20 +19,21 @@
          type in the "widget_frame" layout. -->
 <androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Preference"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:layout_marginVertical="4dp"
-    android:paddingHorizontal="16dp">
+    android:layout_marginVertical="4dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:gravity="center_vertical"
-        android:background="?android:attr/selectableItemBackground">
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@android:id/icon"
@@ -43,11 +44,12 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@android:id/title"
+                tools:text="Title"
                 android:theme="@style/Theme.MBoard.Preference.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,10 +59,12 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@android:id/summary"
+                tools:text="summary for this setting."
                 android:theme="@style/Theme.MBoard.Preference.Summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@android:id/title"
+                android:layout_alignStart="@android:id/title"
                 android:layout_alignLeft="@android:id/title"
                 android:maxLines="4" />
 

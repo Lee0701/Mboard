@@ -12,4 +12,5 @@ class SwitchPreference(
     init {
         layoutResource = R.layout.preference_inline
     }
+
 }
