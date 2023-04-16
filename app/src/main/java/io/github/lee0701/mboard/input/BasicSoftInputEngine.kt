@@ -176,6 +176,12 @@ class BasicSoftInputEngine(
         when(code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
             }
+            KeyEvent.KEYCODE_CAPS_LOCK -> {
+                val currentCapsLockState = keyboardState.shiftState.locked
+                val newShiftState = keyboardState.shiftState.copy(pressed = !currentCapsLockState, locked = !currentCapsLockState)
+                keyboardState = keyboardState.copy(shiftState = newShiftState)
+                updateView()
+            }
             KeyEvent.KEYCODE_DEL -> {
                 inputEngine.onDelete()
             }
