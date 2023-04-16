@@ -1,13 +1,15 @@
 package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
+import io.github.lee0701.converter.library.engine.ComposingText
+import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import kotlinx.coroutines.*
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val hanjaConverter: DictionaryHanjaConverter,
+    private val hanjaConverter: HanjaConverter,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
 
@@ -84,8 +86,10 @@ class HanjaConverterInputEngine(
     }
 
     private fun convert() = CoroutineScope(Dispatchers.IO).launch {
-        val candidates = hanjaConverter.convertPrefix(currentComposing).flatten()
-        launch(Dispatchers.Main) { onCandidates(candidates) }
+        val text = currentComposing
+        val composingText = ComposingText(text = text, 0, text.length)
+        val candidates = hanjaConverter.convertPrefix(composingText).flatten()
+        launch(Dispatchers.Main) { onCandidates(candidates.map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }) }
     }
 
     private fun updateView() {

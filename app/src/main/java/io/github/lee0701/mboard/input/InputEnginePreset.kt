@@ -1,8 +1,8 @@
 package io.github.lee0701.mboard.input
 
-import io.github.lee0701.mboard.dictionary.HanjaDictionary
-import io.github.lee0701.mboard.module.table.CodeConvertTable
+import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 
@@ -48,9 +48,8 @@ sealed interface InputEnginePreset {
         val keyboard: Keyboard,
         val codeConvertTable: CodeConvertTable,
         val combinationTable: JamoCombinationTable,
-        val dictionary: HanjaDictionary,
+        val hanjaConverter: HanjaConverter,
     ): InputEnginePreset {
-        private val hanjaConverter = DictionaryHanjaConverter(dictionary)
         override fun create(ime: MBoardIME): InputEngine {
             return BasicSoftInputEngine(keyboard, { listener ->
                 HanjaConverterInputEngine({ l ->
