@@ -50,6 +50,21 @@ sealed interface InputEnginePreset {
         val codeConvertTable: CodeConvertTable,
         val combinationTable: JamoCombinationTable,
         val hanjaConverter: HanjaConverter,
+    ): InputEnginePreset {
+        override fun create(ime: MBoardIME): InputEngine {
+            return BasicSoftInputEngine(keyboard, { listener ->
+                HanjaConverterInputEngine({ l ->
+                    HangulInputEngine(codeConvertTable, combinationTable, l)
+                }, hanjaConverter, null, listener)
+            }, true, ime)
+        }
+    }
+
+    data class PredictingHanja(
+        val keyboard: Keyboard,
+        val codeConvertTable: CodeConvertTable,
+        val combinationTable: JamoCombinationTable,
+        val hanjaConverter: HanjaConverter,
         val predictor: Predictor?,
     ): InputEnginePreset {
         override fun create(ime: MBoardIME): InputEngine {

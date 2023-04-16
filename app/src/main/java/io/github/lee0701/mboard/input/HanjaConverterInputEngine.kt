@@ -104,7 +104,6 @@ class HanjaConverterInputEngine(
             hanjaConverter.convertPrefix(composingText).flatten()
                 .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
         } else {
-            println("$predictor $composingText")
             predictor?.predict(composingText)?.top(10).orEmpty()
                 .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
         }

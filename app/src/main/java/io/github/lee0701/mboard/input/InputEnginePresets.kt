@@ -29,61 +29,76 @@ object InputEnginePresets {
         return InputEnginePreset.Latin(keyboard, convertTable).create(mBoardIME)
     }
 
-    fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
+    fun Hangul2SetKS5002(mBoardIME: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_ks5002.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_2set_ks5002.yaml")
-        return if(hanja) {
+        return if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+        } else if(hanja) {
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
     }
 
-    fun Hangul2SetOldHangul(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
+    fun Hangul2SetOldHangul(mBoardIME: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_2set_old_hangul.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_full.yaml")
-        return if(hanja) {
+        return if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+        } else if(hanja) {
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
     }
 
-    private fun Hangul3Set390(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
+    private fun Hangul3Set390(mBoardIME: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_390.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_390.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_390.yaml")
-        return if(hanja) {
+        return if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+        } else if(hanja) {
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
     }
 
-    private fun Hangul3Set391(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
+    private fun Hangul3Set391(mBoardIME: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_391.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391.yaml")
-        return if(hanja) {
+        return if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+        } else if(hanja) {
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
     }
 
-    private fun Hangul3Set391Strict(mBoardIME: MBoardIME, hanja: Boolean): InputEngine {
+    private fun Hangul3Set391Strict(mBoardIME: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine {
         val keyboard = loadKeyboard(mBoardIME.assets, "soft_qwerty_mobile_3set_391.yaml")
         val convertTable = loadConvertTable(mBoardIME.assets, "table_hangul_3set_391_strict.yaml")
         val combinationTable = loadJamoCombinationTable(mBoardIME.assets, "comb_hangul_3set_391_strict.yaml")
-        return if(hanja) {
+        return if(hanja && prediction) {
             val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
-            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+            InputEnginePreset.PredictingHanja(keyboard, convertTable, combinationTable, converter, predictor).create(mBoardIME)
+        } else if(hanja) {
+            val (converter, predictor) = HanjaConverterBuilder.build(mBoardIME)
+            InputEnginePreset.Hanja(keyboard, convertTable, combinationTable, converter).create(mBoardIME)
         } else {
             InputEnginePreset.Hangul(keyboard, convertTable, combinationTable).create(mBoardIME)
         }
@@ -108,16 +123,16 @@ object InputEnginePresets {
         return Yaml.default.decodeFromStream(assets.open(name))
     }
 
-    fun of(key: String, ime: MBoardIME, hanja: Boolean = false): InputEngine? {
+    fun of(key: String, ime: MBoardIME, hanja: Boolean, prediction: Boolean): InputEngine? {
         return when(key) {
             "layout_latin_qwerty" -> LatinQWERTY(ime)
             "layout_latin_dvorak" -> LatinDvorak(ime)
             "layout_latin_colemak" -> LatinColemak(ime)
-            "layout_2set_ks5002" -> Hangul2SetKS5002(ime, hanja)
-            "layout_2set_old_hangul" -> Hangul2SetOldHangul(ime, hanja)
-            "layout_3set_390" -> Hangul3Set390(ime, hanja)
-            "layout_3set_391" -> Hangul3Set391(ime, hanja)
-            "layout_3set_391_strict" -> Hangul3Set391Strict(ime, hanja)
+            "layout_2set_ks5002" -> Hangul2SetKS5002(ime, hanja, prediction)
+            "layout_2set_old_hangul" -> Hangul2SetOldHangul(ime, hanja, prediction)
+            "layout_3set_390" -> Hangul3Set390(ime, hanja, prediction)
+            "layout_3set_391" -> Hangul3Set391(ime, hanja, prediction)
+            "layout_3set_391_strict" -> Hangul3Set391Strict(ime, hanja, prediction)
             else -> null
         }
     }
