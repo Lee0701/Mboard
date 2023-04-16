@@ -86,6 +86,7 @@ sealed interface InputEnginePreset {
     }
 
     @SerialName("hangul-hanja")
+    @Serializable
     data class HangulHanja(
         val softKeyboard: List<String>,
         val hangulTable: List<String>,
@@ -105,6 +106,7 @@ sealed interface InputEnginePreset {
     }
 
     @SerialName("predicting-hangul-hanja")
+    @Serializable
     data class PredictingHangulHanja(
         val softKeyboard: List<String>,
         val hangulTable: List<String>,

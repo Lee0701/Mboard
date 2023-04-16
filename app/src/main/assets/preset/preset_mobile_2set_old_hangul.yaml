@@ -1,5 +1,5 @@
 ---
-!<hanja-hangul>
+!<hangul-hanja>
 softKeyboard:
 - "common/soft_qwerty_mobile.yaml"
 hangulTable:
