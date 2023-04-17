@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.module.serialization
 
 import android.view.KeyEvent
-import io.github.lee0701.mboard.layout.CustomKeycode
+import io.github.lee0701.mboard.module.table.CustomKeyCode
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -12,7 +12,7 @@ object KeyCodeSerializer: KSerializer<Int> {
     override val descriptor = PrimitiveSerialDescriptor("Hexadecimal", PrimitiveKind.INT)
 
     override fun serialize(encoder: Encoder, value: Int) {
-        val custom = CustomKeycode.values().find { it.code == value }?.name
+        val custom = CustomKeyCode.values().find { it.second == value }?.first
         val string = custom ?: KeyEvent.keyCodeToString(value)
         encoder.encodeString(string)
     }
@@ -20,7 +20,7 @@ object KeyCodeSerializer: KSerializer<Int> {
     override fun deserialize(decoder: Decoder): Int {
         val string = decoder.decodeString()
         val keyCode = try {
-            CustomKeycode.valueOf(string).code
+            CustomKeyCode.keyCodeFromString(string) ?: KeyEvent.keyCodeFromString(string)
         } catch(ex: IllegalArgumentException) {
             val keyCode = KeyEvent.keyCodeFromString(string)
             if(keyCode > 0) keyCode else string.toIntOrNull() ?: 0

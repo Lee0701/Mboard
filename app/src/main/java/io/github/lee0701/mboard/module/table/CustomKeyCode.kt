@@ -14,6 +14,8 @@ object CustomKeyCode {
 
     private val revTable = table.entries.associate { (key, value) -> value to key }
 
+    fun values(): Set<Pair<String, Int>> = table.entries.map { (k, v) -> k to v }.toSet()
+
     fun keyCodeFromString(str: String): Int? = table[str]
     fun keyCodeToString(code: Int): String? = revTable[code]
 
