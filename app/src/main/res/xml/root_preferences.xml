@@ -74,7 +74,7 @@
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="layout_hangul_preset"
-            app:defaultValue="layout_3set_390"
+            app:defaultValue="preset/preset_%s_3set_390.yaml"
             app:entries="@array/preset_hangul"
             app:entryValues="@array/preset_hangul_values"
             app:title="@string/pref_layout_hangul_preset_title"
@@ -82,7 +82,7 @@
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="layout_latin_preset"
-            app:defaultValue="layout_latin_qwerty"
+            app:defaultValue="preset/preset_%s_latin_qwerty.yaml"
             app:entries="@array/preset_latin"
             app:entryValues="@array/preset_latin_values"
             app:title="@string/pref_layout_latin_preset_title"
