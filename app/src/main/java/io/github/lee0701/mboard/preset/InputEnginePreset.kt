@@ -8,6 +8,8 @@ import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.dictionary.DiskTrieDictionary
+import io.github.lee0701.mboard.input.PredictingInputEngine
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
@@ -245,6 +247,29 @@ data class InputEnginePreset(
             }
         }
     }
+
+//    @SerialName("predicting-hangul")
+//    @Serializable
+//    data class PredictingHangul(
+//        val softKeyboard: List<String>,
+//        val hangulTable: List<String>,
+//        val combinationTable: List<String>,
+//    ): InputEnginePreset {
+//        override fun inflate(ime: MBoardIME): InputEngine {
+//            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
+//            val convertTable = loadConvertTables(ime, names = hangulTable)
+//            val combinationTable = loadCombinationTable(ime, names = combinationTable)
+//            val dictionary = DiskTrieDictionary(ime.assets.open("dict/ko.bin"))
+//            val vocab = ime.assets.open("dict/ko.tsv").bufferedReader().readLines()
+//                .map { line -> line.split('\t') }
+//                .mapIndexed { i, (k, v) -> i to k }.toMap()
+//            return BasicSoftInputEngine(keyboard, { listener ->
+//                PredictingInputEngine({ l ->
+//                    HangulInputEngine(convertTable, combinationTable, l)
+//                }, dictionary, vocab, listener)
+//            }, true, ime)
+//        }
+//    }
 
     companion object {
         private val yamlConfig = YamlConfiguration(encodeDefaults = false)
