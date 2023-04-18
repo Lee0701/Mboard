@@ -35,14 +35,14 @@ class ImportExportActivity: AppCompatActivity() {
 //        upgradeTables(tables)
 
         val keyboards = listOf(
-            "common/soft_qwerty_mobile.yaml",
-            "hangul_3set/soft_mobile_390.yaml",
-            "hangul_3set/soft_mobile_391.yaml",
-            "latin/soft_qwerty_mobile_dvorak_custom.yaml",
-            "soft_qwerty_mobile_with_num.yaml",
-            "common/soft_qwerty_mobile_with_semicolon.yaml",
+//            "common/soft_qwerty_mobile.yaml",
+            "hangul_3set/soft_390_mobile.yaml",
+            "hangul_3set/soft_391_mobile.yaml",
+//            "latin/soft_qwerty_mobile_dvorak_custom.yaml",
+//            "soft_qwerty_mobile_with_num.yaml",
+//            "common/soft_qwerty_mobile_with_semicolon.yaml",
         )
-//        upgradeKeyboards(keyboards)
+        upgradeKeyboards(keyboards)
 
         generatePreset()
     }
@@ -66,7 +66,9 @@ class ImportExportActivity: AppCompatActivity() {
     private fun upgradeKeyboards(names: List<String>) {
         names.forEach { name ->
             val input = assets.open(name)
-            val output = File(filesDir, name).outputStream()
+            val file = File(filesDir, name)
+            file.parentFile.mkdirs()
+            val output = file.outputStream()
             upgradeKeyboard(input, output)
         }
     }

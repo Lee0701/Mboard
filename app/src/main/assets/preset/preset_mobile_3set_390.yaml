@@ -1,7 +1,7 @@
 ---
 !<hangul>
 softKeyboard:
-- "hangul_3set/soft_qwerty_mobile_390.yaml"
+- "hangul_3set/soft_390_mobile.yaml"
 hangulTable:
 - "hangul_3set/table_390.yaml"
 combinationTable:

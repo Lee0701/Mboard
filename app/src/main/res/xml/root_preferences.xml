@@ -211,7 +211,7 @@
     <io.github.lee0701.mboard.settings.PreferenceCategory
         app:title="@string/pref_header_about_title">
 
-        <io.github.lee0701.mboard.settings.Preference
+        <io.github.lee0701.mboard.settings.StartActivityPreference
             android:title="@string/pref_about_app_info_title"
             android:summary="@string/pref_about_app_info_summary" />
 
