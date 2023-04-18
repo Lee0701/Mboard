@@ -12,20 +12,26 @@ object KeyCodeSerializer: KSerializer<Int> {
     override val descriptor = PrimitiveSerialDescriptor("Hexadecimal", PrimitiveKind.INT)
 
     override fun serialize(encoder: Encoder, value: Int) {
-        val custom = CustomKeycode.values().find { it.code == value }?.name
-        val string = custom ?: KeyEvent.keyCodeToString(value)
+        val string = keyCodeToString(value)
         encoder.encodeString(string)
     }
 
     override fun deserialize(decoder: Decoder): Int {
         val string = decoder.decodeString()
-        val keyCode = try {
+        return keyCodeFromString(string)
+    }
+
+    fun keyCodeToString(code: Int): String {
+        val custom = CustomKeycode.values().find { it.code == code }?.name
+        return custom ?: KeyEvent.keyCodeToString(code)
+    }
+
+    fun keyCodeFromString(string: String): Int {
+        return try {
             CustomKeycode.valueOf(string).code
         } catch(ex: IllegalArgumentException) {
             val keyCode = KeyEvent.keyCodeFromString(string)
             if(keyCode > 0) keyCode else string.toIntOrNull() ?: 0
         }
-        return keyCode
     }
-
 }

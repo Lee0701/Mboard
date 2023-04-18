@@ -127,10 +127,14 @@
     </string-array>
 
     <string-array name="preset_symbol">
+        <item>@string/layout_symbol_a</item>
+        <item>@string/layout_symbol_b</item>
         <item>@string/layout_symbol_g</item>
     </string-array>
 
     <string-array name="preset_symbol_values">
+        <item>preset/preset_%s_symbol_a.yaml</item>
+        <item>preset/preset_%s_symbol_b.yaml</item>
         <item>preset/preset_%s_symbol_g.yaml</item>
     </string-array>
 

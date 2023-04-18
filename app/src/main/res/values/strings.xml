@@ -44,6 +44,8 @@
     <string name="layout_latin_qwerty">QWERTY</string>
     <string name="layout_latin_dvorak">Dvorak</string>
     <string name="layout_latin_colemak">Colemak</string>
+    <string name="layout_symbol_a">Symbol A</string>
+    <string name="layout_symbol_b">Symbol B</string>
     <string name="layout_symbol_g">Symbol G</string>
 
     <string name="pref_header_input_title">Input</string>

@@ -1,0 +1,7 @@
+---
+!<latin>
+softKeyboard:
+- "common/soft_qwerty_tablet.yaml"
+codeConvertTable:
+- "symbol/table_custom_keys.yaml"
+- "symbol/table_symbol_b.yaml"
