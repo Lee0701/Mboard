@@ -73,7 +73,9 @@ class StackedViewKeyboardView(
                         root.addView(keyViewWrapper.binding.root)
                     }
                     is Spacer -> {
-                        wrappers += initSpacerView(keyLike)
+                        val spacerViewWrapper = initSpacerView(keyLike)
+                        wrappers += spacerViewWrapper
+                        root.addView(spacerViewWrapper.binding.root)
                     }
                 }
             }
