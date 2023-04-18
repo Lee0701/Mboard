@@ -33,6 +33,7 @@
     <string name="screen_mode_full">풀사이즈</string>
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>
     <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
+    <string name="pref_layout_symbol_preset_title">기호 키보드 배열</string>
     <string name="layout_2set_ks5002">두벌식 KS 표준</string>
     <string name="layout_2set_old_hangul">두벌식 옛한글</string>
     <string name="layout_3set_390">세벌식 3–90</string>
@@ -41,6 +42,7 @@
     <string name="layout_latin_qwerty">QWERTY</string>
     <string name="layout_latin_dvorak">드보락</string>
     <string name="layout_latin_colemak">콜맥</string>
+    <string name="layout_symbol_g">기호 G</string>
 
     <string name="pref_header_input_title">입력</string>
     <string name="pref_input_hanja_conversion_title">한자 변환</string>

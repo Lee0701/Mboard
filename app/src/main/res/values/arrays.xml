@@ -126,4 +126,12 @@
         <item>preset/preset_%s_latin_colemak.yaml</item>
     </string-array>
 
+    <string-array name="preset_symbol">
+        <item>@string/layout_symbol_g</item>
+    </string-array>
+
+    <string-array name="preset_symbol_values">
+        <item>preset/preset_%s_symbol_g.yaml</item>
+    </string-array>
+
 </resources>

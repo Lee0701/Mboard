@@ -88,6 +88,14 @@
             app:title="@string/pref_layout_latin_preset_title"
             app:useSimpleSummaryProvider="true" />
 
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="layout_symbol_preset"
+            app:defaultValue="preset/preset_%s_symbol_g.yaml"
+            app:entries="@array/preset_symbol"
+            app:entryValues="@array/preset_symbol_values"
+            app:title="@string/pref_layout_symbol_preset_title"
+            app:useSimpleSummaryProvider="true" />
+
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
