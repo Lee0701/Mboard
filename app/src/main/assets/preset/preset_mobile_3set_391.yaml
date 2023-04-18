@@ -3,6 +3,7 @@
 softKeyboard:
 - "hangul_3set/soft_391_mobile.yaml"
 hangulTable:
+- "symbol/table_custom_keys.yaml"
 - "hangul_3set/table_391.yaml"
 combinationTable:
 - "hangul_3set/comb_3set_cho.yaml"

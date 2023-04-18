@@ -131,8 +131,11 @@ rows:
   - !<key>
     code: "KEYCODE_SPACE"
     label: ""
-    width: 8.0
+    width: 7.0
     type: "Space"
+  - !<key>
+      code: "KEYCODE_COMMA_PERIOD"
+      output: ","
   - !<key>
     code: "KEYCODE_SYM"
     label: "?12"

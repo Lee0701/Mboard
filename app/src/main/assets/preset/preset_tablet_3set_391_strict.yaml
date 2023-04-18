@@ -4,6 +4,7 @@ softKeyboard:
 - "common/soft_tablet_num.yaml"
 - "hangul_3set/soft_391_tablet.yaml"
 hangulTable:
+- "symbol/table_custom_keys.yaml"
 - "hangul_3set/table_391.yaml"
 - "hangul_3set/table_391_strict.yaml"
 combinationTable:
