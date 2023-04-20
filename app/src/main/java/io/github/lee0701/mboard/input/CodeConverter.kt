@@ -7,7 +7,6 @@ class CodeConverter(
     private val table: CodeConvertTable,
 ) {
     fun convert(input: Int, state: KeyboardState): Int? {
-        val entry = table.codeMap[input] ?: return null
-        return entry.withKeyboardState(state)
+        return table.get(input, state)
     }
 }

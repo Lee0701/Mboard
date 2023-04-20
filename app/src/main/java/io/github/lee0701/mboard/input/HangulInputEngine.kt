@@ -20,7 +20,7 @@ class HangulInputEngine(
     private val hangulState: HangulCombiner.State get() = stateStack.lastOrNull() ?: HangulCombiner.State()
 
     override fun onKey(code: Int, state: KeyboardState) {
-        val converted = table.codeMap[code]?.withKeyboardState(state)
+        val converted = table.get(code, state)
         if(converted == null) {
             val char = keyCharacterMap.get(code, state.asMetaState())
             onReset()
@@ -55,14 +55,14 @@ class HangulInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val codeMap = table.codeMap.mapValues { (_, entry) ->
-            val ch = entry.withKeyboardState(state)?.let { it and 0xffffff }
-            if(ch != null && Hangul.isModernJamo(ch)) {
+        val codeMap = table.getAllForState(state).mapValues { (_, output) ->
+            val ch = output and 0xffffff
+            if(Hangul.isModernJamo(ch)) {
                 if(Hangul.isCho(ch)) Hangul.choToCompatConsonant(ch.toChar()).toString()
                 else if(Hangul.isJung(ch)) Hangul.jungToCompatVowel(ch.toChar()).toString()
                 else if(Hangul.isJong(ch)) Hangul.jongToCompatConsonant(ch.toChar()).toString()
                 else ch.toChar().toString()
-            } else ch?.toChar()?.toString().orEmpty()
+            } else ch.toChar().toString().orEmpty()
         }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }

@@ -16,6 +16,7 @@ import io.github.lee0701.mboard.input.HanjaConverterInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
+import io.github.lee0701.mboard.module.table.CompoundCodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 import kotlinx.serialization.Serializable
@@ -37,7 +38,7 @@ sealed interface InputEnginePreset {
     fun loadConvertTables(context: Context, names: List<String>): CodeConvertTable {
         val resolved = names.map { filename ->
             Yaml.default.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-        return resolved.reduce { acc, input -> acc + input }
+        return CompoundCodeConvertTable(resolved)
     }
 
     fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
@@ -46,8 +47,8 @@ sealed interface InputEnginePreset {
         return resolved.reduce { acc, input -> acc + input }
     }
 
-    @SerialName("latin")
     @Serializable
+    @SerialName("latin")
     data class Latin(
         val softKeyboard: List<String>,
         val codeConvertTable: List<String>,
@@ -64,8 +65,8 @@ sealed interface InputEnginePreset {
         }
     }
 
-    @SerialName("hangul")
     @Serializable
+    @SerialName("hangul")
     data class Hangul(
         val softKeyboard: List<String>,
         val hangulTable: List<String>,
@@ -84,8 +85,8 @@ sealed interface InputEnginePreset {
         }
     }
 
-    @SerialName("hangul-hanja")
     @Serializable
+    @SerialName("hangul-hanja")
     data class HangulHanja(
         val softKeyboard: List<String>,
         val hangulTable: List<String>,
@@ -104,8 +105,8 @@ sealed interface InputEnginePreset {
         }
     }
 
-    @SerialName("predicting-hangul-hanja")
     @Serializable
+    @SerialName("predicting-hangul-hanja")
     data class PredictingHangulHanja(
         val softKeyboard: List<String>,
         val hangulTable: List<String>,

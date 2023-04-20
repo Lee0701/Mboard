@@ -1,3 +1,4 @@
+!<simple>
 map:
   "KEYCODE_COMMA_PERIOD":
     base: 0x002c

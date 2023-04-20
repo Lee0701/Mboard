@@ -11,6 +11,7 @@ import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.module.serialization.KeyCodeSerializer
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
+import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
 import kotlinx.serialization.modules.EmptySerializersModule
 import java.io.File
 import java.io.InputStream
@@ -96,8 +97,8 @@ class ImportExportActivity: AppCompatActivity() {
 
     private fun importLayout(layout: Array<IntArray>): CodeConvertTable {
         val map = layout.associate { (code, base, shift) ->
-            convertKeycode(code) to CodeConvertTable.Entry(base, shift) }
-        return CodeConvertTable(map)
+            KeyEvent.keyCodeFromString(convertKeycode(code)) to SimpleCodeConvertTable.Entry(base, shift) }
+        return SimpleCodeConvertTable(map = map)
     }
 
     private fun convertKeycode(code: Int): String {
