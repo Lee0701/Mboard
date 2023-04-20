@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.layout
+package io.github.lee0701.mboard.module.table
 
 enum class CustomKeycode(val code: Int) {
 

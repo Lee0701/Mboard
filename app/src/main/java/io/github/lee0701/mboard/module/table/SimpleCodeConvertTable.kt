@@ -9,7 +9,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("simple")
 class SimpleCodeConvertTable(
-    @Serializable private val map: Map<@Serializable(with = KeyCodeSerializer::class) Int, Entry> = mapOf(),
+    @Serializable private val map: Map<
+            @Serializable(with = KeyCodeSerializer::class) Int,
+            Entry> = mapOf(),
 ): CodeConvertTable {
 
     override fun get(keyCode: Int, state: KeyboardState): Int? {
