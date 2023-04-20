@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("layered")
 class LayeredCodeConvertTable(
-    val layers: Map<String, CodeConvertTable>,
+    @Serializable private val layers: Map<String, CodeConvertTable>,
 ): CodeConvertTable {
 
     fun get(layerId: String): CodeConvertTable? {
@@ -15,7 +15,7 @@ class LayeredCodeConvertTable(
     }
 
     fun get(layerId: String, keyCode: Int, state: KeyboardState): Int? {
-        return get(layerId)?.get(keyCode, state)
+        return get(layerId)?.get(keyCode, state) ?: get(BASE_LAYER_NAME)?.get(keyCode, state)
     }
 
     fun getAllForState(layerId: String, state: KeyboardState): Map<Int, Int> {

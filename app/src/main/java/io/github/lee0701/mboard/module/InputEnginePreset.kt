@@ -35,10 +35,10 @@ sealed interface InputEnginePreset {
         return resolved.reduce { acc, input -> acc + input }
     }
 
-    fun loadConvertTables(context: Context, names: List<String>): CodeConvertTable {
+    fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
         val resolved = names.map { filename ->
             Yaml.default.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-        return CompoundCodeConvertTable(resolved)
+        return resolved[0]
     }
 
     fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
@@ -55,7 +55,7 @@ sealed interface InputEnginePreset {
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val convertTable = loadConvertTables(ime, names = codeConvertTable)
+            val convertTable = loadConvertTable(ime, names = codeConvertTable)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> CodeConverterInputEngine(convertTable, listener) },
@@ -74,7 +74,7 @@ sealed interface InputEnginePreset {
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val convertTable = loadConvertTables(ime, names = hangulTable)
+            val convertTable = loadConvertTable(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
@@ -94,7 +94,7 @@ sealed interface InputEnginePreset {
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val hangulTable = loadConvertTables(ime, names = hangulTable)
+            val hangulTable = loadConvertTable(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, _) = createHanjaConverter(ime, prediction = false)
             return BasicSoftInputEngine(keyboard, { listener ->
@@ -114,7 +114,7 @@ sealed interface InputEnginePreset {
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val convertTable = loadConvertTables(ime, names = hangulTable)
+            val convertTable = loadConvertTable(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, predictor) = createHanjaConverter(ime, prediction = true)
             return BasicSoftInputEngine(keyboard, { listener ->
