@@ -24,6 +24,9 @@ class KeyPreviewPopup(
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
     private val binding = KeyPopupPreviewBinding.inflate(LayoutInflater.from(wrappedContext), null, false)
 
+    override val width: Int = binding.root.width
+    override val height: Int = binding.root.height
+
     private val animator: Animator = ValueAnimator.ofFloat(1f, 0f).apply {
         addUpdateListener {
             val value = animatedValue as Float
@@ -69,6 +72,9 @@ class KeyPreviewPopup(
     }
 
     override fun touchMove(x: Int, y: Int) {
+    }
+
+    override fun touchUp() {
     }
 
     override fun dismiss() {

@@ -10,8 +10,12 @@ abstract class KeyboardPopup(
 ) {
     protected val popupWindow: PopupWindow = PopupWindow(context, null)
 
+    abstract val width: Int
+    abstract val height: Int
+
     abstract fun show(parent: View, parentX: Int, parentY: Int)
     abstract fun touchMove(x: Int, y: Int)
+    abstract fun touchUp()
     abstract fun dismiss()
     abstract fun cancel()
 

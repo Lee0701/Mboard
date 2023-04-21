@@ -103,7 +103,7 @@ open class CanvasKeyboardView(
                         val height = rowHeight
                         val label = key.label
                         val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
-                        cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon)
+                        cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon, null)
                         x += width
                     }
                     else -> {
@@ -190,6 +190,11 @@ open class CanvasKeyboardView(
         }
     }
 
+    override fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>) {
+        moreKeysKeyboards.clear()
+        moreKeysKeyboards += keyboards
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(keyboardWidth, keyboardHeight)
@@ -202,6 +207,7 @@ open class CanvasKeyboardView(
         override val width: Int,
         override val height: Int,
         override val icon: Drawable?,
+        val moreKeysKeyboard: Keyboard?,
     ): KeyWrapper
 
     data class CachedSpacer(
@@ -228,13 +234,6 @@ open class CanvasKeyboardView(
             }
         }
         return null
-    }
-
-    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup) {
-        val candidatesViewHeight = context.resources.getDimension(R.dimen.candidates_view_height).toInt()
-        val parentX = key.x + key.width/2
-        val parentY = key.y + candidatesViewHeight + key.height/2
-        popup.show(this, parentX, parentY)
     }
 
     override fun postViewChanged() {

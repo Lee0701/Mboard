@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import kotlin.math.roundToInt
@@ -20,7 +21,9 @@ class MoreKeysPopup(
     context: Context,
     key: KeyboardView.KeyWrapper,
     val keyboard: Keyboard,
+    val listener: KeyboardListener,
 ): KeyboardPopup(context, key), KeyboardListener {
+    private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
 
     private val keyWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
@@ -32,29 +35,40 @@ class MoreKeysPopup(
     private val keyboardWidth = ((keyboard.rows.map { it.keys.size }.maxOrNull() ?: 1) * keyWidth) + keyMarginHorizontal*2
     private val keyboardHeight = (keyboard.rows.size * keyHeight) + keyMarginVertical*2
 
-    private val keyboardView: KeyboardView = CanvasMoreKeysView(
-        context, null, keyboard, Themes.Static, this, keyboardWidth.roundToInt(), keyboardHeight.roundToInt())
+    override val width: Int = keyboardWidth.roundToInt()
+    override val height: Int = keyboardHeight.roundToInt()
+
+    val theme = Themes.ofName(preferences.getString("appearance_theme", "theme_dynamic"))
+    private val keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: "canvas"
+    private val keyboardView: MoreKeysKeyboardView =
+        when(keyboardViewType) {
+            "stacked_view" -> StackedViewMoreKeysView(
+                context, null, keyboard, Themes.Static, this, width, height)
+            else -> CanvasMoreKeysView(
+                context, null, keyboard, Themes.Static, this, width, height)
+        }
+    private var pointedKey: KeyboardView.KeyWrapper? = null
 
     private val animator: Animator = ValueAnimator.ofFloat(1f, 0f).apply {
         addUpdateListener {
             val value = animatedValue as Float
             popupWindow.background.alpha = (value * 256).toInt()
-            keyboardView.alpha = value
+            (keyboardView as View).alpha = value
         }
         addListener(object: AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 popupWindow.dismiss()
                 popupWindow.background.alpha = 255
-                keyboardView.alpha = 1f
+                (keyboardView as View).alpha = 1f
             }
         })
     }
 
     override fun show(parent: View, parentX: Int, parentY: Int) {
         popupWindow.apply {
-            this.contentView = keyboardView
-            this.width = keyboardWidth.roundToInt()
-            this.height = keyboardHeight.roundToInt()
+            this.contentView = keyboardView as ViewGroup
+            this.width = width
+            this.height = height
             keyboardView.removeAllViews()
             keyboardView.layoutParams = ViewGroup.LayoutParams(width, height)
             this.isClippingEnabled = true
@@ -73,13 +87,14 @@ class MoreKeysPopup(
             }
         }
 
-        val x = parentX - popupWindow.width / 2
-        val y = parentY - popupWindow.height / 2 * 3
+        val x = parentX - popupWindow.width/2f
+        val y = parentY - popupWindow.height/2*3f
 
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }
 
     override fun onKeyClick(code: Int, output: String?) {
+        listener.onKeyClick(code, output)
     }
 
     override fun onKeyLongClick(code: Int, output: String?) {
@@ -95,7 +110,20 @@ class MoreKeysPopup(
     }
 
     override fun touchMove(x: Int, y: Int) {
-        val key = keyboardView.findKey(x, y)
+        val pointX = x
+        val pointY = y - keyHeight.roundToInt()
+        val pointedKey = keyboardView.findKey(pointX, pointY)
+        if(pointedKey != null && this.pointedKey != pointedKey) {
+            keyboardView.highlight(pointedKey)
+            this.pointedKey = pointedKey
+        }
+    }
+
+    override fun touchUp() {
+        val pointedKey = pointedKey ?: return
+        this.onKeyClick(pointedKey.key.code, pointedKey.key.output)
+        keyboardView.reset()
+        this.pointedKey = null
     }
 
     override fun dismiss() {

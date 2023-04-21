@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 
-class CanvasMoreKeysView(
+class StackedViewMoreKeysView(
     context: Context,
     attrs: AttributeSet?,
     keyboard: Keyboard,
@@ -12,19 +12,15 @@ class CanvasMoreKeysView(
     listener: KeyboardListener,
     override val keyboardWidth: Int = 0,
     override val keyboardHeight: Int = 0,
-): CanvasKeyboardView(context, attrs, keyboard, theme, listener), MoreKeysKeyboardView {
-    init {
-        clearCachedKeys()
-        cacheKeys()
-    }
+): StackedViewKeyboardView(context, attrs, keyboard, theme, listener), MoreKeysKeyboardView {
 
     override fun highlight(key: KeyWrapper) {
         reset()
-        this.keyStates[key.key.code] = true
-        invalidate()
+        val wrappedKey = wrappedKeys.filterIsInstance<KeyViewWrapper>().find { it == key } ?: return
+        wrappedKey.binding.root.isPressed = true
     }
 
     override fun reset() {
-        this.keyStates.clear()
+        wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { it.binding.root.isPressed = false }
     }
 }

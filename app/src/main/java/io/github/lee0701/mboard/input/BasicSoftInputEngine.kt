@@ -9,6 +9,8 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
+import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
@@ -121,6 +123,12 @@ class BasicSoftInputEngine(
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
         val keyboardView = keyboardView ?: return
         keyboardView.updateLabelsAndIcons(labels, icons)
+        // TODO: replace with a real implementation
+        val kbd = Keyboard(listOf(
+            Row("ARST".mapIndexed { i, c -> Key(i + 1000, c.toString()) }),
+            Row(listOf(Spacer()) + "OEU".mapIndexed { i, c -> Key(i + 1010, c.toString()) }),
+        ))
+        keyboardView.updateMoreKeyKeyboards(mapOf(KeyEvent.KEYCODE_A to kbd, KeyEvent.KEYCODE_G to kbd))
     }
 
     override fun onKeyDown(code: Int, output: String?) {

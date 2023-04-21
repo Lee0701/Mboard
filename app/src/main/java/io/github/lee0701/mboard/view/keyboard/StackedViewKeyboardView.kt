@@ -19,7 +19,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
-class StackedViewKeyboardView(
+open class StackedViewKeyboardView(
     context: Context,
     attrs: AttributeSet?,
     keyboard: Keyboard,
@@ -155,6 +155,11 @@ class StackedViewKeyboardView(
         }
     }
 
+    override fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>) {
+        moreKeysKeyboards.clear()
+        moreKeysKeyboards += keyboards
+    }
+
     override fun findKey(x: Int, y: Int): KeyWrapper? {
         keyboardViewWrapper.rows.forEach { row ->
             val rowY = row.binding.root.y.toInt()
@@ -170,15 +175,6 @@ class StackedViewKeyboardView(
             }
         }
         return null
-    }
-
-    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup) {
-        if(key is KeyViewWrapper) popup.apply {
-            val parentX = key.x + key.width/2
-            val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
-            val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
-            show(this@StackedViewKeyboardView, parentX, parentY.roundToInt())
-        }
     }
 
     override fun postViewChanged() {
