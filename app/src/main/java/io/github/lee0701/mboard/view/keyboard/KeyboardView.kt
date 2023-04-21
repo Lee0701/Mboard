@@ -16,6 +16,7 @@ import io.github.lee0701.mboard.input.FlickLongPressAction
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -29,10 +30,10 @@ abstract class KeyboardView(
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    protected val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
-    val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
-    val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    private val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
+    private val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels
+    open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 
@@ -158,9 +159,9 @@ abstract class KeyboardView(
     }
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
-    protected abstract fun findKey(x: Int, y: Int): KeyWrapper?
-    protected abstract fun showPopup(key: KeyWrapper, popup: KeyboardPopup)
-    protected abstract fun postViewChanged()
+    abstract fun findKey(x: Int, y: Int): KeyWrapper?
+    abstract fun showPopup(key: KeyWrapper, popup: KeyboardPopup)
+    abstract fun postViewChanged()
 
     private fun performSoundFeedback(keyCode: Int) {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -191,7 +192,11 @@ abstract class KeyboardView(
     }
 
     private fun showMoreKeysPopup(key: KeyWrapper, pointerId: Int) {
-        val keyPopup = MoreKeysPopup(context, key)
+        val moreKeysKeyboard = Keyboard(listOf(
+            Row("ARST".map { c -> Key(c.code, c.toString()) }),
+            Row(listOf(Spacer(1f)) + "OEU".map { c -> Key(c.code, c.toString()) }),
+        ))
+        val keyPopup = MoreKeysPopup(context, key, moreKeysKeyboard)
         popups[pointerId]?.cancel()
         popups[pointerId] = keyPopup
         showPopup(key, keyPopup)

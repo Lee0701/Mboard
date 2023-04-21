@@ -42,10 +42,8 @@ class KeyPreviewPopup(
     override fun show(parent: View, parentX: Int, parentY: Int) {
         popupWindow.apply {
             this.contentView = binding.root
-            val popupWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_width)
-            val popupHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_height)
-            this.width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupWidth, context.resources.displayMetrics).roundToInt()
-            this.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupHeight, context.resources.displayMetrics).roundToInt()
+            this.width = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_width).roundToInt()
+            this.height = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_height).roundToInt()
             this.isClippingEnabled = true
             this.isTouchable = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

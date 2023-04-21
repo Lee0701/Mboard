@@ -8,10 +8,10 @@
     <dimen name="key_popup_radius">12dp</dimen>
     <dimen name="key_popup_elevation">4dp</dimen>
     <dimen name="key_popup_text_size">28sp</dimen>
-    <dimen name="key_popup_preview_width">18dp</dimen>
-    <dimen name="key_popup_preview_height">22dp</dimen>
-    <dimen name="key_popup_morekeys_width">12dp</dimen>
-    <dimen name="key_popup_morekeys_height">16dp</dimen>
+    <dimen name="key_popup_preview_width">60dp</dimen>
+    <dimen name="key_popup_preview_height">70dp</dimen>
+    <dimen name="key_popup_morekeys_width">40dp</dimen>
+    <dimen name="key_popup_morekeys_height">48dp</dimen>
 
     <dimen name="candidates_view_height">48dp</dimen>
     <dimen name="candidates_text_size">22sp</dimen>

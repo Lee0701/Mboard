@@ -7,45 +7,56 @@ import android.content.Context
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.databinding.KeyPopupMorekeysBinding
-import io.github.lee0701.mboard.databinding.KeyPopupMorekeysKeyBinding
-import io.github.lee0701.mboard.databinding.KeyPopupMorekeysRowBinding
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import kotlin.math.roundToInt
 
 class MoreKeysPopup(
     context: Context,
     key: KeyboardView.KeyWrapper,
-): KeyboardPopup(context, key) {
+    val keyboard: Keyboard,
+): KeyboardPopup(context, key), KeyboardListener {
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
-    private val inflater = LayoutInflater.from(wrappedContext)
-    private val binding = KeyPopupMorekeysBinding.inflate(inflater, null, false)
+
+    private val keyWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
+    private val keyHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_height)
+
+    private val keyMarginHorizontal = context.resources.getDimension(R.dimen.key_margin_horizontal)
+    private val keyMarginVertical = context.resources.getDimension(R.dimen.key_margin_vertical)
+
+    private val keyboardWidth = ((keyboard.rows.map { it.keys.size }.maxOrNull() ?: 1) * keyWidth) + keyMarginHorizontal*2
+    private val keyboardHeight = (keyboard.rows.size * keyHeight) + keyMarginVertical*2
+
+    private val keyboardView: KeyboardView = CanvasMoreKeysView(
+        context, null, keyboard, Themes.Static, this, keyboardWidth.roundToInt(), keyboardHeight.roundToInt())
 
     private val animator: Animator = ValueAnimator.ofFloat(1f, 0f).apply {
         addUpdateListener {
             val value = animatedValue as Float
             popupWindow.background.alpha = (value * 256).toInt()
-            binding.root.alpha = value
+            keyboardView.alpha = value
         }
         addListener(object: AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 popupWindow.dismiss()
                 popupWindow.background.alpha = 255
-                binding.root.alpha = 1f
+                keyboardView.alpha = 1f
             }
         })
     }
 
     override fun show(parent: View, parentX: Int, parentY: Int) {
         popupWindow.apply {
-            this.contentView = binding.root
-            binding.root.removeAllViews()
+            this.contentView = keyboardView
+            this.width = keyboardWidth.roundToInt()
+            this.height = keyboardHeight.roundToInt()
+            keyboardView.removeAllViews()
+            keyboardView.layoutParams = ViewGroup.LayoutParams(width, height)
             this.isClippingEnabled = true
             this.isTouchable = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -65,24 +76,26 @@ class MoreKeysPopup(
         val x = parentX - popupWindow.width / 2
         val y = parentY - popupWindow.height / 2 * 3
 
-        val rowView = KeyPopupMorekeysRowBinding.inflate(inflater, null, false)
-        binding.root.addView(rowView.root)
-        "ARST".map { c ->
-            val keyView = KeyPopupMorekeysKeyBinding.inflate(inflater, null, false)
-            keyView.label.text = c.toString()
-            rowView.root.addView(keyView.root)
-            val popupWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
-            val popupHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_height)
-            val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupWidth, context.resources.displayMetrics).roundToInt()
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupHeight, context.resources.displayMetrics).roundToInt()
-            keyView.root.layoutParams = LinearLayoutCompat.LayoutParams(width, height)
-        }
-//        if(animator.isRunning) animator.cancel()
-
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
 
+    override fun onKeyClick(code: Int, output: String?) {
+    }
+
+    override fun onKeyLongClick(code: Int, output: String?) {
+    }
+
+    override fun onKeyDown(code: Int, output: String?) {
+    }
+
+    override fun onKeyUp(code: Int, output: String?) {
+    }
+
+    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+    }
+
     override fun touchMove(x: Int, y: Int) {
+        val key = keyboardView.findKey(x, y)
     }
 
     override fun dismiss() {

@@ -115,6 +115,10 @@ open class CanvasKeyboardView(
         }
     }
 
+    fun clearCachedKeys() {
+        cachedKeys.clear()
+    }
+
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         if(canvas == null) return
@@ -142,6 +146,7 @@ open class CanvasKeyboardView(
                 val y = key.y + keyMarginVertical - extendTop
                 val width = (key.width - keyMarginHorizontal*2)
                 val height = (key.height - keyMarginVertical*2) + extendTop + extendBottom
+                if(width <= 0f || height <= 0f) return@forEach
                 val bitmap = bitmapCache.getOrPut(BitmapCacheKey(width.roundToInt(), height.roundToInt(), pressed, key.key.type)) {
                     background.toBitmap(width.roundToInt(), height.roundToInt())
                 }
@@ -187,7 +192,7 @@ open class CanvasKeyboardView(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(keyboardWidth.roundToInt(), keyboardHeight)
+        setMeasuredDimension(keyboardWidth, keyboardHeight)
     }
 
     data class CachedKey(
@@ -226,8 +231,9 @@ open class CanvasKeyboardView(
     }
 
     override fun showPopup(key: KeyWrapper, popup: KeyboardPopup) {
+        val candidatesViewHeight = context.resources.getDimension(R.dimen.candidates_view_height).toInt()
         val parentX = key.x + key.width/2
-        val parentY = key.y + context.resources.getDimension(R.dimen.candidates_view_height).toInt() + key.height/2
+        val parentY = key.y + candidatesViewHeight + key.height/2
         popup.show(this, parentX, parentY)
     }
 
