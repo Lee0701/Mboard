@@ -83,7 +83,7 @@ layers:
         base: "0x1112"
         shift: "0x002f"
       "KEYCODE_SLASH":
-        base: "0x011169"
+        base: "0x110f"
         shift: "0x003f"
   $cho:
     !<simple>
@@ -108,13 +108,13 @@ layers:
       "KEYCODE_U":
         base: "0x1103"
       "KEYCODE_I":
-        base: "0x1116e"
+        base: "0x100116e"
         shift: "0x1106"
       "KEYCODE_O":
-        base: "0x1116e"
+        base: "0x100116e"
         shift: "0x110e"
       "KEYCODE_P":
-        base: "0x11169"
+        base: "0x1001169"
         shift: "0x1111"
       "KEYCODE_A":
         base: "0x1164"
