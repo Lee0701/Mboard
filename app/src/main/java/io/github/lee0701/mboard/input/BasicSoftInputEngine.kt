@@ -2,7 +2,6 @@ package io.github.lee0701.mboard.input
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -13,7 +12,11 @@ import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.*
+import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
+import io.github.lee0701.mboard.view.keyboard.FlickDirection
+import io.github.lee0701.mboard.view.keyboard.KeyboardView
+import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
+import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,

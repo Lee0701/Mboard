@@ -10,6 +10,11 @@ sealed interface FlickLongPressAction {
         }
     }
 
+    object MoreKeys: FlickLongPressAction {
+        override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
+        }
+    }
+
     object Repeat: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
             // This action will be intercepted and be processed by Soft Keyboard

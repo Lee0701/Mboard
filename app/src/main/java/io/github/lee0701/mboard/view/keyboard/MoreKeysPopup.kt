@@ -10,19 +10,22 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.databinding.KeyPopupPreviewBinding
+import io.github.lee0701.mboard.databinding.KeyPopupMorekeysBinding
+import io.github.lee0701.mboard.databinding.KeyPopupMorekeysKeyBinding
+import io.github.lee0701.mboard.databinding.KeyPopupMorekeysRowBinding
 import kotlin.math.roundToInt
 
-class KeyPreviewPopup(
+class MoreKeysPopup(
     context: Context,
     key: KeyboardView.KeyWrapper,
 ): KeyboardPopup(context, key) {
-
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
-    private val binding = KeyPopupPreviewBinding.inflate(LayoutInflater.from(wrappedContext), null, false)
+    private val inflater = LayoutInflater.from(wrappedContext)
+    private val binding = KeyPopupMorekeysBinding.inflate(inflater, null, false)
 
     private val animator: Animator = ValueAnimator.ofFloat(1f, 0f).apply {
         addUpdateListener {
@@ -42,10 +45,7 @@ class KeyPreviewPopup(
     override fun show(parent: View, parentX: Int, parentY: Int) {
         popupWindow.apply {
             this.contentView = binding.root
-            val popupWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_width)
-            val popupHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_preview_height)
-            this.width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupWidth, context.resources.displayMetrics).roundToInt()
-            this.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupHeight, context.resources.displayMetrics).roundToInt()
+            binding.root.removeAllViews()
             this.isClippingEnabled = true
             this.isTouchable = false
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -64,9 +64,21 @@ class KeyPreviewPopup(
 
         val x = parentX - popupWindow.width / 2
         val y = parentY - popupWindow.height / 2 * 3
-        binding.icon.setImageDrawable(key.icon)
-        binding.label.text = key.key.label
-        if(animator.isRunning) animator.cancel()
+
+        val rowView = KeyPopupMorekeysRowBinding.inflate(inflater, null, false)
+        binding.root.addView(rowView.root)
+        "ARST".map { c ->
+            val keyView = KeyPopupMorekeysKeyBinding.inflate(inflater, null, false)
+            keyView.label.text = c.toString()
+            rowView.root.addView(keyView.root)
+            val popupWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
+            val popupHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_height)
+            val width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupWidth, context.resources.displayMetrics).roundToInt()
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, popupHeight, context.resources.displayMetrics).roundToInt()
+            keyView.root.layoutParams = LinearLayoutCompat.LayoutParams(width, height)
+        }
+//        if(animator.isRunning) animator.cancel()
+
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
     }
 

@@ -12,6 +12,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.input.FlickLongPressAction
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
@@ -37,7 +38,7 @@ abstract class KeyboardView(
 
     protected val showKeyPopups = preferences.getBoolean("behaviour_show_popups", true)
     protected val longPressDuration = preferences.getFloat("behaviour_long_press_duration", 100f).toLong()
-    protected val repeatOnLongPress = preferences.getString("behaviour_long_press_action", "shift") == "repeat"
+    protected val longPressAction = FlickLongPressAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
     protected val repeatInterval = preferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
     protected val slideAction = preferences.getString("behaviour_slide_action", "flick")
@@ -82,14 +83,16 @@ abstract class KeyboardView(
     protected fun onTouchDown(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         if(this.soundFeedback) this.performSoundFeedback(key.key.code)
-        maybeShowPopup(key, pointerId)
+        maybeShowPreviewPopup(key, pointerId)
         fun repeater() {
             listener.onKeyClick(key.key.code, key.key.output)
             handler.postDelayed({ repeater() }, repeatInterval)
         }
         handler.postDelayed({
-            if(key.key.repeatable || repeatOnLongPress) {
+            if(key.key.repeatable || longPressAction == FlickLongPressAction.Repeat) {
                 repeater()
+            } else if(true || longPressAction == FlickLongPressAction.MoreKeys) {
+                showMoreKeysPopup(key, pointerId)
             } else {
                 if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 listener.onKeyLongClick(key.key.code, key.key.output)
@@ -134,7 +137,7 @@ abstract class KeyboardView(
                     keyStates[newKey.key.code] = true
                     pointers[pointerId] = pointer.copy(key = newKey)
                     popups[pointerId]?.cancel()
-                    maybeShowPopup(newKey, pointerId)
+                    maybeShowPreviewPopup(newKey, pointerId)
                 }
             }
         }
@@ -174,14 +177,24 @@ abstract class KeyboardView(
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
     }
 
-    private fun maybeShowPopup(key: KeyWrapper, pointerId: Int) {
+    private fun maybeShowPreviewPopup(key: KeyWrapper, pointerId: Int) {
         if(showKeyPopups &&
             (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
-            val keyPopup = popups.getOrPut(pointerId) { KeyPreviewPopup(context, key) }
+            val keyPopup = KeyPreviewPopup(context, key)
+            popups[pointerId]?.cancel()
+            popups[pointerId] = keyPopup
             showPopup(key, keyPopup)
         } else {
             popups[pointerId]?.cancel()
+            popups.remove(pointerId)
         }
+    }
+
+    private fun showMoreKeysPopup(key: KeyWrapper, pointerId: Int) {
+        val keyPopup = MoreKeysPopup(context, key)
+        popups[pointerId]?.cancel()
+        popups[pointerId] = keyPopup
+        showPopup(key, keyPopup)
     }
 
     interface KeyLikeWrapper {
