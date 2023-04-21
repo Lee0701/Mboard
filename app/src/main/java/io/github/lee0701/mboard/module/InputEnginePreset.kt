@@ -16,7 +16,6 @@ import io.github.lee0701.mboard.input.HanjaConverterInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
-import io.github.lee0701.mboard.module.table.CompoundCodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.service.MBoardIME
 import kotlinx.serialization.Serializable
@@ -38,7 +37,7 @@ sealed interface InputEnginePreset {
     fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
         val resolved = names.map { filename ->
             Yaml.default.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-        return resolved[0]
+        return resolved.reduce { acc, input -> acc + input }
     }
 
     fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {

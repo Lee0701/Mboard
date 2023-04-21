@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("simple")
 class SimpleCodeConvertTable(
-    @Serializable private val map: Map<
+    @Serializable val map: Map<
             @Serializable(with = KeyCodeSerializer::class) Int,
             Entry> = mapOf(),
 ): CodeConvertTable {
@@ -24,8 +24,23 @@ class SimpleCodeConvertTable(
             .toMap()
     }
 
-    operator fun plus(simpleCodeConvertTable: SimpleCodeConvertTable): SimpleCodeConvertTable {
-        return SimpleCodeConvertTable(map = this.map + simpleCodeConvertTable.map)
+    override fun plus(table: CodeConvertTable): CodeConvertTable {
+        return when(table) {
+            is SimpleCodeConvertTable -> this + table
+            is LayeredCodeConvertTable -> this + table
+        }
+    }
+
+    operator fun plus(table: SimpleCodeConvertTable): SimpleCodeConvertTable {
+        return SimpleCodeConvertTable(map = this.map + table.map)
+    }
+
+    operator fun plus(table: LayeredCodeConvertTable): LayeredCodeConvertTable {
+        return LayeredCodeConvertTable(table.layers.keys.map { key ->
+            val layers = table.layers[key]
+            if(layers != null) key to LayeredCodeConvertTable(mapOf(key to (this + layers)))
+            else null
+        }.filterNotNull().toMap())
     }
 
     @Serializable

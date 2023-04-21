@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @SerialName("layered")
 class LayeredCodeConvertTable(
-    @Serializable private val layers: Map<String, CodeConvertTable>,
+    @Serializable val layers: Map<String, CodeConvertTable>,
 ): CodeConvertTable {
 
     fun get(layerId: String): CodeConvertTable? {
@@ -28,6 +28,27 @@ class LayeredCodeConvertTable(
 
     override fun getAllForState(state: KeyboardState): Map<Int, Int> {
         return getAllForState(BASE_LAYER_NAME, state)
+    }
+
+    override fun plus(table: CodeConvertTable): CodeConvertTable {
+        return when(table) {
+            is SimpleCodeConvertTable -> this + table
+            is LayeredCodeConvertTable -> this + table
+        }
+    }
+
+    operator fun plus(table: LayeredCodeConvertTable): LayeredCodeConvertTable {
+        val keys = layers.keys + table.layers.keys
+        return LayeredCodeConvertTable(keys.map { key ->
+            val a = table.layers[key]
+            val b = this.layers[key]
+            if(a != null && b != null) key to LayeredCodeConvertTable(mapOf(key to (a + b)))
+            else null
+        }.filterNotNull().toMap())
+    }
+
+    operator fun plus(table: SimpleCodeConvertTable): LayeredCodeConvertTable {
+        return LayeredCodeConvertTable(this.layers.mapValues { (_, layer) -> layer + table })
     }
 
     companion object {

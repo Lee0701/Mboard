@@ -69,6 +69,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hangulModule = modHangul(yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)))
         val symbolModule = yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename))
 
+        // TODO: Fix these as soon as possiblẻ
         val latinInputEngine = kotlin.runCatching { latinModule.inflate(this) }.getOrNull()
         val hangulInputEngine = kotlin.runCatching { hangulModule.inflate(this) }.getOrNull()
         val symbolInputEngine = kotlin.runCatching { symbolModule.inflate(this) }.getOrNull()
