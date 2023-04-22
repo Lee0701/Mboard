@@ -30,4 +30,3 @@ rows:
   - !<key>
     code: "KEYCODE_0"
     output: "0"
-height: 55.0

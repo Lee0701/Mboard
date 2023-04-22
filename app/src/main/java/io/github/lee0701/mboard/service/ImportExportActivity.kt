@@ -60,8 +60,9 @@ class ImportExportActivity: AppCompatActivity() {
                 val layouts = mapOf(
 //                    "3set_shin_original_chojong" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJONG,
 //                    "3set_shin_original_chojung" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJUNG,
-                    "3set_shin_edit_chojong" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJONG,
-                    "3set_shin_edit_chojung" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJUNG,
+//                    "3set_shin_edit_chojong" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJONG,
+//                    "3set_shin_edit_chojung" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJUNG,
+                    "3set_393_old_hangul" to OpenWnnKoreanLayouts.JAMO_SEBUL_393Y,
                 )
                 layouts.forEach { (name, layout) ->
                     val table = importLayout(layout)
