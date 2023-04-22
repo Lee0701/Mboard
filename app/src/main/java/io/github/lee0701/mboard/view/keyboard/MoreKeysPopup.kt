@@ -32,7 +32,7 @@ class MoreKeysPopup(
     private val keyMarginHorizontal = context.resources.getDimension(R.dimen.key_margin_horizontal)
     private val keyMarginVertical = context.resources.getDimension(R.dimen.key_margin_vertical)
 
-    private val keyboardWidth = ((keyboard.rows.map { it.keys.size }.maxOrNull() ?: 1) * keyWidth) + keyMarginHorizontal*2
+    private val keyboardWidth = ((keyboard.rows.maxOfOrNull { it.keys.size } ?: 1) * keyWidth) + keyMarginHorizontal*2
     private val keyboardHeight = (keyboard.rows.size * keyHeight) + keyMarginVertical*2
 
     override val width: Int = keyboardWidth.roundToInt()
@@ -43,7 +43,7 @@ class MoreKeysPopup(
     private val keyboardView: MoreKeysKeyboardView =
         when(keyboardViewType) {
             "stacked_view" -> StackedViewMoreKeysView(
-                context, null, keyboard, Themes.Static, this, width, height)
+                context, null, keyboard, Themes.Static, this)
             else -> CanvasMoreKeysView(
                 context, null, keyboard, Themes.Static, this, width, height)
         }
@@ -67,9 +67,9 @@ class MoreKeysPopup(
     override fun show(parent: View, parentX: Int, parentY: Int) {
         popupWindow.apply {
             this.contentView = keyboardView as ViewGroup
-            this.width = width
-            this.height = height
-            keyboardView.removeAllViews()
+            this.width = this@MoreKeysPopup.width
+            this.height = this@MoreKeysPopup.height
+//            keyboardView.removeAllViews()
             keyboardView.layoutParams = ViewGroup.LayoutParams(width, height)
             this.isClippingEnabled = true
             this.isTouchable = false
@@ -88,7 +88,7 @@ class MoreKeysPopup(
         }
 
         val x = parentX - popupWindow.width/2f
-        val y = parentY - popupWindow.height/2*3f
+        val y = parentY - popupWindow.height/2f*3f
 
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }

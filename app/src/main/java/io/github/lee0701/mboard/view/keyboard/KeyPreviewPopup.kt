@@ -63,12 +63,12 @@ class KeyPreviewPopup(
             }
         }
 
-        val x = parentX - popupWindow.width / 2
-        val y = parentY - popupWindow.height / 2 * 3
+        val x = parentX - popupWindow.width/2f
+        val y = parentY - popupWindow.height/2f*3f
         binding.icon.setImageDrawable(key.icon)
         binding.label.text = key.key.label
         if(animator.isRunning) animator.cancel()
-        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x, y)
+        popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }
 
     override fun touchMove(x: Int, y: Int) {

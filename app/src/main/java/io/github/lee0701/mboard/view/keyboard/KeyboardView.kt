@@ -175,14 +175,8 @@ abstract class KeyboardView(
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
     abstract fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>)
     abstract fun findKey(x: Int, y: Int): KeyWrapper?
+    abstract fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int)
     abstract fun postViewChanged()
-
-    private fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
-        println("${key.x} ${key.width} ${popup.width} $offsetX")
-        val parentX = key.x + key.width/2f - popup.width/2f + offsetX
-        val parentY = key.y + key.height/2f - popup.height/2f + candidatesViewHeight + offsetY
-        popup.show(this, parentX.roundToInt(), parentY.roundToInt())
-    }
 
     private fun performSoundFeedback(keyCode: Int) {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -217,9 +211,14 @@ abstract class KeyboardView(
         val keyPopup = MoreKeysPopup(context, key, moreKeysKeyboard, listener)
         popups[pointerId]?.cancel()
         popups[pointerId] = keyPopup
-        val x = 0
-        val y = - keyPopup.height/3f*2f
-        showPopup(key, keyPopup, x, y.roundToInt())
+        val x = 0f
+        val y = 0f
+        showPopup(key, keyPopup, x.roundToInt(), y.roundToInt())
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        setMeasuredDimension(keyboardWidth, keyboardHeight)
     }
 
     interface KeyLikeWrapper {

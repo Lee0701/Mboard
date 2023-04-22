@@ -182,4 +182,16 @@ open class StackedViewKeyboardView(
             key.binding.root.isPressed = keyStates[key.key.code] == true
         }
     }
+
+    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
+        if(key is KeyViewWrapper) {
+            val parentX = key.x + key.width/2f + offsetX
+            val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
+            val parentY = row.binding.root.y +
+                    resources.getDimension(R.dimen.candidates_view_height).toInt() +
+                    row.binding.root.height/2f +
+                    offsetY
+            popup.show(this, parentX.roundToInt(), parentY.roundToInt())
+        }
+    }
 }

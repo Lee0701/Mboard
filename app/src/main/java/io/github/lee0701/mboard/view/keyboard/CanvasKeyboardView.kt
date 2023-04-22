@@ -195,9 +195,11 @@ open class CanvasKeyboardView(
         moreKeysKeyboards += keyboards
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(keyboardWidth, keyboardHeight)
+    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
+        val candidatesViewHeight = context.resources.getDimension(R.dimen.candidates_view_height).toInt()
+        val parentX = key.x + key.width/2f + offsetX
+        val parentY = key.y + candidatesViewHeight + key.height/2f + offsetY
+        popup.show(this, parentX.roundToInt(), parentY.roundToInt())
     }
 
     data class CachedKey(

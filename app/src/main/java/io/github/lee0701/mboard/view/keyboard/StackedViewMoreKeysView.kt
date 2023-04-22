@@ -2,6 +2,8 @@ package io.github.lee0701.mboard.view.keyboard
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.view.WindowManager
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 
 class StackedViewMoreKeysView(
@@ -10,8 +12,6 @@ class StackedViewMoreKeysView(
     keyboard: Keyboard,
     theme: Theme,
     listener: KeyboardListener,
-    override val keyboardWidth: Int = 0,
-    override val keyboardHeight: Int = 0,
 ): StackedViewKeyboardView(context, attrs, keyboard, theme, listener), MoreKeysKeyboardView {
 
     override fun highlight(key: KeyWrapper) {

@@ -13,6 +13,7 @@ class CanvasMoreKeysView(
     override val keyboardWidth: Int = 0,
     override val keyboardHeight: Int = 0,
 ): CanvasKeyboardView(context, attrs, keyboard, theme, listener), MoreKeysKeyboardView {
+
     init {
         clearCachedKeys()
         cacheKeys()
