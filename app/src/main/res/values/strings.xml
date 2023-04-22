@@ -54,6 +54,8 @@
     <string name="pref_input_hanja_conversion_summary">requires Hanja Converter installed.</string>
     <string name="pref_input_hanja_prediction_title">Hanja Prediction</string>
     <string name="pref_input_hanja_prediction_summary">requires Hanja Converter Donation Version installed.</string>
+    <string name="pref_input_hanja_sort_by_context_title">Sort Hanja by Context</string>
+    <string name="pref_input_hanja_sort_by_context_summary">requires Hanja Converter Donation Version installed.</string>
     <string name="pref_input_hanja_additional_dictionaries_title">Additional Hanja Dictionaries</string>
     <string name="person_name">Person Names</string>
     <string name="metro_station">Metro Station Names</string>

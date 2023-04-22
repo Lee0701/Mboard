@@ -22,14 +22,16 @@ object HanjaConverterBuilder {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         val list = listOf(donationPackageName, commonPackageName)
-        val converterContext = list.map { name -> kotlin.runCatching {
-            context.createPackageContext(name, 0)
-        } }.filter { it.isSuccess }.firstOrNull()?.getOrNull() ?: return null to null
+        val converterContext = list.map { name ->
+            kotlin.runCatching {
+                context.createPackageContext(name, 0)
+            }
+        }.firstOrNull { it.isSuccess }?.getOrNull() ?: return null to null
 
         val converters: MutableList<HanjaConverter> = mutableListOf()
         val isDonation = converterContext.packageName == donationPackageName
         val usePrediction = true
-        val sortByContext = true
+        val sortByContext = preferences.getBoolean("input_hanja_sort_by_context", false)
 
         val tfliteAvailable = isDonation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && (usePrediction || sortByContext)
         val tfLitePredictor = if(tfliteAvailable) {
