@@ -8,8 +8,11 @@ import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
@@ -221,6 +224,40 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.deleteSurroundingText(beforeLength, afterLength)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onUpdateSelection(
+        oldSelStart: Int,
+        oldSelEnd: Int,
+        newSelStart: Int,
+        newSelEnd: Int,
+        candidatesStart: Int,
+        candidatesEnd: Int
+    ) {
+        super.onUpdateSelection(
+            oldSelStart,
+            oldSelEnd,
+            newSelStart,
+            newSelEnd,
+            candidatesStart,
+            candidatesEnd
+        )
+        currentInputConnection?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_MONITOR)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    override fun onUpdateCursorAnchorInfo(cursorAnchorInfo: CursorAnchorInfo?) {
+        if(cursorAnchorInfo == null) return
+        val selectionEnd = cursorAnchorInfo.selectionStart
+        val composingEnd = cursorAnchorInfo.composingTextStart + (cursorAnchorInfo.composingText?.length ?: 0)
+        if(selectionEnd != composingEnd) resetCurrentEngine()
+    }
+
+    // Still needed for pre-lollipop devices
+    @Deprecated("Deprecated in Java")
+    override fun onViewClicked(focusChanged: Boolean) {
+        if(focusChanged) resetCurrentEngine()
     }
 
     override fun onComputeInsets(outInsets: Insets?) {
