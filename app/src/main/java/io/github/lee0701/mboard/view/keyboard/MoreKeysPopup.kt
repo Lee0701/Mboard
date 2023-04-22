@@ -40,11 +40,11 @@ class MoreKeysPopup(
 
     val theme = Themes.ofName(preferences.getString("appearance_theme", "theme_dynamic"))
     private val keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: "canvas"
-    private val keyboardView: MoreKeysKeyboardView =
+    private val keyboardView: KeyboardView =
         when(keyboardViewType) {
-            "stacked_view" -> StackedViewMoreKeysView(
+            "stacked_view" -> StackedViewKeyboardView(
                 context, null, keyboard, Themes.Static, this)
-            else -> CanvasMoreKeysView(
+            else -> CanvasKeyboardView(
                 context, null, keyboard, Themes.Static, this, width, height)
         }
     private var pointedKey: KeyboardView.KeyWrapper? = null
@@ -122,7 +122,6 @@ class MoreKeysPopup(
     override fun touchUp() {
         val pointedKey = pointedKey ?: return
         this.onKeyClick(pointedKey.key.code, pointedKey.key.output)
-        keyboardView.reset()
         this.pointedKey = null
     }
 

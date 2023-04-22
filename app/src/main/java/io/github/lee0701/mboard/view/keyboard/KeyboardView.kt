@@ -17,9 +17,10 @@ import io.github.lee0701.mboard.input.FlickLongPressAction
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 abstract class KeyboardView(
@@ -98,6 +99,8 @@ abstract class KeyboardView(
                 repeater()
             } else if(showMoreKeys) {
                 showMoreKeysPopup(key, pointerId)
+                // Call this once to initially point a key on popup
+                handler?.post { onTouchMove(key, pointerId, x, y) }
             } else {
                 if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 listener.onKeyLongClick(key.key.code, key.key.output)
@@ -114,9 +117,15 @@ abstract class KeyboardView(
         val pointer = pointers[pointerId] ?: return
         val popup = popups[pointerId]
         if(popup != null) {
-            val parentX = key.x + key.width/2f - popup.width/2f
+            val parentLeft = key.x + key.width/2f - popup.width/2f
+            val parentRight = parentLeft + popup.width
+
+            // Correct touch positions when view has pushed from outside of screen bounds
+            val correctedLeft = parentLeft - max(0f, parentLeft)
+            val correctedRight = parentRight - min(keyboardWidth.toFloat(), parentRight)
+
             val parentY = key.y + key.height/2f - popup.height/2f
-            val localX = x - parentX
+            val localX = x - parentLeft + correctedLeft + correctedRight
             val localY = y - parentY + popup.height/3f*2f
             popup.touchMove(localX.roundToInt(), localY.roundToInt())
             return
@@ -174,9 +183,19 @@ abstract class KeyboardView(
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
     abstract fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>)
-    abstract fun findKey(x: Int, y: Int): KeyWrapper?
-    abstract fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int)
     abstract fun postViewChanged()
+    abstract fun highlight(key: KeyWrapper)
+
+    fun findKey(x: Int, y: Int): KeyWrapper? {
+        wrappedKeys.forEach { key ->
+            if(x in key.x until key.x+key.width) {
+                if(y in key.y until key.y+key.height) {
+                    if(key is KeyWrapper) return key
+                }
+            }
+        }
+        return null
+    }
 
     private fun performSoundFeedback(keyCode: Int) {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -211,10 +230,22 @@ abstract class KeyboardView(
         val keyPopup = MoreKeysPopup(context, key, moreKeysKeyboard, listener)
         popups[pointerId]?.cancel()
         popups[pointerId] = keyPopup
-        val x = 0f
-        val y = 0f
-        showPopup(key, keyPopup, x.roundToInt(), y.roundToInt())
+        val popupX = getPopupX(key)
+        val popupY = getPopupY(key)
+        // Correct popup position if outside the screen
+        val offsetX = if(popupX < 0) -popupX else 0f
+        val offsetY = 0f
+        showPopup(key, keyPopup, offsetX.roundToInt(), offsetY.roundToInt())
     }
+
+    private fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
+        val x = getPopupX(key) + offsetX
+        val y = getPopupY(key) + offsetY
+        popup.show(this, x.roundToInt(), y.roundToInt())
+    }
+
+    private fun getPopupX(key: KeyWrapper): Float = key.x + key.width/2f
+    private fun getPopupY(key: KeyWrapper): Float = key.y + candidatesViewHeight + key.height/2f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)

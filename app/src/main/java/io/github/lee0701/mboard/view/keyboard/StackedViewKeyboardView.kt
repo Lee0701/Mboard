@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
@@ -161,35 +160,16 @@ open class StackedViewKeyboardView(
         moreKeysKeyboards += keyboards
     }
 
-    override fun findKey(x: Int, y: Int): KeyWrapper? {
-        keyboardViewWrapper.rows.forEach { row ->
-            val rowY = row.binding.root.y.toInt()
-            val rowHeight = row.binding.root.height
-            if(y in rowY until rowY+rowHeight) {
-                row.keys.forEach { key ->
-                    val keyX = key.binding.root.x.toInt()
-                    val keyWidth = key.binding.root.width
-                    if(x in keyX until keyX+keyWidth) {
-                        return key
-                    }
-                }
-            }
-        }
-        return null
-    }
-
     override fun postViewChanged() {
         wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { key ->
             key.binding.root.isPressed = keyStates[key.key.code] == true
         }
     }
 
-    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
-        if(key is KeyViewWrapper) {
-            val parentX = key.x + key.width/2f + offsetX
-            val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
-            val parentY = key.y + candidatesViewHeight + key.height/2f + offsetY
-            popup.show(this, parentX.roundToInt(), parentY.roundToInt())
-        }
+    override fun highlight(key: KeyWrapper) {
+        wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { it.binding.root.isPressed = false }
+        val wrappedKey = wrappedKeys.filterIsInstance<KeyViewWrapper>().find { it == key } ?: return
+        wrappedKey.binding.root.isPressed = true
     }
+
 }

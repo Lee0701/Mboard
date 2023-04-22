@@ -25,6 +25,8 @@ open class CanvasKeyboardView(
     keyboard: Keyboard,
     theme: Theme,
     listener: KeyboardListener,
+    override val keyboardWidth: Int = 0,
+    override val keyboardHeight: Int = 0,
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
     private val rect = Rect()
@@ -195,12 +197,6 @@ open class CanvasKeyboardView(
         moreKeysKeyboards += keyboards
     }
 
-    override fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
-        val parentX = key.x + key.width/2f + offsetX
-        val parentY = key.y + candidatesViewHeight + key.height/2f + offsetY
-        popup.show(this, parentX.roundToInt(), parentY.roundToInt())
-    }
-
     data class CachedKey(
         override val key: Key,
         override val x: Int,
@@ -226,18 +222,14 @@ open class CanvasKeyboardView(
         val type: KeyType,
     )
 
-    override fun findKey(x: Int, y: Int): KeyWrapper? {
-        wrappedKeys.forEach { key ->
-            if(x in key.x until key.x+key.width) {
-                if(y in key.y until key.y+key.height) {
-                    return key
-                }
-            }
-        }
-        return null
-    }
-
     override fun postViewChanged() {
         invalidate()
     }
+
+    override fun highlight(key: KeyWrapper) {
+        this.keyStates.clear()
+        this.keyStates[key.key.code] = true
+        invalidate()
+    }
+
 }
