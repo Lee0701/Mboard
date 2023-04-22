@@ -17,6 +17,7 @@ import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
+import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.MBoardIME
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
@@ -29,35 +30,45 @@ sealed interface InputEnginePreset {
 
     fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
         val resolved = names.map { filename ->
-            Yaml.default.decodeFromStream<Keyboard>(context.assets.open(filename))
+            yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
         }
-        return resolved.reduce { acc, input -> acc + input }
+        return resolved.fold(Keyboard()) { acc, input -> acc + input }
     }
 
     fun loadConvertTables(context: Context, names: List<String>): CodeConvertTable {
         val resolved = names.map { filename ->
-            Yaml.default.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-        return resolved.reduce { acc, input -> acc + input }
+            yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
+        return resolved.fold(CodeConvertTable()) { acc, input -> acc + input }
     }
 
     fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
         val resolved = names.map { filename ->
-            Yaml.default.decodeFromStream<JamoCombinationTable>(context.assets.open(filename)) }
-        return resolved.reduce { acc, input -> acc + input }
+            yaml.decodeFromStream<JamoCombinationTable>(context.assets.open(filename)) }
+        return resolved.fold(JamoCombinationTable()) { acc, input -> acc + input }
+    }
+
+    fun loadMoreKeysTable(context: Context, names: List<String>): MoreKeysTable {
+        val resolved = names.map { filename ->
+            val refMap = yaml.decodeFromStream<MoreKeysTable.RefMap>(context.assets.open(filename))
+            refMap.resolve(context.assets, yaml)
+        }
+        return resolved.fold(MoreKeysTable()) { acc, input -> acc + input }
     }
 
     @SerialName("latin")
     @Serializable
     data class Latin(
-        val softKeyboard: List<String>,
-        val codeConvertTable: List<String>,
+        val softKeyboard: List<String> = listOf(),
+        val moreKeysTable: List<String> = listOf(),
+        val codeConvertTable: List<String> = listOf(),
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
             val convertTable = loadConvertTables(ime, names = codeConvertTable)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
-                getInputEngine = { listener -> CodeConverterInputEngine(convertTable, listener) },
+                getInputEngine = { listener -> CodeConverterInputEngine(convertTable, moreKeysTable, listener) },
                 autoUnlockShift = true,
                 listener = ime,
             )
@@ -67,12 +78,14 @@ sealed interface InputEnginePreset {
     @SerialName("hangul")
     @Serializable
     data class Hangul(
-        val softKeyboard: List<String>,
-        val hangulTable: List<String>,
-        val combinationTable: List<String>,
+        val softKeyboard: List<String> = listOf(),
+        val moreKeysTable: List<String> = listOf(),
+        val hangulTable: List<String> = listOf(),
+        val combinationTable: List<String> = listOf(),
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
             val convertTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             return BasicSoftInputEngine(
@@ -87,45 +100,59 @@ sealed interface InputEnginePreset {
     @SerialName("hangul-hanja")
     @Serializable
     data class HangulHanja(
-        val softKeyboard: List<String>,
-        val hangulTable: List<String>,
-        val combinationTable: List<String>,
+        val softKeyboard: List<String> = listOf(),
+        val moreKeysTable: List<String> = listOf(),
+        val hangulTable: List<String> = listOf(),
+        val combinationTable: List<String> = listOf(),
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
             val hangulTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, _) = createHanjaConverter(ime, prediction = false)
-            return BasicSoftInputEngine(keyboard, { listener ->
-                HanjaConverterInputEngine({ l ->
-                    HangulInputEngine(hangulTable, combinationTable, l)
-                }, converter, null, listener)
-            }, true, ime)
+            return BasicSoftInputEngine(
+                keyboard = keyboard,
+                getInputEngine = { listener ->
+                    HanjaConverterInputEngine({ l ->
+                        HangulInputEngine(hangulTable, combinationTable, l)
+                    }, converter, null, listener)
+                },
+                autoUnlockShift = true,
+                listener = ime
+            )
         }
     }
 
     @SerialName("predicting-hangul-hanja")
     @Serializable
     data class PredictingHangulHanja(
-        val softKeyboard: List<String>,
-        val hangulTable: List<String>,
-        val combinationTable: List<String>,
+        val softKeyboard: List<String> = listOf(),
+        val moreKeysTable: List<String> = listOf(),
+        val hangulTable: List<String> = listOf(),
+        val combinationTable: List<String> = listOf(),
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
             val convertTable = loadConvertTables(ime, names = hangulTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             val (converter, predictor) = createHanjaConverter(ime, prediction = true)
-            return BasicSoftInputEngine(keyboard, { listener ->
-                HanjaConverterInputEngine({ l ->
-                    HangulInputEngine(convertTable, combinationTable, l)
-                }, converter, predictor, listener)
-            }, true, ime)
+            return BasicSoftInputEngine(
+                keyboard = keyboard,
+                getInputEngine = { listener ->
+                    HanjaConverterInputEngine({ l ->
+                        HangulInputEngine(convertTable, combinationTable, l)
+                    }, converter, predictor, listener)
+                },
+                autoUnlockShift = true,
+                listener = ime
+            )
         }
     }
 
     companion object {
-        val yamlConfig = YamlConfiguration(encodeDefaults = false)
+        private val yamlConfig = YamlConfiguration(encodeDefaults = false)
         val yaml = Yaml(EmptySerializersModule(), yamlConfig)
 
         private fun createHanjaConverter(ime: MBoardIME, prediction: Boolean): Pair<HanjaConverter?, Predictor?> {

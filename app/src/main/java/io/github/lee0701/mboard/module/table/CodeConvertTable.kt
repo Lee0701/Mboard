@@ -18,6 +18,9 @@ data class CodeConvertTable(
             if(keyCode > 0) keyCode else k.toIntOrNull() ?: 0
         }
     }
+    val reversedCodeMap: Map<Pair<Int, EntryKey>, Int> = codeMap.flatMap { (key, value) ->
+        value.explode().map { (entryKey, charCode) -> (charCode to entryKey) to key }
+    }.toMap()
 
     operator fun plus(another: CodeConvertTable): CodeConvertTable {
         return CodeConvertTable(this.map + another.map)
@@ -39,6 +42,37 @@ data class CodeConvertTable(
             else if(shiftPressed) shift
             else if(altPressed) alt
             else base
+        }
+        fun forKey(key: EntryKey): Int? {
+            return when(key) {
+                EntryKey.Base -> base
+                EntryKey.Shift -> shift ?: base
+                EntryKey.CapsLock -> capsLock ?: shift ?: base
+                EntryKey.Alt -> alt ?: base
+                EntryKey.AltShift -> altShift ?: alt
+            }
+        }
+        fun explode(): Map<EntryKey, Int> {
+            return listOfNotNull(
+                base?.let { EntryKey.Base to it },
+                shift?.let { EntryKey.Shift to it },
+                capsLock?.let { EntryKey.CapsLock to it },
+                alt?.let { EntryKey.Alt to it },
+                altShift?.let { EntryKey.AltShift to it },
+            ).toMap()
+        }
+    }
+
+    enum class EntryKey {
+        Base, Shift, CapsLock, Alt, AltShift;
+        companion object {
+            fun fromKeyboardState(keyboardState: KeyboardState): EntryKey {
+                return if(keyboardState.altState.pressed && keyboardState.shiftState.pressed) AltShift
+                else if(keyboardState.altState.pressed) Alt
+                else if(keyboardState.shiftState.locked) CapsLock
+                else if(keyboardState.shiftState.pressed) Shift
+                else Base
+            }
         }
     }
 }
