@@ -74,6 +74,7 @@ open class StackedViewKeyboardView(
                         wrappers += spacerViewWrapper
                         root.addView(spacerViewWrapper.binding.root)
                     }
+                    else -> {}
                 }
             }
         }

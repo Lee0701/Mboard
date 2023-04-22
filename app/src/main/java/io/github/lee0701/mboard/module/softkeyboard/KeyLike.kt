@@ -27,3 +27,11 @@ data class Key(
     val repeatable: Boolean = false,
     val type: KeyType = KeyType.Alphanumeric,
 ): KeyLike
+
+@SerialName("include")
+@Serializable
+data class Include(
+    val name: String,
+): KeyLike {
+    override val width: Float = 0f
+}
