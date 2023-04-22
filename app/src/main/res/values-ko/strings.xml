@@ -40,6 +40,8 @@
     <string name="layout_3set_391">세벌식 3–91 (최종)</string>
     <string name="layout_3set_391_strict">세벌식 3–91 (최종, 정석 강요)</string>
     <string name="layout_3set_shin_original">신세벌식 원안</string>
+    <string name="layout_3set_shin_edit">수정 신세벌식</string>
+    <string name="layout_3set_393_old_hangul">세벌식 393 옛한글</string>
     <string name="layout_latin_qwerty">QWERTY</string>
     <string name="layout_latin_dvorak">드보락</string>
     <string name="layout_latin_colemak">콜맥</string>

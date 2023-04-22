@@ -14,10 +14,6 @@ import io.github.lee0701.mboard.module.serialization.KeyCodeSerializer
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
-import io.github.lee0701.mboard.service.OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_ORIGINAL_CHOJONG
-import io.github.lee0701.mboard.service.OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_ORIGINAL_CHOJUNG
-import io.github.lee0701.mboard.service.OpenWnnKoreanLayouts.SYMBOL_A
-import io.github.lee0701.mboard.service.OpenWnnKoreanLayouts.SYMBOL_B
 import kotlinx.serialization.modules.EmptySerializersModule
 import java.io.File
 import java.io.InputStream
@@ -60,9 +56,12 @@ class ImportExportActivity: AppCompatActivity() {
         Button(this).apply {
             text = "Import Layouts"
             setOnClickListener {
+                // 신세벌식 계열 변환 후에는 이중모음용 가상 낱자 코드를 필히 확인할것.
                 val layouts = mapOf(
-                    "3set_shin_original_chojong" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJONG,
-                    "3set_shin_original_chojung" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJUNG,
+//                    "3set_shin_original_chojong" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJONG,
+//                    "3set_shin_original_chojung" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJUNG,
+                    "3set_shin_edit_chojong" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJONG,
+                    "3set_shin_edit_chojung" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJUNG,
                 )
                 layouts.forEach { (name, layout) ->
                     val table = importLayout(layout)
@@ -127,6 +126,16 @@ class ImportExportActivity: AppCompatActivity() {
             in '0'.code .. '9'.code -> code - '0'.code + KeyEvent.KEYCODE_0
             in 'A'.code .. 'Z'.code -> code - 'A'.code + KeyEvent.KEYCODE_A
             in 'a'.code .. 'z'.code -> code - 'a'.code + KeyEvent.KEYCODE_A
+            '-'.code, '_'.code -> KeyEvent.KEYCODE_MINUS
+            '='.code, '+'.code -> KeyEvent.KEYCODE_EQUALS
+            '\\'.code, '|'.code -> KeyEvent.KEYCODE_BACKSLASH
+            '['.code, '{'.code -> KeyEvent.KEYCODE_LEFT_BRACKET
+            ']'.code, '}'.code -> KeyEvent.KEYCODE_RIGHT_BRACKET
+            ';'.code, ':'.code -> KeyEvent.KEYCODE_SEMICOLON
+            '\''.code, '"'.code -> KeyEvent.KEYCODE_APOSTROPHE
+            ','.code, '<'.code -> KeyEvent.KEYCODE_COMMA
+            '.'.code, '>'.code -> KeyEvent.KEYCODE_PERIOD
+            '/'.code, '?'.code -> KeyEvent.KEYCODE_SLASH
             else -> null
         }
         return converted?.let { KeyCodeSerializer.keyCodeToString(it) }

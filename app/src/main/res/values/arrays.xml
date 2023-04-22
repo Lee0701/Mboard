@@ -104,6 +104,7 @@
         <item>@string/layout_3set_391</item>
         <item>@string/layout_3set_391_strict</item>
         <item>@string/layout_3set_shin_original</item>
+        <item>@string/layout_3set_shin_edit</item>
         <item>@string/layout_2set_old_hangul</item>
     </string-array>
 
@@ -113,6 +114,7 @@
         <item>preset/preset_%s_3set_391.yaml</item>
         <item>preset/preset_%s_3set_391_strict.yaml</item>
         <item>preset/preset_%s_3set_shin_original.yaml</item>
+        <item>preset/preset_%s_3set_shin_edit.yaml</item>
         <item>preset/preset_%s_2set_old_hangul.yaml</item>
     </string-array>
 
