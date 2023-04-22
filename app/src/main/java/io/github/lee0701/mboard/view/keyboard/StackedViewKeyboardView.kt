@@ -5,12 +5,9 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.android.material.color.DynamicColors
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.databinding.KeyboardBinding
 import io.github.lee0701.mboard.databinding.KeyboardKeyBinding
 import io.github.lee0701.mboard.databinding.KeyboardRowBinding
@@ -21,7 +18,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
-class StackedViewKeyboardView(
+open class StackedViewKeyboardView(
     context: Context,
     attrs: AttributeSet?,
     keyboard: Keyboard,
@@ -68,7 +65,7 @@ class StackedViewKeyboardView(
             row.keys.forEach { keyLike ->
                 when(keyLike) {
                     is Key -> {
-                        val keyViewWrapper = initKeyView(keyLike, theme)
+                        val keyViewWrapper = initKeyView(keyLike, this, theme)
                         wrappers += keyViewWrapper
                         root.addView(keyViewWrapper.binding.root)
                     }
@@ -95,7 +92,7 @@ class StackedViewKeyboardView(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initKeyView(keyModel: Key, theme: Theme): KeyViewWrapper {
+    private fun initKeyView(keyModel: Key, row: KeyboardRowBinding, theme: Theme): KeyViewWrapper {
         val wrappedContext = theme.keyBackground[keyModel.type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
         val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
             val icon = theme.keyIcon[keyModel.iconType]
@@ -107,7 +104,7 @@ class StackedViewKeyboardView(
                 weight = keyModel.width
             }
         }
-        return KeyViewWrapper(keyModel, binding)
+        return KeyViewWrapper(keyModel, row, binding)
     }
 
     data class KeyboardViewWrapper(
@@ -129,12 +126,14 @@ class StackedViewKeyboardView(
 
     data class KeyViewWrapper(
         override val key: Key,
+        private val row: KeyboardRowBinding,
         val binding: KeyboardKeyBinding,
     ): KeyLikeViewWrapper, KeyWrapper {
         override val x: Int get() = binding.root.x.roundToInt()
-        override val y: Int get() = binding.root.y.roundToInt()
+        override val y: Int get() = row.root.y.roundToInt()
         override val width: Int get() = binding.root.width
-        override val height: Int get() = binding.root.height
+        override val height: Int get() = row.root.height
+        override val label: String get() = binding.label.text.toString()
         override val icon: Drawable? get() = binding.icon.drawable
     }
 
@@ -157,35 +156,21 @@ class StackedViewKeyboardView(
         }
     }
 
-    override fun findKey(x: Int, y: Int): KeyWrapper? {
-        keyboardViewWrapper.rows.forEach { row ->
-            val rowY = row.binding.root.y.toInt()
-            val rowHeight = row.binding.root.height
-            if(y in rowY until rowY+rowHeight) {
-                row.keys.forEach { key ->
-                    val keyX = key.binding.root.x.toInt()
-                    val keyWidth = key.binding.root.width
-                    if(x in keyX until keyX+keyWidth) {
-                        return key
-                    }
-                }
-            }
-        }
-        return null
-    }
-
-    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
-        if(key is KeyViewWrapper) popup.apply {
-            val parentX = key.x + key.width/2
-            val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
-            val parentY = row.binding.root.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + row.binding.root.height/2
-            show(this@StackedViewKeyboardView, key.binding.label.text, key.icon, parentX, parentY.roundToInt())
-        }
+    override fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>) {
+        moreKeysKeyboards.clear()
+        moreKeysKeyboards += keyboards
     }
 
     override fun postViewChanged() {
         wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { key ->
-            key.binding.root.isPressed = keyStates[key.key.code] == true
+            key.binding.root.isPressed = keyStates[key.key] == true
         }
     }
+
+    override fun highlight(key: KeyWrapper) {
+        wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { it.binding.root.isPressed = false }
+        val wrappedKey = wrappedKeys.filterIsInstance<KeyViewWrapper>().find { it == key } ?: return
+        wrappedKey.binding.root.isPressed = true
+    }
+
 }

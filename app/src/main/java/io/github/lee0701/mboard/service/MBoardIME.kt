@@ -75,9 +75,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hangulModule = modHangul(yaml.decodeFromStream<InputEnginePreset>(assets.open(hangulFilename)))
         val symbolModule = yaml.decodeFromStream<InputEnginePreset>(assets.open(symbolFilename))
 
-        val latinInputEngine = kotlin.runCatching { latinModule.inflate(this) }.getOrNull()
-        val hangulInputEngine = kotlin.runCatching { hangulModule.inflate(this) }.getOrNull()
-        val symbolInputEngine = kotlin.runCatching { symbolModule.inflate(this) }.getOrNull()
+        val latinInputEngine = latinModule.inflate(this)
+        val hangulInputEngine = hangulModule.inflate(this)
+        val symbolInputEngine = symbolModule.inflate(this)
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = symbolInputEngine

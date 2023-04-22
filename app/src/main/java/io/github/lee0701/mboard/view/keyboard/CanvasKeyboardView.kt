@@ -14,7 +14,6 @@ import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
-import io.github.lee0701.mboard.module.softkeyboard.KeyLike
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
@@ -26,12 +25,16 @@ open class CanvasKeyboardView(
     keyboard: Keyboard,
     theme: Theme,
     listener: KeyboardListener,
+    val width: Int? = null,
+    val height: Int? = null,
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
     private val rect = Rect()
     private val bitmapPaint = Paint()
     private val textPaint = Paint()
 
+    override val keyboardWidth: Int = width ?: super.keyboardWidth
+    override val keyboardHeight: Int = height ?: super.keyboardHeight
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
 
@@ -104,7 +107,7 @@ open class CanvasKeyboardView(
                         val height = rowHeight
                         val label = key.label
                         val icon = theme.keyIcon[key.iconType]?.let { ContextCompat.getDrawable(context, it) }
-                        cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, icon)
+                        cachedKeys += CachedKey(key, x.roundToInt(), y, width.roundToInt(), height, label, icon, null)
                         x += width
                     }
                     else -> {
@@ -114,6 +117,10 @@ open class CanvasKeyboardView(
                 }
             }
         }
+    }
+
+    fun clearCachedKeys() {
+        cachedKeys.clear()
     }
 
     @SuppressLint("DrawAllocation")
@@ -129,7 +136,7 @@ open class CanvasKeyboardView(
         cachedKeys.forEach { key ->
             val keyBackgroundOverride = key.key.backgroundType?.resId?.let { ContextCompat.getDrawable(context, it) }
             val keyBackgroundInfo = keyBackgrounds[key.key.type]
-            val pressed = keyStates[key.key.code] == true
+            val pressed = keyStates[key.key] == true
             if(keyBackgroundInfo != null) {
                 val drawable = keyBackgroundOverride ?: keyBackgroundInfo.first.mutate().constantState?.newDrawable()
                 val background = drawable?.apply {
@@ -143,6 +150,7 @@ open class CanvasKeyboardView(
                 val y = key.y + keyMarginVertical - extendTop
                 val width = (key.width - keyMarginHorizontal*2)
                 val height = (key.height - keyMarginVertical*2) + extendTop + extendBottom
+                if(width <= 0f || height <= 0f) return@forEach
                 val bitmap = bitmapCache.getOrPut(BitmapCacheKey(width.roundToInt(), height.roundToInt(), pressed, key.key.type)) {
                     background.toBitmap(width.roundToInt(), height.roundToInt())
                 }
@@ -164,12 +172,12 @@ open class CanvasKeyboardView(
             }
             val textSize = keyLabelTextSizes[key.key.type]
             val textColor = keyLabelTextColors[key.key.type]
-            if(key.key.label != null && textSize != null && textColor != null) {
+            if(key.label != null && textSize != null && textColor != null) {
                 textPaint.color = textColor
                 textPaint.textSize = textSize
                 val x = baseX.toFloat()
                 val y = baseY - (textPaint.descent() + textPaint.ascent())/2
-                canvas.drawText(key.key.label, x, y, textPaint)
+                canvas.drawText(key.label, x, y, textPaint)
             }
         }
     }
@@ -181,14 +189,14 @@ open class CanvasKeyboardView(
             if(key.icon != null) {
                 key.copy(icon = icons[key.key.code] ?: key.icon)
             } else {
-                key.copy(key = key.key.copy(label = labels[key.key.code]?.toString()))
+                key.copy(label = labels[key.key.code]?.toString() ?: key.label)
             }
         }
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(keyboardWidth.roundToInt(), keyboardHeight)
+    override fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>) {
+        moreKeysKeyboards.clear()
+        moreKeysKeyboards += keyboards
     }
 
     data class CachedKey(
@@ -197,7 +205,9 @@ open class CanvasKeyboardView(
         override val y: Int,
         override val width: Int,
         override val height: Int,
+        override val label: String?,
         override val icon: Drawable?,
+        val moreKeysKeyboard: Keyboard?,
     ): KeyWrapper
 
     data class CachedSpacer(
@@ -215,26 +225,14 @@ open class CanvasKeyboardView(
         val type: KeyType,
     )
 
-    override fun findKey(x: Int, y: Int): KeyWrapper? {
-        wrappedKeys.forEach { key ->
-            if(x in key.x until key.x+key.width) {
-                if(y in key.y until key.y+key.height) {
-                    return key
-                }
-            }
-        }
-        return null
-    }
-
-    override fun showPopup(key: KeyWrapper, popup: KeyPopup) {
-        popup.apply {
-            val parentX = key.x + key.width/2
-            val parentY = key.y + resources.getDimension(R.dimen.candidates_view_height).toInt() + key.height/2
-            show(this@CanvasKeyboardView, key.key.label, key.icon, parentX, parentY)
-        }
-    }
-
     override fun postViewChanged() {
         invalidate()
     }
+
+    override fun highlight(key: KeyWrapper) {
+        this.keyStates.clear()
+        this.keyStates[key.key] = true
+        invalidate()
+    }
+
 }

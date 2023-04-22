@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import io.github.lee0701.converter.library.engine.ComposingText
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import kotlinx.coroutines.CoroutineScope
@@ -140,5 +141,9 @@ class HanjaConverterInputEngine(
 
     override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
         return emptyMap()
+    }
+
+    override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
+        return mapOf()
     }
 }

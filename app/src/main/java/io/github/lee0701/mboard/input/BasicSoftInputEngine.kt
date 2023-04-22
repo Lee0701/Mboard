@@ -2,7 +2,6 @@ package io.github.lee0701.mboard.input
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -10,10 +9,17 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
+import io.github.lee0701.mboard.module.softkeyboard.Spacer
+import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.*
+import io.github.lee0701.mboard.view.keyboard.CanvasKeyboardView
+import io.github.lee0701.mboard.view.keyboard.FlickDirection
+import io.github.lee0701.mboard.view.keyboard.KeyboardView
+import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
+import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(
     private val keyboard: Keyboard,
@@ -62,7 +68,7 @@ class BasicSoftInputEngine(
     }
 
     override fun onKey(code: Int, state: KeyboardState) {
-        onPrintingKey(code, state)
+        onPrintingKey(code, null, state)
         updateView()
     }
 
@@ -95,12 +101,17 @@ class BasicSoftInputEngine(
         return inputEngine.getIcons(state) + shiftIcon?.let { mapOf(KeyEvent.KEYCODE_SHIFT_LEFT to it, KeyEvent.KEYCODE_SHIFT_RIGHT to it) }.orEmpty()
     }
 
+    override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
+        return inputEngine.getMoreKeys(state)
+    }
+
     override fun onItemClicked(candidate: Candidate) {
         if(inputEngine is BasicCandidatesViewManager.Listener) inputEngine.onItemClicked(candidate)
     }
 
     override fun updateView() {
         updateLabelsAndIcons(getShiftedLabels() + getLabels(keyboardState), getIcons(keyboardState))
+        updateMoreKeys(inputEngine.getMoreKeys(keyboardState))
         keyboardView?.apply {
             invalidate()
         }
@@ -118,6 +129,11 @@ class BasicSoftInputEngine(
     private fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>) {
         val keyboardView = keyboardView ?: return
         keyboardView.updateLabelsAndIcons(labels, icons)
+    }
+
+    private fun updateMoreKeys(moreKeys: Map<Int, Keyboard>) {
+        val keyboardView = keyboardView ?: return
+        keyboardView.updateMoreKeyKeyboards(getMoreKeys(keyboardState))
     }
 
     override fun onKeyDown(code: Int, output: String?) {
@@ -173,7 +189,7 @@ class BasicSoftInputEngine(
 
     override fun onKeyClick(code: Int, output: String?) {
         if(listener.onSystemKey(code)) return
-        if(ignoreCode == code) {
+        if(ignoreCode != 0 && ignoreCode == code) {
             ignoreCode = 0
             return
         }
@@ -202,7 +218,7 @@ class BasicSoftInputEngine(
                 autoUnlockShift()
             }
             else -> {
-                onPrintingKey(code, keyboardState)
+                onPrintingKey(code, output, keyboardState)
                 autoUnlockShift()
             }
         }
@@ -215,8 +231,12 @@ class BasicSoftInputEngine(
         inputHappened = true
     }
 
-    private fun onPrintingKey(code: Int, keyboardState: KeyboardState) {
-        inputEngine.onKey(code, keyboardState)
+    private fun onPrintingKey(code: Int, output: String?, keyboardState: KeyboardState) {
+        if(code == 0 && output != null) {
+            listener.onCommitText(output)
+        } else {
+            inputEngine.onKey(code, keyboardState)
+        }
         inputHappened = true
     }
 

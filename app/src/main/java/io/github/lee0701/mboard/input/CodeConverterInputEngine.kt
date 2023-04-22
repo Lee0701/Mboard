@@ -2,25 +2,22 @@ package io.github.lee0701.mboard.input
 
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
+import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverterInputEngine(
     private val table: CodeConvertTable,
+    private val moreKeysTable: MoreKeysTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
 
     override fun onKey(code: Int, state: KeyboardState) {
-        val converted = table.codeMap[code]?.withKeyboardState(state)
-        if(converted == null) {
-            val char = keyCharacterMap.get(code, state.asMetaState())
-            onReset()
-            if(char > 0) listener.onCommitText(char.toChar().toString())
-        } else {
-            listener.onCommitText(converted.toChar().toString())
-        }
+        val converted = table.codeMap[code]?.withKeyboardState(state) ?: keyCharacterMap.get(code, state.asMetaState())
+        listener.onCommitText(converted.toChar().toString())
     }
 
     override fun onDelete() {
@@ -41,5 +38,13 @@ class CodeConverterInputEngine(
 
     override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
         return emptyMap()
+    }
+
+    override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
+        return moreKeysTable.map.mapNotNull { (code, value) ->
+            val key = table.reversedCodeMap[code to CodeConvertTable.EntryKey.fromKeyboardState(state)]
+            if(key == null) null
+            else key to value
+        }.toMap()
     }
 }

@@ -12,11 +12,15 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
+import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.input.FlickLongPressAction
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 abstract class KeyboardView(
@@ -28,17 +32,19 @@ abstract class KeyboardView(
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    protected val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
-    val keyboardWidth = context.resources.displayMetrics.widthPixels.toFloat()
-    val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
-    val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    private val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
+    private val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
+    open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels
+    open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
+    protected val candidatesViewHeight = context.resources.getDimension(R.dimen.candidates_view_height).toInt()
 
-    protected val showKeyPopups = preferences.getBoolean("behaviour_show_popups", true)
-    protected val longPressDuration = preferences.getFloat("behaviour_long_press_duration", 100f).toLong()
-    protected val repeatOnLongPress = preferences.getString("behaviour_long_press_action", "shift") == "repeat"
-    protected val repeatInterval = preferences.getFloat("behaviour_repeat_interval", 50f).toLong()
+    protected val showKeyPopups: Boolean = preferences.getBoolean("behaviour_show_popups", true)
+    protected val showMoreKeys: Boolean = preferences.getBoolean("behaviour_show_more_keys", true)
+    protected val longPressDuration: Long = preferences.getFloat("behaviour_long_press_duration", 100f).toLong()
+    protected val longPressAction: FlickLongPressAction = FlickLongPressAction.of(preferences.getString("behaviour_long_press_action", "shift") ?: "shift")
+    protected val repeatInterval: Long = preferences.getFloat("behaviour_repeat_interval", 50f).toLong()
 
     protected val slideAction = preferences.getString("behaviour_slide_action", "flick")
     protected val flickSensitivity = dipToPixel(preferences.getFloat("behaviour_flick_sensitivity", 100f)).toInt()
@@ -47,10 +53,11 @@ abstract class KeyboardView(
     protected val soundFeedback = preferences.getBoolean("appearance_sound_feedback", true)
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
-    protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
-    private var keyPopups: MutableMap<Int, KeyPopup> = mutableMapOf()
+    protected val keyStates: MutableMap<Key, Boolean> = mutableMapOf()
+    private var popups: MutableMap<Int, KeyboardPopup> = mutableMapOf()
 
     protected abstract val wrappedKeys: List<KeyLikeWrapper>
+    protected val moreKeysKeyboards: MutableMap<Int, Keyboard> = mutableMapOf()
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -82,14 +89,18 @@ abstract class KeyboardView(
     protected fun onTouchDown(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         if(this.soundFeedback) this.performSoundFeedback(key.key.code)
-        maybeShowPopup(key, pointerId)
+        maybeShowPreviewPopup(key, pointerId)
         fun repeater() {
             listener.onKeyClick(key.key.code, key.key.output)
             handler.postDelayed({ repeater() }, repeatInterval)
         }
         handler.postDelayed({
-            if(key.key.repeatable || repeatOnLongPress) {
+            if(key.key.repeatable || longPressAction == FlickLongPressAction.Repeat) {
                 repeater()
+            } else if(showMoreKeys) {
+                showMoreKeysPopup(key, pointerId)
+                // Call this once to initially point a key on popup
+                handler?.post { onTouchMove(key, pointerId, x, y) }
             } else {
                 if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 listener.onKeyLongClick(key.key.code, key.key.output)
@@ -97,13 +108,29 @@ abstract class KeyboardView(
         }, longPressDuration)
 
         listener.onKeyDown(key.key.code, key.key.output)
-        keyStates[key.key.code] = true
+        keyStates[key.key] = true
         val pointer = TouchPointer(x, y, key)
         pointers += pointerId to pointer
     }
 
     protected fun onTouchMove(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         val pointer = pointers[pointerId] ?: return
+        val popup = popups[pointerId]
+        if(popup is MoreKeysPopup) {
+            val parentLeft = key.x + key.width/2f - popup.width/2f + popup.offsetX
+            val parentRight = parentLeft + popup.width
+
+            // Correct touch positions when view has pushed from outside of screen bounds
+            val correctedLeft = parentLeft - max(0f, parentLeft)
+            val correctedRight = parentRight - min(keyboardWidth.toFloat(), parentRight)
+
+            val parentY = key.y + key.height/2f - popup.height/2f + popup.offsetY
+            val localX = x - parentLeft + correctedLeft + correctedRight
+            val localY = y - parentY + popup.height/3f*2f
+            popup.touchMove(localX.roundToInt(), localY.roundToInt())
+            return
+        }
+
         val dx = abs(pointer.initialX - x)
         val dy = abs(pointer.initialY - y)
 
@@ -123,18 +150,27 @@ abstract class KeyboardView(
             pointers[pointerId] = pointer.copy(flickDirection = direction)
 
         } else if(slideAction == "seek" && key.key.code !in setOf(KeyEvent.KEYCODE_DEL)) {
-            handler.removeCallbacksAndMessages(null)
 
             if(x !in key.x until key.x+key.width
                 || y !in key.y until key.y+key.height) {
 
                 val newKey = findKey(x, y) ?: key
-                if(newKey.key.code != key.key.code) {
-                    keyStates[key.key.code] = false
-                    keyStates[newKey.key.code] = true
+                if(newKey.key != key.key) {
+                    handler.removeCallbacksAndMessages(null)
+
+                    if(showMoreKeys) {
+                        handler.postDelayed({
+                            showMoreKeysPopup(newKey, pointerId)
+                            // Call this once to initially point a key on popup
+                            handler?.post { onTouchMove(newKey, pointerId, x, y) }
+                        }, longPressDuration)
+                    }
+
+                    keyStates[key.key] = false
+                    keyStates[newKey.key] = true
                     pointers[pointerId] = pointer.copy(key = newKey)
-                    keyPopups[pointerId]?.cancel()
-                    maybeShowPopup(newKey, pointerId)
+                    popups[pointerId]?.cancel()
+                    maybeShowPreviewPopup(newKey, pointerId)
                 }
             }
         }
@@ -142,11 +178,17 @@ abstract class KeyboardView(
 
     protected fun onTouchUp(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         handler.removeCallbacksAndMessages(null)
-        keyPopups[pointerId]?.hide()
-        keyStates[key.key.code] = false
-        listener.onKeyClick(key.key.code, key.key.output)
-        listener.onKeyUp(key.key.code, key.key.output)
+        val popup = popups[pointerId]
+        if(popup is MoreKeysPopup) {
+            popup.touchUp()
+            popup.dismiss()
+        } else {
+            popup?.dismiss()
+            listener.onKeyClick(key.key.code, key.key.output)
+            listener.onKeyUp(key.key.code, key.key.output)
+        }
         performClick()
+        keyStates[key.key] = false
         pointers -= pointerId
     }
 
@@ -155,9 +197,20 @@ abstract class KeyboardView(
     }
 
     abstract fun updateLabelsAndIcons(labels: Map<Int, CharSequence>, icons: Map<Int, Drawable>)
-    protected abstract fun findKey(x: Int, y: Int): KeyWrapper?
-    protected abstract fun showPopup(key: KeyWrapper, popup: KeyPopup)
-    protected abstract fun postViewChanged()
+    abstract fun updateMoreKeyKeyboards(keyboards: Map<Int, Keyboard>)
+    abstract fun postViewChanged()
+    abstract fun highlight(key: KeyWrapper)
+
+    fun findKey(x: Int, y: Int): KeyWrapper? {
+        wrappedKeys.forEach { key ->
+            if(x in key.x until key.x+key.width) {
+                if(y in key.y until key.y+key.height) {
+                    if(key is KeyWrapper) return key
+                }
+            }
+        }
+        return null
+    }
 
     private fun performSoundFeedback(keyCode: Int) {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -174,14 +227,44 @@ abstract class KeyboardView(
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics)
     }
 
-    private fun maybeShowPopup(key: KeyWrapper, pointerId: Int) {
+    private fun maybeShowPreviewPopup(key: KeyWrapper, pointerId: Int) {
         if(showKeyPopups &&
             (key.key.type == KeyType.Alphanumeric || key.key.type == KeyType.AlphanumericAlt)) {
-            val keyPopup = keyPopups.getOrPut(pointerId) { KeyPopup(context) }
-            showPopup(key, keyPopup)
+            val keyPopup = KeyPreviewPopup(context, key)
+            popups[pointerId]?.cancel()
+            popups[pointerId] = keyPopup
+            showPopup(key, keyPopup, 0, 0)
         } else {
-            keyPopups[pointerId]?.cancel()
+            popups[pointerId]?.cancel()
+            popups.remove(pointerId)
         }
+    }
+
+    private fun showMoreKeysPopup(key: KeyWrapper, pointerId: Int) {
+        val moreKeysKeyboard = moreKeysKeyboards[key.key.code] ?: return
+        val keyPopup = MoreKeysPopup(context, key, moreKeysKeyboard, listener)
+        popups[pointerId]?.cancel()
+        popups[pointerId] = keyPopup
+        val popupX = getPopupX(key)
+        val popupY = getPopupY(key)
+        // Correct popup position if outside the screen
+        val offsetX = if(popupX < 0) -popupX else 0f
+        val offsetY = 0f
+        showPopup(key, keyPopup, offsetX.roundToInt(), offsetY.roundToInt())
+    }
+
+    private fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
+        val x = getPopupX(key) + offsetX
+        val y = getPopupY(key) + offsetY
+        popup.show(this, x.roundToInt(), y.roundToInt())
+    }
+
+    private fun getPopupX(key: KeyWrapper): Float = key.x + key.width/2f
+    private fun getPopupY(key: KeyWrapper): Float = key.y + candidatesViewHeight + key.height/2f
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        setMeasuredDimension(keyboardWidth, keyboardHeight)
     }
 
     interface KeyLikeWrapper {
@@ -193,6 +276,7 @@ abstract class KeyboardView(
 
     interface KeyWrapper: KeyLikeWrapper {
         val key: Key
+        val label: String?
         val icon: Drawable?
     }
 
