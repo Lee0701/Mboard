@@ -61,6 +61,7 @@ sealed interface InputEnginePreset {
         val softKeyboard: List<String> = listOf(),
         val moreKeysTable: List<String> = listOf(),
         val codeConvertTable: List<String> = listOf(),
+        val autoUnlockShift: Boolean = true,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -69,8 +70,8 @@ sealed interface InputEnginePreset {
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> CodeConverterInputEngine(convertTable, moreKeysTable, listener) },
-                autoUnlockShift = true,
                 listener = ime,
+                autoUnlockShift = autoUnlockShift,
             )
         }
     }
