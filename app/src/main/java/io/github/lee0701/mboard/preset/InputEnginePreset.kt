@@ -261,10 +261,10 @@ data class InputEnginePreset(
 //            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
 //            val convertTable = loadConvertTable(ime, names = hangulTable)
 //            val combinationTable = loadCombinationTable(ime, names = combinationTable)
-//            val dictionary = DiskTrieDictionary(ime.assets.open("dict/ko.bin"))
-//            val vocab = ime.assets.open("dict/ko.tsv").bufferedReader().readLines()
+//            val dictionary = DiskTrieDictionary(ime.assets.open("dict/dict-prefix.bin"))
+//            val vocab = ime.assets.open("dict/vocab.tsv").bufferedReader().readLines()
 //                .map { line -> line.split('\t') }
-//                .mapIndexed { i, (k, v) -> i to k }.toMap()
+//                .mapIndexed { i, (k, v) -> i to (k to v.toInt()) }.toMap()
 //            return BasicSoftInputEngine(
 //                keyboard = keyboard,
 //                getInputEngine = { listener ->
