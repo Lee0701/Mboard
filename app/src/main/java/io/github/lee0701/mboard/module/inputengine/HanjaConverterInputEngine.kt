@@ -9,11 +9,13 @@ import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
+import io.github.lee0701.mboard.charset.Hangul
+import io.github.lee0701.mboard.dictionary.AbstractTrieDictionary
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HanjaConverterInputEngine(
@@ -159,6 +161,6 @@ class HanjaConverterInputEngine(
     }
 
     override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
-        return mapOf()
+        return inputEngine.getMoreKeys(state)
     }
 }
