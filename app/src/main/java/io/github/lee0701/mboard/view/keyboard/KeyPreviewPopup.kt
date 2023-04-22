@@ -68,7 +68,7 @@ class KeyPreviewPopup(
         val x = parentX - popupWindow.width/2f
         val y = parentY - popupWindow.height/2f*3f
         binding.icon.setImageDrawable(key.icon)
-        binding.label.text = key.key.label
+        binding.label.text = key.label
         if(animator.isRunning) animator.cancel()
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }

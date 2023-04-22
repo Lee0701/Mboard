@@ -133,6 +133,7 @@ open class StackedViewKeyboardView(
         override val y: Int get() = row.root.y.roundToInt()
         override val width: Int get() = binding.root.width
         override val height: Int get() = row.root.height
+        override val label: String get() = binding.label.text.toString()
         override val icon: Drawable? get() = binding.icon.drawable
     }
 

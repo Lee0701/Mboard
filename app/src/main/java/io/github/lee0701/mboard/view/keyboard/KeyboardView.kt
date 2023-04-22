@@ -276,6 +276,7 @@ abstract class KeyboardView(
 
     interface KeyWrapper: KeyLikeWrapper {
         val key: Key
+        val label: String?
         val icon: Drawable?
     }
 
