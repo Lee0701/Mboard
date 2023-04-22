@@ -66,7 +66,7 @@ open class StackedViewKeyboardView(
             row.keys.forEach { keyLike ->
                 when(keyLike) {
                     is Key -> {
-                        val keyViewWrapper = initKeyView(keyLike, theme)
+                        val keyViewWrapper = initKeyView(keyLike, this, theme)
                         wrappers += keyViewWrapper
                         root.addView(keyViewWrapper.binding.root)
                     }
@@ -93,7 +93,7 @@ open class StackedViewKeyboardView(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initKeyView(keyModel: Key, theme: Theme): KeyViewWrapper {
+    private fun initKeyView(keyModel: Key, row: KeyboardRowBinding, theme: Theme): KeyViewWrapper {
         val wrappedContext = theme.keyBackground[keyModel.type]?.let { DynamicColors.wrapContextIfAvailable(context, it) } ?: context
         val binding = KeyboardKeyBinding.inflate(LayoutInflater.from(wrappedContext), null, false).apply {
             val icon = theme.keyIcon[keyModel.iconType]
@@ -105,7 +105,7 @@ open class StackedViewKeyboardView(
                 weight = keyModel.width
             }
         }
-        return KeyViewWrapper(keyModel, binding)
+        return KeyViewWrapper(keyModel, row, binding)
     }
 
     data class KeyboardViewWrapper(
@@ -127,12 +127,13 @@ open class StackedViewKeyboardView(
 
     data class KeyViewWrapper(
         override val key: Key,
+        private val row: KeyboardRowBinding,
         val binding: KeyboardKeyBinding,
     ): KeyLikeViewWrapper, KeyWrapper {
         override val x: Int get() = binding.root.x.roundToInt()
-        override val y: Int get() = binding.root.y.roundToInt()
+        override val y: Int get() = row.root.y.roundToInt()
         override val width: Int get() = binding.root.width
-        override val height: Int get() = binding.root.height
+        override val height: Int get() = row.root.height
         override val icon: Drawable? get() = binding.icon.drawable
     }
 
@@ -187,10 +188,7 @@ open class StackedViewKeyboardView(
         if(key is KeyViewWrapper) {
             val parentX = key.x + key.width/2f + offsetX
             val row = keyboardViewWrapper.rows.find { key in it.keyLikes } ?: return
-            val parentY = row.binding.root.y +
-                    resources.getDimension(R.dimen.candidates_view_height).toInt() +
-                    row.binding.root.height/2f +
-                    offsetY
+            val parentY = key.y + candidatesViewHeight + key.height/2f + offsetY
             popup.show(this, parentX.roundToInt(), parentY.roundToInt())
         }
     }

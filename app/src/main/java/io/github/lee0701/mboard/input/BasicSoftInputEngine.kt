@@ -128,7 +128,7 @@ class BasicSoftInputEngine(
             Row("ARST".mapIndexed { i, c -> Key(i + 1000, c.toString()) }),
             Row(listOf(Spacer()) + "OEU".mapIndexed { i, c -> Key(i + 1010, c.toString()) }),
         ))
-        keyboardView.updateMoreKeyKeyboards(mapOf(KeyEvent.KEYCODE_A to kbd, KeyEvent.KEYCODE_G to kbd))
+        keyboardView.updateMoreKeyKeyboards(mapOf(KeyEvent.KEYCODE_A to kbd, KeyEvent.KEYCODE_G to kbd, KeyEvent.KEYCODE_Y to kbd, KeyEvent.KEYCODE_B to kbd))
     }
 
     override fun onKeyDown(code: Int, output: String?) {
