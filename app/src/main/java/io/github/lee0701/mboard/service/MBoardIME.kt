@@ -55,11 +55,18 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             if(preset !is InputEnginePreset.Hangul) return preset
             if(hanjaConversionEnabled && hanjaPredictionEnabled) {
                 return InputEnginePreset.PredictingHangulHanja(
-                    preset.softKeyboard, preset.hangulTable, preset.combinationTable)
+                    softKeyboard = preset.softKeyboard,
+                    moreKeysTable = preset.moreKeysTable,
+                    hangulTable = preset.hangulTable,
+                    combinationTable = preset.combinationTable,
+                )
             }
             if(hanjaConversionEnabled) {
                 return InputEnginePreset.HangulHanja(
-                    preset.softKeyboard, preset.hangulTable, preset.combinationTable
+                    softKeyboard = preset.softKeyboard,
+                    moreKeysTable = preset.moreKeysTable,
+                    hangulTable = preset.hangulTable,
+                    combinationTable = preset.combinationTable,
                 )
             }
             return preset

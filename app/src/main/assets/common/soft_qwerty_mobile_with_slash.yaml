@@ -88,13 +88,13 @@ rows:
     code: "KEYCODE_M"
     output: "M"
   - !<key>
-      code: "KEYCODE_APOSTROPHE"
-      output: "'"
+    code: "KEYCODE_APOSTROPHE"
+    output: "'"
   - !<key>
-      code: "KEYCODE_DEL"
-      iconType: "Backspace"
-      repeatable: true
-      type: "Modifier"
+    code: "KEYCODE_DEL"
+    iconType: "Backspace"
+    repeatable: true
+    type: "Modifier"
 - keys:
   - !<key>
     code: "KEYCODE_SYM"
@@ -102,9 +102,9 @@ rows:
     width: 1.5
     type: "Modifier"
   - !<key>
-      code: "KEYCODE_COMMA_PERIOD"
-      output: ","
-      type: "AlphanumericAlt"
+    code: "KEYCODE_COMMA_PERIOD"
+    output: ","
+    type: "AlphanumericAlt"
   - !<key>
     code: "KEYCODE_LANGUAGE_SWITCH"
     iconType: "Language"
@@ -115,9 +115,9 @@ rows:
     width: 4.0
     type: "Space"
   - !<key>
-      code: "KEYCODE_SLASH"
-      output: "/"
-      type: "AlphanumericAlt"
+    code: "KEYCODE_SLASH"
+    output: "/"
+    type: "AlphanumericAlt"
   - !<key>
     code: "KEYCODE_ENTER"
     iconType: "Return"

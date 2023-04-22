@@ -8,10 +8,12 @@ import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.LayeredCodeConvertTable
 import io.github.lee0701.mboard.module.table.LayeredCodeConvertTable.Companion.BASE_LAYER_NAME
+import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class HangulInputEngine(
     private val table: CodeConvertTable,
+    private val moreKeysTable: MoreKeysTable,
     private val jamoCombinationTable: JamoCombinationTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {

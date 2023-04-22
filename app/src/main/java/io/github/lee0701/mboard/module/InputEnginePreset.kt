@@ -90,7 +90,7 @@ sealed interface InputEnginePreset {
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
-                getInputEngine = { listener -> HangulInputEngine(convertTable, combinationTable, listener) },
+                getInputEngine = { listener -> HangulInputEngine(convertTable, moreKeysTable, combinationTable, listener) },
                 autoUnlockShift = true,
                 listener = ime,
             )
@@ -115,7 +115,7 @@ sealed interface InputEnginePreset {
                 keyboard = keyboard,
                 getInputEngine = { listener ->
                     HanjaConverterInputEngine({ l ->
-                        HangulInputEngine(hangulTable, combinationTable, l)
+                        HangulInputEngine(hangulTable, moreKeysTable, combinationTable, l)
                     }, converter, null, listener)
                 },
                 autoUnlockShift = true,
@@ -142,7 +142,7 @@ sealed interface InputEnginePreset {
                 keyboard = keyboard,
                 getInputEngine = { listener ->
                     HanjaConverterInputEngine({ l ->
-                        HangulInputEngine(convertTable, combinationTable, l)
+                        HangulInputEngine(convertTable, moreKeysTable, combinationTable, l)
                     }, converter, predictor, listener)
                 },
                 autoUnlockShift = true,
