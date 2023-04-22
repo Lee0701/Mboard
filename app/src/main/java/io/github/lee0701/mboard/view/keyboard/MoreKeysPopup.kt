@@ -69,7 +69,6 @@ class MoreKeysPopup(
             this.contentView = keyboardView as ViewGroup
             this.width = this@MoreKeysPopup.width
             this.height = this@MoreKeysPopup.height
-//            keyboardView.removeAllViews()
             keyboardView.layoutParams = ViewGroup.LayoutParams(width, height)
             this.isClippingEnabled = true
             this.isTouchable = false

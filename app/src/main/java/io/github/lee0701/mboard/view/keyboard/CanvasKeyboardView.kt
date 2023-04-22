@@ -25,14 +25,16 @@ open class CanvasKeyboardView(
     keyboard: Keyboard,
     theme: Theme,
     listener: KeyboardListener,
-    override val keyboardWidth: Int = 0,
-    override val keyboardHeight: Int = 0,
+    val width: Int? = null,
+    val height: Int? = null,
 ): KeyboardView(context, attrs, keyboard, theme, listener) {
 
     private val rect = Rect()
     private val bitmapPaint = Paint()
     private val textPaint = Paint()
 
+    override val keyboardWidth: Int = width ?: super.keyboardWidth
+    override val keyboardHeight: Int = height ?: super.keyboardHeight
     private val keyMarginHorizontal: Float
     private val keyMarginVertical: Float
 
