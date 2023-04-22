@@ -53,7 +53,7 @@ abstract class KeyboardView(
     protected val soundFeedback = preferences.getBoolean("appearance_sound_feedback", true)
 
     protected val pointers: MutableMap<Int, TouchPointer> = mutableMapOf()
-    protected val keyStates: MutableMap<Int, Boolean> = mutableMapOf()
+    protected val keyStates: MutableMap<Key, Boolean> = mutableMapOf()
     private var popups: MutableMap<Int, KeyboardPopup> = mutableMapOf()
 
     protected abstract val wrappedKeys: List<KeyLikeWrapper>
@@ -108,7 +108,7 @@ abstract class KeyboardView(
         }, longPressDuration)
 
         listener.onKeyDown(key.key.code, key.key.output)
-        keyStates[key.key.code] = true
+        keyStates[key.key] = true
         val pointer = TouchPointer(x, y, key)
         pointers += pointerId to pointer
     }
@@ -166,8 +166,8 @@ abstract class KeyboardView(
                         }, longPressDuration)
                     }
 
-                    keyStates[key.key.code] = false
-                    keyStates[newKey.key.code] = true
+                    keyStates[key.key] = false
+                    keyStates[newKey.key] = true
                     pointers[pointerId] = pointer.copy(key = newKey)
                     popups[pointerId]?.cancel()
                     maybeShowPreviewPopup(newKey, pointerId)
@@ -188,7 +188,7 @@ abstract class KeyboardView(
             listener.onKeyUp(key.key.code, key.key.output)
         }
         performClick()
-        keyStates[key.key.code] = false
+        keyStates[key.key] = false
         pointers -= pointerId
     }
 

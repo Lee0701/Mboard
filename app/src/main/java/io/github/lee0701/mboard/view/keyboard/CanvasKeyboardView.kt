@@ -136,7 +136,7 @@ open class CanvasKeyboardView(
         cachedKeys.forEach { key ->
             val keyBackgroundOverride = key.key.backgroundType?.resId?.let { ContextCompat.getDrawable(context, it) }
             val keyBackgroundInfo = keyBackgrounds[key.key.type]
-            val pressed = keyStates[key.key.code] == true
+            val pressed = keyStates[key.key] == true
             if(keyBackgroundInfo != null) {
                 val drawable = keyBackgroundOverride ?: keyBackgroundInfo.first.mutate().constantState?.newDrawable()
                 val background = drawable?.apply {
@@ -172,12 +172,12 @@ open class CanvasKeyboardView(
             }
             val textSize = keyLabelTextSizes[key.key.type]
             val textColor = keyLabelTextColors[key.key.type]
-            if(key.key.label != null && textSize != null && textColor != null) {
+            if(key.label != null && textSize != null && textColor != null) {
                 textPaint.color = textColor
                 textPaint.textSize = textSize
                 val x = baseX.toFloat()
                 val y = baseY - (textPaint.descent() + textPaint.ascent())/2
-                canvas.drawText(key.key.label, x, y, textPaint)
+                canvas.drawText(key.label, x, y, textPaint)
             }
         }
     }
@@ -189,7 +189,7 @@ open class CanvasKeyboardView(
             if(key.icon != null) {
                 key.copy(icon = icons[key.key.code] ?: key.icon)
             } else {
-                key.copy(key = key.key.copy(label = labels[key.key.code]?.toString()))
+                key.copy(label = labels[key.key.code]?.toString() ?: key.label)
             }
         }
     }
@@ -231,7 +231,7 @@ open class CanvasKeyboardView(
 
     override fun highlight(key: KeyWrapper) {
         this.keyStates.clear()
-        this.keyStates[key.key.code] = true
+        this.keyStates[key.key] = true
         invalidate()
     }
 

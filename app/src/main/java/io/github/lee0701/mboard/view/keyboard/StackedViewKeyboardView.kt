@@ -163,7 +163,7 @@ open class StackedViewKeyboardView(
 
     override fun postViewChanged() {
         wrappedKeys.filterIsInstance<KeyViewWrapper>().forEach { key ->
-            key.binding.root.isPressed = keyStates[key.key.code] == true
+            key.binding.root.isPressed = keyStates[key.key] == true
         }
     }
 
