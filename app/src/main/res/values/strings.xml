@@ -41,6 +41,7 @@
     <string name="layout_3set_390">3-Set 390</string>
     <string name="layout_3set_391">3-Set 391 (Final)</string>
     <string name="layout_3set_391_strict">3-Set 391 (Final, Strict)</string>
+    <string name="layout_3set_shin_original">3-Set Shin-Type Original</string>
     <string name="layout_latin_qwerty">QWERTY</string>
     <string name="layout_latin_dvorak">Dvorak</string>
     <string name="layout_latin_colemak">Colemak</string>

@@ -1,7 +1,7 @@
 package io.github.lee0701.mboard.module.serialization
 
 import android.view.KeyEvent
-import io.github.lee0701.mboard.layout.CustomKeycode
+import io.github.lee0701.mboard.module.table.CustomKeycode
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

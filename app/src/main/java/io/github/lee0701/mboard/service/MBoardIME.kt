@@ -38,16 +38,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onCreate() {
         super.onCreate()
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-
         reload(sharedPreferences)
     }
 
     private fun reload(pref: SharedPreferences, force: Boolean = false) {
-        // TODO: complete input engine.
-//        val latinInputEngine = InputEnginePresets.of(latinPresetKey, this)
-//        val hangulInputEngine = InputEnginePresets.of(hangulPresetKey, this, hanjaConversionEnabled)
-//        val symbolInputEngine = InputEnginePresets.SymbolsG(this)
-
         val screenMode = pref.getString("layout_screen_mode", "mobile")
         val latinFilename = pref.getString("layout_latin_preset", null)?.format(screenMode) ?: "preset/preset_mobile_latin_qwerty.yaml"
         val hangulFilename = pref.getString("layout_hangul_preset", null)?.format(screenMode) ?: "preset/preset_mobile_2set_ks5002.yaml"

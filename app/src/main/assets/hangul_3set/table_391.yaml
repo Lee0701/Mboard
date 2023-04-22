@@ -1,3 +1,4 @@
+!<simple>
 map:
   "KEYCODE_1":
     base: 0x11c2
