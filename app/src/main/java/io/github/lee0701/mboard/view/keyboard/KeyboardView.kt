@@ -169,11 +169,16 @@ abstract class KeyboardView(
 
     protected fun onTouchUp(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         handler.removeCallbacksAndMessages(null)
-        popups[pointerId]?.dismiss()
-        keyStates[key.key.code] = false
-        listener.onKeyClick(key.key.code, key.key.output)
-        listener.onKeyUp(key.key.code, key.key.output)
+        val popup = popups[pointerId]
+        if(popup != null) {
+            popup.touchUp()
+            popup.dismiss()
+        } else {
+            listener.onKeyClick(key.key.code, key.key.output)
+            listener.onKeyUp(key.key.code, key.key.output)
+        }
         performClick()
+        keyStates[key.key.code] = false
         pointers -= pointerId
     }
 

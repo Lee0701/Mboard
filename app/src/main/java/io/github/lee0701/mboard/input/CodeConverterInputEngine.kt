@@ -9,11 +9,20 @@ class CodeConverterInputEngine(
     private val table: CodeConvertTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {
+    private val moreKeysMap = CodeConvertTable(mapOf(
+        "1000" to CodeConvertTable.Entry('A'.code),
+        "1001" to CodeConvertTable.Entry('R'.code),
+        "1002" to CodeConvertTable.Entry('S'.code),
+        "1003" to CodeConvertTable.Entry('T'.code),
+        "1010" to CodeConvertTable.Entry('O'.code),
+        "1011" to CodeConvertTable.Entry('E'.code),
+        "1012" to CodeConvertTable.Entry('U'.code),
+    ))
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
 
     override fun onKey(code: Int, state: KeyboardState) {
-        val converted = table.codeMap[code]?.withKeyboardState(state)
+        val converted = (moreKeysMap.codeMap[code] ?: table.codeMap[code])?.withKeyboardState(state)
         if(converted == null) {
             val char = keyCharacterMap.get(code, state.asMetaState())
             onReset()
