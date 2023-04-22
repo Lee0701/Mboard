@@ -108,7 +108,9 @@ abstract class KeyboardView(
         }, longPressDuration)
 
         listener.onKeyDown(key.key.code, key.key.output)
-        keyStates[key.key] = true
+        if(key.key.code == KeyEvent.KEYCODE_ENTER)
+            wrappedKeys.filterIsInstance<KeyWrapper>().forEach { if(it.key.code == key.key.code) keyStates[it.key] = true }
+        else keyStates[key.key] = true
         val pointer = TouchPointer(x, y, key)
         pointers += pointerId to pointer
     }
@@ -188,7 +190,9 @@ abstract class KeyboardView(
             listener.onKeyUp(key.key.code, key.key.output)
         }
         performClick()
-        keyStates[key.key] = false
+        if(key.key.code == KeyEvent.KEYCODE_ENTER)
+            wrappedKeys.filterIsInstance<KeyWrapper>().forEach { if(it.key.code == key.key.code) keyStates[it.key] = false }
+        else keyStates[key.key] = false
         pointers -= pointerId
     }
 
