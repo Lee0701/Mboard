@@ -249,8 +249,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onUpdateCursorAnchorInfo(cursorAnchorInfo: CursorAnchorInfo?) {
         if(cursorAnchorInfo == null) return
+        val composingText = cursorAnchorInfo.composingText ?: return
         val selectionEnd = cursorAnchorInfo.selectionStart
-        val composingEnd = cursorAnchorInfo.composingTextStart + (cursorAnchorInfo.composingText?.length ?: 0)
+        val composingEnd = cursorAnchorInfo.composingTextStart + composingText.length
         if(selectionEnd != composingEnd) resetCurrentEngine()
     }
 
