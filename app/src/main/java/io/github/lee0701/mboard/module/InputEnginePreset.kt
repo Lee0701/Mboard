@@ -15,7 +15,7 @@ import io.github.lee0701.mboard.input.HanjaConverterBuilder
 import io.github.lee0701.mboard.input.HanjaConverterInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.module.softkeyboard.Include
-import io.github.lee0701.mboard.module.softkeyboard.KeyLike
+import io.github.lee0701.mboard.module.softkeyboard.RowItem
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.table.CodeConvertTable
@@ -31,11 +31,11 @@ sealed interface InputEnginePreset {
 
     fun inflate(ime: MBoardIME): InputEngine
 
-    fun resolveSoftKeyIncludes(context: Context, row: Row): List<KeyLike> {
-        return row.keys.flatMap { keyLike ->
-            if(keyLike is Include) resolveSoftKeyIncludes(context,
-                yaml.decodeFromStream(context.assets.open(keyLike.name)))
-            else listOf(keyLike)
+    fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
+        return row.keys.flatMap { rowItem ->
+            if(rowItem is Include) resolveSoftKeyIncludes(context,
+                yaml.decodeFromStream(context.assets.open(rowItem.name)))
+            else listOf(rowItem)
         }
     }
 

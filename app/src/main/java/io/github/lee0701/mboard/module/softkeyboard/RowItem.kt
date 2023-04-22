@@ -5,7 +5,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable()
-sealed interface KeyLike {
+sealed interface RowItem {
     val width: Float
 }
 
@@ -13,7 +13,7 @@ sealed interface KeyLike {
 @Serializable
 data class Spacer(
     @Serializable override val width: Float = 1f,
-): KeyLike
+): RowItem
 
 @SerialName("key")
 @Serializable
@@ -26,12 +26,12 @@ data class Key(
     override val width: Float = 1f,
     val repeatable: Boolean = false,
     val type: KeyType = KeyType.Alphanumeric,
-): KeyLike
+): RowItem
 
 @SerialName("include")
 @Serializable
 data class Include(
     val name: String,
-): KeyLike {
+): RowItem {
     override val width: Float = 0f
 }
