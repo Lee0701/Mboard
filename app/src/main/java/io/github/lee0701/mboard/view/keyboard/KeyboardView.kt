@@ -117,14 +117,14 @@ abstract class KeyboardView(
         val pointer = pointers[pointerId] ?: return
         val popup = popups[pointerId]
         if(popup != null) {
-            val parentLeft = key.x + key.width/2f - popup.width/2f
+            val parentLeft = key.x + key.width/2f - popup.width/2f + popup.offsetX
             val parentRight = parentLeft + popup.width
 
             // Correct touch positions when view has pushed from outside of screen bounds
             val correctedLeft = parentLeft - max(0f, parentLeft)
             val correctedRight = parentRight - min(keyboardWidth.toFloat(), parentRight)
 
-            val parentY = key.y + key.height/2f - popup.height/2f
+            val parentY = key.y + key.height/2f - popup.height/2f + popup.offsetY
             val localX = x - parentLeft + correctedLeft + correctedRight
             val localY = y - parentY + popup.height/3f*2f
             popup.touchMove(localX.roundToInt(), localY.roundToInt())

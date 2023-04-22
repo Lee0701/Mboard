@@ -10,6 +10,8 @@ abstract class KeyboardPopup(
 ) {
     protected val popupWindow: PopupWindow = PopupWindow(context, null)
 
+    abstract val offsetX: Int
+    abstract val offsetY: Int
     abstract val width: Int
     abstract val height: Int
 

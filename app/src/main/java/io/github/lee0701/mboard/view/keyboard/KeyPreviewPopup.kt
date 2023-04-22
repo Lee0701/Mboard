@@ -24,6 +24,8 @@ class KeyPreviewPopup(
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
     private val binding = KeyPopupPreviewBinding.inflate(LayoutInflater.from(wrappedContext), null, false)
 
+    override val offsetX: Int = 0
+    override val offsetY: Int = 0
     override val width: Int = binding.root.width
     override val height: Int = binding.root.height
 

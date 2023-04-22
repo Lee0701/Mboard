@@ -26,13 +26,17 @@ class MoreKeysPopup(
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val wrappedContext = ContextThemeWrapper(context, R.style.Theme_MBoard_Keyboard_KeyPopup)
 
-    private val keyWidth = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
-    private val keyHeight = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_height)
+    private val keyWidth: Float = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_width)
+    private val keyHeight: Float = wrappedContext.resources.getDimension(R.dimen.key_popup_morekeys_height)
 
+    private val maxRows: Int = (keyboard.rows.maxOfOrNull { it.keys.size } ?: 1)
+
+    override val offsetX: Int = if(maxRows % 2 == 0) keyWidth.roundToInt()/2 else 0
+    override val offsetY: Int = 0
     private val keyMarginHorizontal = context.resources.getDimension(R.dimen.key_margin_horizontal)
     private val keyMarginVertical = context.resources.getDimension(R.dimen.key_margin_vertical)
 
-    private val keyboardWidth = ((keyboard.rows.maxOfOrNull { it.keys.size } ?: 1) * keyWidth) + keyMarginHorizontal*2
+    private val keyboardWidth = (maxRows * keyWidth) + keyMarginHorizontal*2
     private val keyboardHeight = (keyboard.rows.size * keyHeight) + keyMarginVertical*2
 
     override val width: Int = keyboardWidth.roundToInt()
@@ -86,8 +90,8 @@ class MoreKeysPopup(
             }
         }
 
-        val x = parentX - popupWindow.width/2f
-        val y = parentY - popupWindow.height/2f*3f
+        val x = parentX - popupWindow.width/2f + offsetX
+        val y = parentY - popupWindow.height/2f*3f + offsetY
 
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }
