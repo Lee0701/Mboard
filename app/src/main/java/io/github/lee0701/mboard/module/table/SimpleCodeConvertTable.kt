@@ -44,11 +44,9 @@ class SimpleCodeConvertTable(
     }
 
     operator fun plus(table: LayeredCodeConvertTable): LayeredCodeConvertTable {
-        return LayeredCodeConvertTable(table.layers.keys.map { key ->
-            val layers = table.layers[key]
-            if(layers != null) key to LayeredCodeConvertTable(mapOf(key to (this + layers)))
-            else null
-        }.filterNotNull().toMap())
+        return LayeredCodeConvertTable(table.layers.mapValues { (_, table) ->
+            this + table
+        })
     }
 
     @Serializable
