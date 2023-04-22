@@ -6,8 +6,10 @@
     <dimen name="key_margin_horizontal">5dp</dimen>
 
     <dimen name="key_popup_text_size">28sp</dimen>
-    <dimen name="key_popup_preview_width">28dp</dimen>
-    <dimen name="key_popup_preview_height">28dp</dimen>
+    <dimen name="key_popup_preview_width">80dp</dimen>
+    <dimen name="key_popup_preview_height">90dp</dimen>
+    <dimen name="key_popup_morekeys_width">50dp</dimen>
+    <dimen name="key_popup_morekeys_height">60dp</dimen>
 
     <dimen name="pref_appearance_keyboard_height_default">65dp</dimen>
 </resources>
