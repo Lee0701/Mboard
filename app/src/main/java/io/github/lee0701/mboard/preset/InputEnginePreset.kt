@@ -252,22 +252,27 @@ data class InputEnginePreset(
 //    @Serializable
 //    data class PredictingHangul(
 //        val softKeyboard: List<String>,
+//        val moreKeysTable: List<String> = listOf(),
 //        val hangulTable: List<String>,
 //        val combinationTable: List<String>,
 //    ): InputEnginePreset {
 //        override fun inflate(ime: MBoardIME): InputEngine {
 //            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-//            val convertTable = loadConvertTables(ime, names = hangulTable)
+//            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
+//            val convertTable = loadConvertTable(ime, names = hangulTable)
 //            val combinationTable = loadCombinationTable(ime, names = combinationTable)
 //            val dictionary = DiskTrieDictionary(ime.assets.open("dict/ko.bin"))
 //            val vocab = ime.assets.open("dict/ko.tsv").bufferedReader().readLines()
 //                .map { line -> line.split('\t') }
 //                .mapIndexed { i, (k, v) -> i to k }.toMap()
-//            return BasicSoftInputEngine(keyboard, { listener ->
-//                PredictingInputEngine({ l ->
-//                    HangulInputEngine(convertTable, combinationTable, l)
-//                }, dictionary, vocab, listener)
-//            }, true, ime)
+//            return BasicSoftInputEngine(
+//                keyboard = keyboard,
+//                getInputEngine = { listener ->
+//                    PredictingInputEngine({ l ->
+//                        HangulInputEngine(convertTable, moreKeysTable, combinationTable, l) }, dictionary, vocab, listener) },
+//                autoUnlockShift = true,
+//                listener = ime
+//            )
 //        }
 //    }
 
