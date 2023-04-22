@@ -130,6 +130,12 @@
             app:defaultValue="true"
             app:title="@string/pref_behaviour_show_popups_title" />
 
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="behaviour_show_more_keys"
+            app:defaultValue="true"
+            app:title="@string/pref_behaviour_show_more_keys_title"
+            app:summary="@string/pref_behaviour_show_more_keys_summary" />
+
         <io.github.lee0701.mboard.settings.SliderPreference
             app:key="behaviour_double_tap_gap"
             app:valueFrom="100.0"

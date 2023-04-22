@@ -116,7 +116,7 @@ abstract class KeyboardView(
     protected fun onTouchMove(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         val pointer = pointers[pointerId] ?: return
         val popup = popups[pointerId]
-        if(popup != null) {
+        if(popup is MoreKeysPopup) {
             val parentLeft = key.x + key.width/2f - popup.width/2f + popup.offsetX
             val parentRight = parentLeft + popup.width
 
@@ -150,13 +150,22 @@ abstract class KeyboardView(
             pointers[pointerId] = pointer.copy(flickDirection = direction)
 
         } else if(slideAction == "seek" && key.key.code !in setOf(KeyEvent.KEYCODE_DEL)) {
-            handler.removeCallbacksAndMessages(null)
 
             if(x !in key.x until key.x+key.width
                 || y !in key.y until key.y+key.height) {
 
                 val newKey = findKey(x, y) ?: key
-                if(newKey.key.code != key.key.code) {
+                if(newKey.key != key.key) {
+                    handler.removeCallbacksAndMessages(null)
+
+                    if(showMoreKeys) {
+                        handler.postDelayed({
+                            showMoreKeysPopup(newKey, pointerId)
+                            // Call this once to initially point a key on popup
+                            handler?.post { onTouchMove(newKey, pointerId, x, y) }
+                        }, longPressDuration)
+                    }
+
                     keyStates[key.key.code] = false
                     keyStates[newKey.key.code] = true
                     pointers[pointerId] = pointer.copy(key = newKey)
@@ -170,10 +179,11 @@ abstract class KeyboardView(
     protected fun onTouchUp(key: KeyWrapper, pointerId: Int, x: Int, y: Int) {
         handler.removeCallbacksAndMessages(null)
         val popup = popups[pointerId]
-        if(popup != null) {
+        if(popup is MoreKeysPopup) {
             popup.touchUp()
             popup.dismiss()
         } else {
+            popup?.dismiss()
             listener.onKeyClick(key.key.code, key.key.output)
             listener.onKeyUp(key.key.code, key.key.output)
         }
