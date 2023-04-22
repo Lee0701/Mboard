@@ -10,20 +10,18 @@ import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.kokr.Hangul
-import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 
 class PredictingInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
     private val dictionary: AbstractTrieDictionary,
-    private val vocab: Map<Int, String>,
+    private val vocab: Map<Int, Pair<String, Int>>,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, CandidateListener {
     private var job: Job? = null
@@ -123,8 +121,8 @@ class PredictingInputEngine(
             }
         this.job = CoroutineScope(Dispatchers.IO).launch {
             val candidates = dictionary.searchPrefix(key)
-                .mapNotNull { (index, value) -> vocab[index]?.let { DefaultCandidate(it, value.toFloat()) } }
-            delay(50)
+                .mapNotNull { (index, value) -> vocab[index]?.let { (text, freq) -> DefaultCandidate(text, freq.toFloat()) } }
+                .sortedByDescending { it.score }.take(10)
             launch(Dispatchers.Main) {
                 onCandidates(candidates)
             }

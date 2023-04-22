@@ -11,16 +11,16 @@ fun main() {
     val genNgramDict = true
 
     if(genPrefixDict) {
-        val inFile = File("dict_src/corpus2.txt")
+        val inFile = File("dict_src/corpus.txt")
         val outDictFile = File("dict_src/dict-prefix.bin")
         val outVocabFile = File("dict_src/vocab.tsv")
         val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 10)
     }
     if(genNgramDict) {
-        val inFile = File("dict_src/corpus2_10k.txt")
+        val inFile = File("dict_src/corpus-100k.txt")
         val inVocabFile = File("dict_src/vocab.tsv")
         val outFile = File("dict_src/dict-ngram.bin")
-        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 5, 2)
+        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 5, 4)
     }
     if(testSearch) {
         val prefixDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-prefix.bin").readBytes()))
