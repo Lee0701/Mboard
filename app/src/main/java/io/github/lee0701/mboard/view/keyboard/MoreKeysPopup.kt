@@ -47,9 +47,9 @@ class MoreKeysPopup(
     private val keyboardView: KeyboardView =
         when(keyboardViewType) {
             "stacked_view" -> StackedViewKeyboardView(
-                context, null, keyboard, Themes.Static, this)
+                context, null, keyboard, Themes.Static, 0, this)
             else -> CanvasKeyboardView(
-                context, null, keyboard, Themes.Static, this, width, height)
+                context, null, keyboard, Themes.Static, 0, this, width, height)
         }
     private var pointedKey: KeyboardView.KeyWrapper? = null
 

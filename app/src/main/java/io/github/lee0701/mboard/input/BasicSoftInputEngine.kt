@@ -9,9 +9,6 @@ import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import io.github.lee0701.mboard.module.softkeyboard.Row
-import io.github.lee0701.mboard.module.softkeyboard.Spacer
-import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
@@ -25,6 +22,7 @@ class BasicSoftInputEngine(
     private val keyboard: Keyboard,
     getInputEngine: (InputEngine.Listener) -> InputEngine,
     private val autoUnlockShift: Boolean = true,
+    override val showCandidatesView: Boolean = false,
     override val listener: InputEngine.Listener,
 ): SoftInputEngine {
     private val inputEngine: InputEngine = getInputEngine(listener)
@@ -40,6 +38,8 @@ class BasicSoftInputEngine(
     private var flickDownAction: FlickLongPressAction = FlickLongPressAction.Symbols
     private var flickLeftAction: FlickLongPressAction = FlickLongPressAction.None
     private var flickRightAction: FlickLongPressAction = FlickLongPressAction.None
+
+    private var popupOffsetY = 0
 
     private var keyboardView: KeyboardView? = null
 
@@ -58,11 +58,14 @@ class BasicSoftInputEngine(
         flickLeftAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_left", "none") ?: "none")
         flickRightAction = FlickLongPressAction.of(preferences.getString("behaviour_flick_action_", "none") ?: "none")
 
+        popupOffsetY = if(!showCandidatesView) 0
+        else context.resources.getDimension(R.dimen.candidates_view_height).toInt()
+
         val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
         keyboardView = when(keyboardViewType) {
-            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this)
-            else -> CanvasKeyboardView(context, null, keyboard, theme, this)
+            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, popupOffsetY, this)
+            else -> CanvasKeyboardView(context, null, keyboard, theme, popupOffsetY, this)
         }
         return keyboardView
     }

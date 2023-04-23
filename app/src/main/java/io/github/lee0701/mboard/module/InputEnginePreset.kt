@@ -62,6 +62,7 @@ sealed interface InputEnginePreset {
         val moreKeysTable: List<String> = listOf(),
         val codeConvertTable: List<String> = listOf(),
         val autoUnlockShift: Boolean = true,
+        val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -70,8 +71,9 @@ sealed interface InputEnginePreset {
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> CodeConverterInputEngine(convertTable, moreKeysTable, listener) },
-                listener = ime,
                 autoUnlockShift = autoUnlockShift,
+                showCandidatesView = showCandidatesView,
+                listener = ime,
             )
         }
     }
@@ -83,6 +85,8 @@ sealed interface InputEnginePreset {
         val moreKeysTable: List<String> = listOf(),
         val hangulTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
+        val autoUnlockShift: Boolean = true,
+        val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -92,7 +96,8 @@ sealed interface InputEnginePreset {
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> HangulInputEngine(convertTable, moreKeysTable, combinationTable, listener) },
-                autoUnlockShift = true,
+                autoUnlockShift = autoUnlockShift,
+                showCandidatesView = showCandidatesView,
                 listener = ime,
             )
         }
@@ -105,6 +110,8 @@ sealed interface InputEnginePreset {
         val moreKeysTable: List<String> = listOf(),
         val hangulTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
+        val autoUnlockShift: Boolean = true,
+        val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -119,8 +126,9 @@ sealed interface InputEnginePreset {
                         HangulInputEngine(hangulTable, moreKeysTable, combinationTable, l)
                     }, converter, null, listener)
                 },
-                autoUnlockShift = true,
-                listener = ime
+                autoUnlockShift = autoUnlockShift,
+                showCandidatesView = showCandidatesView,
+                listener = ime,
             )
         }
     }
@@ -132,6 +140,8 @@ sealed interface InputEnginePreset {
         val moreKeysTable: List<String> = listOf(),
         val hangulTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
+        val autoUnlockShift: Boolean = true,
+        val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -146,8 +156,9 @@ sealed interface InputEnginePreset {
                         HangulInputEngine(convertTable, moreKeysTable, combinationTable, l)
                     }, converter, predictor, listener)
                 },
-                autoUnlockShift = true,
-                listener = ime
+                autoUnlockShift = autoUnlockShift,
+                showCandidatesView = showCandidatesView,
+                listener = ime,
             )
         }
     }

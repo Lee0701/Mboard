@@ -28,6 +28,7 @@ abstract class KeyboardView(
     attrs: AttributeSet?,
     protected val keyboard: Keyboard,
     protected val theme: Theme,
+    protected val popupOffsetY: Int,
     protected val listener: KeyboardListener,
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -38,7 +39,6 @@ abstract class KeyboardView(
     open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
-    protected val candidatesViewHeight = context.resources.getDimension(R.dimen.candidates_view_height).toInt()
 
     protected val showKeyPopups: Boolean = preferences.getBoolean("behaviour_show_popups", true)
     protected val showMoreKeys: Boolean = preferences.getBoolean("behaviour_show_more_keys", true)
@@ -264,7 +264,7 @@ abstract class KeyboardView(
     }
 
     private fun getPopupX(key: KeyWrapper): Float = key.x + key.width/2f
-    private fun getPopupY(key: KeyWrapper): Float = key.y + candidatesViewHeight + key.height/2f
+    private fun getPopupY(key: KeyWrapper): Float = key.y + popupOffsetY + key.height/2f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)

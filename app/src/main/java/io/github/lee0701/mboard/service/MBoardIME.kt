@@ -62,6 +62,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                     moreKeysTable = preset.moreKeysTable,
                     hangulTable = preset.hangulTable,
                     combinationTable = preset.combinationTable,
+                    showCandidatesView = true,
                 )
             }
             if(hanjaConversionEnabled) {
@@ -70,6 +71,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                     moreKeysTable = preset.moreKeysTable,
                     hangulTable = preset.hangulTable,
                     combinationTable = preset.combinationTable,
+                    showCandidatesView = true,
                 )
             }
             return preset
@@ -95,9 +97,9 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val empty = DirectInputEngine(this)
 
         val engines = listOf(
-            latinInputEngine ?: empty,
-            hangulInputEngine ?: empty,
-            symbolInputEngine ?: empty,
+            latinInputEngine,
+            hangulInputEngine,
+            symbolInputEngine,
         )
 
         val table = arrayOf(
@@ -118,13 +120,15 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             orientation = LinearLayoutCompat.VERTICAL
         }
 
-        val candidatesView = defaultCandidatesViewManager?.initView(this)
-        if(candidatesView != null) {
-            candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                resources.getDimension(R.dimen.candidates_view_height).roundToInt()
-            )
-            inputViewWrapper.addView(candidatesView)
+        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView == true) {
+            val candidatesView = defaultCandidatesViewManager?.initView(this)
+            if(candidatesView != null) {
+                candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                    resources.getDimension(R.dimen.candidates_view_height).roundToInt()
+                )
+                inputViewWrapper.addView(candidatesView)
+            }
         }
 
         val keyboardView = inputEngineSwitcher?.initView(this)
