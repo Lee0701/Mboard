@@ -119,7 +119,7 @@ class HanjaConverterInputEngine(
                     ?.top(10).orEmpty()
                     .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
             }
-            delay(100)
+            delay(50)
             launch(Dispatchers.Main) {
                 onCandidates(candidates)
             }
@@ -134,7 +134,6 @@ class HanjaConverterInputEngine(
         inputEngine.onReset()
         listener.onCandidates(listOf())
         updateView()
-        convert()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
