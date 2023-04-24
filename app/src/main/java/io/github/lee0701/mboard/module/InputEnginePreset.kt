@@ -14,13 +14,16 @@ import io.github.lee0701.mboard.input.HangulInputEngine
 import io.github.lee0701.mboard.input.HanjaConverterBuilder
 import io.github.lee0701.mboard.input.HanjaConverterInputEngine
 import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.module.softkeyboard.Include
+import io.github.lee0701.mboard.module.softkeyboard.RowItem
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.MBoardIME
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
 
 @Serializable
@@ -28,9 +31,18 @@ sealed interface InputEnginePreset {
 
     fun inflate(ime: MBoardIME): InputEngine
 
+    fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
+        return row.keys.flatMap { rowItem ->
+            if(rowItem is Include) resolveSoftKeyIncludes(context,
+                yaml.decodeFromStream(context.assets.open(rowItem.name)))
+            else listOf(rowItem)
+        }
+    }
+
     fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
         val resolved = names.map { filename ->
-            yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+            val keyboard = yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+            return@map keyboard.copy(rows = keyboard.rows.map { it.copy(keys = resolveSoftKeyIncludes(context, it)) })
         }
         return resolved.fold(Keyboard()) { acc, input -> acc + input }
     }

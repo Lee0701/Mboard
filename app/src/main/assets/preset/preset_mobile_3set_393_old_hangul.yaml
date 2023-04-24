@@ -1,7 +1,6 @@
 ---
 !<hangul>
 softKeyboard:
-- "common/soft_mobile_num.yaml"
 - "hangul_3set/soft_393_mobile.yaml"
 hangulTable:
 - "symbol/table_custom_keys.yaml"

@@ -1,5 +1,8 @@
 rows:
 - keys:
+  - !<include>
+    name: "common/row_numbers.yaml"
+- keys:
   - !<key>
     code: "KEYCODE_Q"
     output: "Q"
