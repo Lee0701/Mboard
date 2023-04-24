@@ -26,9 +26,11 @@ open class CanvasKeyboardView(
     theme: Theme,
     popupOffsetY: Int,
     listener: KeyboardListener,
+    unifyHeight: Boolean,
+    rowHeight: Int,
     val width: Int? = null,
     val height: Int? = null,
-): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener) {
+): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener, unifyHeight, rowHeight) {
 
     private val rect = Rect()
     private val bitmapPaint = Paint()

@@ -31,7 +31,6 @@ class SettingsActivity: AppCompatActivity() {
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
     }
 
-
     class SettingsFragment: PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)

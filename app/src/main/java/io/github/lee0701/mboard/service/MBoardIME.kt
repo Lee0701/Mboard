@@ -51,30 +51,45 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
         val yaml = InputEnginePreset.yaml
 
+        val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
+        val rowHeight: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+            pref.getFloat("appearance_keyboard_height", 55f), resources.displayMetrics).toInt()
+
         val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
         val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
+
+        fun modLatin(preset: InputEnginePreset): InputEnginePreset {
+            if(preset !is InputEnginePreset.Latin) return preset
+            return preset.copy(
+                unifyHeight = unifyHeight,
+                rowHeight = rowHeight,
+            )
+        }
 
         fun modHangul(preset: InputEnginePreset): InputEnginePreset {
             if(preset !is InputEnginePreset.Hangul) return preset
             if(hanjaConversionEnabled && hanjaPredictionEnabled) {
-                return InputEnginePreset.PredictingHangulHanja(
-                    softKeyboard = preset.softKeyboard,
-                    moreKeysTable = preset.moreKeysTable,
-                    hangulTable = preset.hangulTable,
-                    combinationTable = preset.combinationTable,
+                return preset.copy(
                     showCandidatesView = true,
+                    enableHanjaConversion = true,
+                    enableHanjaPrediction = true,
+                    unifyHeight = unifyHeight,
+                    rowHeight = rowHeight,
                 )
             }
             if(hanjaConversionEnabled) {
-                return InputEnginePreset.HangulHanja(
-                    softKeyboard = preset.softKeyboard,
-                    moreKeysTable = preset.moreKeysTable,
-                    hangulTable = preset.hangulTable,
-                    combinationTable = preset.combinationTable,
+                return preset.copy(
                     showCandidatesView = true,
+                    enableHanjaConversion = true,
+                    enableHanjaPrediction = false,
+                    unifyHeight = unifyHeight,
+                    rowHeight = rowHeight,
                 )
             }
-            return preset
+            return preset.copy(
+                unifyHeight = unifyHeight,
+                rowHeight = rowHeight,
+            )
         }
 
         fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
@@ -83,12 +98,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                 "ko" -> preset.copy(
                     codeConvertTable = preset.codeConvertTable + "symbol/table_currency_won.yaml",
                     moreKeysTable = preset.moreKeysTable + "symbol/morekeys_symbols_hangul.yaml",
+                    unifyHeight = unifyHeight,
+                    rowHeight = rowHeight,
                 )
-                else -> preset
+                else -> preset.copy(
+                    unifyHeight = unifyHeight,
+                    rowHeight = rowHeight,
+                )
             }
         }
 
-        val latinModule = yaml.decodeFromStream<InputEnginePreset>(assets.open(latinFilename))
+        val latinModule = modLatin(yaml.decodeFromStream(assets.open(latinFilename)))
         val latinSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "en")
         val hangulModule = modHangul(yaml.decodeFromStream(assets.open(hangulFilename)))
         val hangulSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "ko")
@@ -134,7 +154,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             orientation = LinearLayoutCompat.VERTICAL
         }
 
-        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView == true) {
+        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView) {
             val candidatesView = defaultCandidatesViewManager?.initView(this)
             if(candidatesView != null) {
                 candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(

@@ -2,7 +2,7 @@
 !<hangul>
 softKeyboard:
 - "hangul_3set/soft_390_mobile.yaml"
-hangulTable:
+codeConvertTable:
 - "symbol/table_custom_keys.yaml"
 - "hangul_3set/table_390.yaml"
 combinationTable:

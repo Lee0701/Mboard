@@ -24,6 +24,8 @@ class BasicSoftInputEngine(
     private val autoUnlockShift: Boolean = true,
     override val showCandidatesView: Boolean = false,
     override val listener: InputEngine.Listener,
+    private val unifyHeight: Boolean,
+    private val rowHeight: Int,
 ): SoftInputEngine {
     private val inputEngine: InputEngine = getInputEngine(listener)
 
@@ -64,8 +66,8 @@ class BasicSoftInputEngine(
         val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
         keyboardView = when(keyboardViewType) {
-            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, popupOffsetY, this)
-            else -> CanvasKeyboardView(context, null, keyboard, theme, popupOffsetY, this)
+            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, popupOffsetY, this, unifyHeight, rowHeight)
+            else -> CanvasKeyboardView(context, null, keyboard, theme, popupOffsetY, this, unifyHeight, rowHeight)
         }
         return keyboardView
     }

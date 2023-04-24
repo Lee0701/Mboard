@@ -2,7 +2,7 @@
 !<hangul>
 softKeyboard:
 - "common/soft_qwerty_tablet.yaml"
-hangulTable:
+codeConvertTable:
 - "symbol/table_custom_keys.yaml"
 - "hangul_2set/table_old_hangul_2set.yaml"
 combinationTable:

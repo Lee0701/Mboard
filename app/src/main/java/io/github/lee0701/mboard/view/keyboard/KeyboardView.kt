@@ -30,11 +30,11 @@ abstract class KeyboardView(
     protected val theme: Theme,
     protected val popupOffsetY: Int,
     protected val listener: KeyboardListener,
+    unifyHeight: Boolean,
+    rowHeight: Int,
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    private val unifyHeight: Boolean = preferences.getBoolean("appearance_unify_height", false)
-    private val rowHeight: Int = dipToPixel(preferences.getFloat("appearance_keyboard_height", 55f)).toInt()
     open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels
     open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
 

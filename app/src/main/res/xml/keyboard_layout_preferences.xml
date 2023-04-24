@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.SliderPreference
+        app:key="appearance_keyboard_height"
+        app:valueFrom="30.0"
+        app:valueTo="100.0"
+        app:stepSize="5.0"
+        app:defaultValue="@string/pref_appearance_keyboard_height_default"
+        app:title="@string/pref_appearance_keyboard_height_title"
+        app:useSimpleSummaryProvider="true"/>
+
+</PreferenceScreen>

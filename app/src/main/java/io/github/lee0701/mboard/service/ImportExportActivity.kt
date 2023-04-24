@@ -108,12 +108,12 @@ class ImportExportActivity: AppCompatActivity() {
     }
 
     private fun generatePreset() {
-        val h2 = InputEnginePreset.HangulHanja(
-            softKeyboard = listOf("common/soft_qwerty_tablet.yaml"),
-            hangulTable = listOf("hangul_2set/table_ks5002.yaml"),
-            combinationTable = listOf("hangul_2set/comb_ks5002.yaml"),
-        )
-        Yaml.default.encodeToStream(h2, File(filesDir, "test.yaml").outputStream())
+//        val h2 = InputEnginePreset.Hangul(
+//            softKeyboard = listOf("common/soft_qwerty_tablet.yaml"),
+//            codeConvertTable = listOf("hangul_2set/table_ks5002.yaml"),
+//            combinationTable = listOf("hangul_2set/comb_ks5002.yaml"),
+//        )
+//        Yaml.default.encodeToStream(h2, File(filesDir, "test.yaml").outputStream())
     }
 
     private fun importLayout(layout: Array<IntArray>): CodeConvertTable {

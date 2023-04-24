@@ -28,6 +28,18 @@ sealed interface InputEnginePreset {
 
     fun inflate(ime: MBoardIME): InputEngine
 
+    fun mutable(): Mutable
+
+    val unifyHeight: Boolean
+    val rowHeight: Int
+
+    val autoUnlockShift: Boolean
+    val showCandidatesView: Boolean
+
+    val softKeyboard: List<String>
+    val moreKeysTable: List<String>
+    val codeConvertTable: List<String>
+
     fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
         val resolved = names.map { filename ->
             yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
@@ -58,11 +70,13 @@ sealed interface InputEnginePreset {
     @Serializable
     @SerialName("latin")
     data class Latin(
-        val softKeyboard: List<String> = listOf(),
-        val moreKeysTable: List<String> = listOf(),
-        val codeConvertTable: List<String> = listOf(),
-        val autoUnlockShift: Boolean = true,
-        val showCandidatesView: Boolean = false,
+        override val softKeyboard: List<String> = listOf(),
+        override val moreKeysTable: List<String> = listOf(),
+        override val codeConvertTable: List<String> = listOf(),
+        override val unifyHeight: Boolean = false,
+        override val rowHeight: Int = 55,
+        override val autoUnlockShift: Boolean = true,
+        override val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
@@ -71,9 +85,27 @@ sealed interface InputEnginePreset {
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> CodeConverterInputEngine(convertTable, moreKeysTable, listener) },
+                unifyHeight = unifyHeight,
+                rowHeight = rowHeight,
                 autoUnlockShift = autoUnlockShift,
                 showCandidatesView = showCandidatesView,
                 listener = ime,
+            )
+        }
+
+        override fun mutable(): Mutable {
+            return Mutable(
+                type = Type.Latin,
+                unifyHeight = this.unifyHeight,
+                rowHeight = this.rowHeight,
+                autoUnlockShift = this.autoUnlockShift,
+                showCandidatesView = this.showCandidatesView,
+                enableHanjaConversion = false,
+                enableHanjaPrediction = false,
+                softKeyboard = this.softKeyboard,
+                moreKeysTable = this.moreKeysTable,
+                codeConvertTable = this.codeConvertTable,
+                combinationTable = listOf(),
             )
         }
     }
@@ -81,86 +113,102 @@ sealed interface InputEnginePreset {
     @Serializable
     @SerialName("hangul")
     data class Hangul(
-        val softKeyboard: List<String> = listOf(),
-        val moreKeysTable: List<String> = listOf(),
-        val hangulTable: List<String> = listOf(),
+        override val softKeyboard: List<String> = listOf(),
+        override val moreKeysTable: List<String> = listOf(),
+        override val codeConvertTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
-        val autoUnlockShift: Boolean = true,
-        val showCandidatesView: Boolean = false,
+        override val unifyHeight: Boolean = false,
+        override val rowHeight: Int = 55,
+        override val autoUnlockShift: Boolean = true,
+        override val showCandidatesView: Boolean = false,
+        val enableHanjaConversion: Boolean = false,
+        val enableHanjaPrediction: Boolean = false,
     ): InputEnginePreset {
         override fun inflate(ime: MBoardIME): InputEngine {
             val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
             val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
-            val convertTable = loadConvertTable(ime, names = hangulTable)
+            val convertTable = loadConvertTable(ime, names = codeConvertTable)
             val combinationTable = loadCombinationTable(ime, names = combinationTable)
+            val (converter, predictor) =
+                if(enableHanjaConversion)createHanjaConverter(ime, prediction = enableHanjaPrediction)
+                else (null to null)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
-                getInputEngine = { listener -> HangulInputEngine(convertTable, moreKeysTable, combinationTable, listener) },
+                getInputEngine = { listener ->
+                    if(enableHanjaConversion) {
+                        HanjaConverterInputEngine({ l ->
+                            HangulInputEngine(convertTable, moreKeysTable, combinationTable, l)
+                        }, converter, predictor, listener)
+                    } else {
+                        HangulInputEngine(convertTable, moreKeysTable, combinationTable, listener)
+                    }
+                },
+                unifyHeight = unifyHeight,
+                rowHeight = rowHeight,
                 autoUnlockShift = autoUnlockShift,
                 showCandidatesView = showCandidatesView,
                 listener = ime,
+            )
+        }
+        override fun mutable(): Mutable {
+            return Mutable(
+                type = Type.Hangul,
+                unifyHeight = this.unifyHeight,
+                rowHeight = this.rowHeight,
+                autoUnlockShift = this.autoUnlockShift,
+                showCandidatesView = this.showCandidatesView,
+                enableHanjaConversion = this.enableHanjaConversion,
+                enableHanjaPrediction = this.enableHanjaPrediction,
+                softKeyboard = this.softKeyboard,
+                moreKeysTable = this.moreKeysTable,
+                codeConvertTable = this.codeConvertTable,
+                combinationTable = this.combinationTable,
             )
         }
     }
 
-    @Serializable
-    @SerialName("hangul-hanja")
-    data class HangulHanja(
-        val softKeyboard: List<String> = listOf(),
-        val moreKeysTable: List<String> = listOf(),
-        val hangulTable: List<String> = listOf(),
-        val combinationTable: List<String> = listOf(),
-        val autoUnlockShift: Boolean = true,
-        val showCandidatesView: Boolean = false,
-    ): InputEnginePreset {
-        override fun inflate(ime: MBoardIME): InputEngine {
-            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
-            val hangulTable = loadConvertTable(ime, names = hangulTable)
-            val combinationTable = loadCombinationTable(ime, names = combinationTable)
-            val (converter, _) = createHanjaConverter(ime, prediction = false)
-            return BasicSoftInputEngine(
-                keyboard = keyboard,
-                getInputEngine = { listener ->
-                    HanjaConverterInputEngine({ l ->
-                        HangulInputEngine(hangulTable, moreKeysTable, combinationTable, l)
-                    }, converter, null, listener)
-                },
-                autoUnlockShift = autoUnlockShift,
-                showCandidatesView = showCandidatesView,
-                listener = ime,
-            )
+    data class Mutable (
+        var type: Type = Type.Latin,
+        var unifyHeight: Boolean = false,
+        var rowHeight: Int = 55,
+        var autoUnlockShift: Boolean = true,
+        var showCandidatesView: Boolean = false,
+        var enableHanjaConversion: Boolean = false,
+        var enableHanjaPrediction: Boolean = false,
+        var softKeyboard: List<String> = listOf(),
+        var moreKeysTable: List<String> = listOf(),
+        var codeConvertTable: List<String> = listOf(),
+        var combinationTable: List<String> = listOf(),
+    ) {
+        fun commit(): InputEnginePreset {
+            return when(type) {
+                Type.Latin -> Latin(
+                    softKeyboard = softKeyboard,
+                    moreKeysTable = moreKeysTable,
+                    codeConvertTable = codeConvertTable,
+                    unifyHeight = unifyHeight,
+                    rowHeight = rowHeight,
+                    showCandidatesView = showCandidatesView,
+                    autoUnlockShift = autoUnlockShift,
+                )
+                Type.Hangul -> {
+                    Hangul(
+                        softKeyboard = softKeyboard,
+                        moreKeysTable = moreKeysTable,
+                        codeConvertTable = codeConvertTable,
+                        combinationTable = combinationTable,
+                        unifyHeight = unifyHeight,
+                        rowHeight = rowHeight,
+                        showCandidatesView = showCandidatesView,
+                        autoUnlockShift = autoUnlockShift,
+                    )
+                }
+            }
         }
     }
 
-    @Serializable
-    @SerialName("predicting-hangul-hanja")
-    data class PredictingHangulHanja(
-        val softKeyboard: List<String> = listOf(),
-        val moreKeysTable: List<String> = listOf(),
-        val hangulTable: List<String> = listOf(),
-        val combinationTable: List<String> = listOf(),
-        val autoUnlockShift: Boolean = true,
-        val showCandidatesView: Boolean = false,
-    ): InputEnginePreset {
-        override fun inflate(ime: MBoardIME): InputEngine {
-            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
-            val convertTable = loadConvertTable(ime, names = hangulTable)
-            val combinationTable = loadCombinationTable(ime, names = combinationTable)
-            val (converter, predictor) = createHanjaConverter(ime, prediction = true)
-            return BasicSoftInputEngine(
-                keyboard = keyboard,
-                getInputEngine = { listener ->
-                    HanjaConverterInputEngine({ l ->
-                        HangulInputEngine(convertTable, moreKeysTable, combinationTable, l)
-                    }, converter, predictor, listener)
-                },
-                autoUnlockShift = autoUnlockShift,
-                showCandidatesView = showCandidatesView,
-                listener = ime,
-            )
-        }
+    enum class Type {
+        Latin, Hangul
     }
 
     companion object {
