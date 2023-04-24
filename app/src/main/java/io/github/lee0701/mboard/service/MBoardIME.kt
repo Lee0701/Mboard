@@ -81,7 +81,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             if(preset !is InputEnginePreset.Latin) return preset
             return when(language) {
                 "ko" -> preset.copy(
-                    codeConvertTable = preset.codeConvertTable + "symbol/table_currency_won.yaml"
+                    codeConvertTable = preset.codeConvertTable + "symbol/table_currency_won.yaml",
+                    moreKeysTable = preset.moreKeysTable + "symbol/morekeys_symbols_hangul.yaml",
                 )
                 else -> preset
             }
