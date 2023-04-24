@@ -14,7 +14,7 @@ class EnterKeyboardSettingsPreference(
     private val fileName: String
 
     init {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference)
+        val a = context.obtainStyledAttributes(attrs, R.styleable.EnterKeyboardSettingsPreference)
         fileName = a.getString(R.styleable.EnterKeyboardSettingsPreference_fileName) ?: "default.yaml"
         a.recycle()
 

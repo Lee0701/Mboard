@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <io.github.lee0701.mboard.settings.SliderPreference
-        app:key="appearance_keyboard_height"
+        app:key="row_height"
         app:valueFrom="30.0"
         app:valueTo="100.0"
         app:stepSize="5.0"

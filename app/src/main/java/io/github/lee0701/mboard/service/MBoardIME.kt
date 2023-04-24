@@ -29,6 +29,7 @@ import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
 import io.github.lee0701.mboard.view.keyboard.Themes
+import java.io.File
 import kotlin.math.roundToInt
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
@@ -108,15 +109,32 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             }
         }
 
+        fun modExperimental(preset: InputEnginePreset): InputEnginePreset {
+            val expRowHeight: Int = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                preset.rowHeight.toFloat(),
+                resources.displayMetrics
+            ).toInt()
+            if(preset is InputEnginePreset.Hangul) {
+                return preset.copy(rowHeight = expRowHeight)
+            } else if(preset is InputEnginePreset.Latin) {
+                return preset.copy(rowHeight = expRowHeight)
+            } else {
+                return preset
+            }
+        }
+
         val latinModule = modLatin(yaml.decodeFromStream(assets.open(latinFilename)))
         val latinSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "en")
         val hangulModule = modHangul(yaml.decodeFromStream(assets.open(hangulFilename)))
         val hangulSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "ko")
+        val experimentalModule = modExperimental(yaml.decodeFromStream(File(filesDir, "arst.yaml").inputStream()))
 
         val latinInputEngine = latinModule.inflate(this)
         val latinSymbolInputEngine = latinSymbolModule.inflate(this)
         val hangulInputEngine = hangulModule.inflate(this)
         val hangulSymbolInputEngine = hangulSymbolModule.inflate(this)
+        val experimentalInputEngine = experimentalModule.inflate(this)
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
@@ -134,11 +152,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             hangulInputEngine,
             latinSymbolInputEngine,
             hangulSymbolInputEngine,
+            experimentalInputEngine,
         )
 
         val table = arrayOf(
             intArrayOf(0, 2),
             intArrayOf(1, 3),
+            intArrayOf(4, 4),
         )
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher

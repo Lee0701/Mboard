@@ -2,12 +2,14 @@ package io.github.lee0701.mboard.settings
 
 import androidx.preference.PreferenceDataStore
 import com.charleskorn.kaml.decodeFromStream
+import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
 
 class KeyboardLayoutPreferenceDataStore(
     val file: File,
-    val preset: InputEnginePreset.Mutable = InputEnginePreset.yaml.decodeFromStream(file.inputStream()),
+    val preset: InputEnginePreset.Mutable =
+        InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable(),
 ): PreferenceDataStore() {
 
     override fun putString(key: String?, value: String?) {
@@ -53,11 +55,18 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     override fun getFloat(key: String?, defValue: Float): Float {
-        return super.getFloat(key, defValue)
+        return when(key) {
+            KEY_ROW_HEIGHT -> preset.rowHeight.toFloat()
+            else -> defValue
+        }
     }
 
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
         return super.getBoolean(key, defValue)
+    }
+
+    fun write() {
+        InputEnginePreset.yaml.encodeToStream(preset.commit(), file.outputStream())
     }
 
     companion object {

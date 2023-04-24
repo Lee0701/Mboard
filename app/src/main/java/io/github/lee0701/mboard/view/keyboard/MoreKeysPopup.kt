@@ -49,7 +49,7 @@ class MoreKeysPopup(
             "stacked_view" -> StackedViewKeyboardView(
                 context, null, keyboard, Themes.Static, 0, this, false, keyHeight.roundToInt())
             else -> CanvasKeyboardView(
-                context, null, keyboard, Themes.Static, 0, this, false, width, height)
+                context, null, keyboard, Themes.Static, 0, this, false, keyHeight.roundToInt(), width, height)
         }
     private var pointedKey: KeyboardView.KeyWrapper? = null
 

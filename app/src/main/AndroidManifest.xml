@@ -49,6 +49,11 @@
             android:exported="false"
             android:label="@string/title_activity_import_export" />
 
+        <activity
+            android:name=".settings.KeyboardLayoutSettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_keyboard_layout" />
+
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@
     <string name="msg_hanja_converter_donation_not_found">Please install HanjaConverter Donation version to use Hanja prediction.</string>
 
     <string name="title_activity_import_export">Import / Export</string>
+    <string name="title_activity_keyboard_layout">Keyboard Layout</string>
 
     <string name="title_activity_settings">mBoard Settings</string>
 
