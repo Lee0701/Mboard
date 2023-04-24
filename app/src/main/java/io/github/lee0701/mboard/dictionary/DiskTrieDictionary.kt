@@ -21,18 +21,18 @@ class DiskTrieDictionary(
     inner class Node(
         private val address: Int,
     ): AbstractTrieDictionary.Node {
-        private val childrenCount: Short = data.getShort(address)
-        private val entriesAddress: Int = address + 2 + childrenCount*8
-        private val entriesCount: Short = data.getShort(entriesAddress)
+        private val childrenCount: Int = data.getInt(address)
+        private val entriesAddress: Int = address + 4 + childrenCount*8
+        private val entriesCount: Int = data.getInt(entriesAddress)
 
         override val children: Map<Int, Node> get() = (0 until childrenCount).associate { i ->
-            val addr = address + 2 + i*8
+            val addr = address + 4 + i*8
             data.getInt(addr) to Node(data.getInt(addr + 4))
         }
-        override val entries: Map<Int, Int> get() = (0 until entriesCount).map { i ->
-            val addr = entriesAddress + 2 + i*8
+        override val entries: Map<Int, Int> get() = (0 until entriesCount).associate { i ->
+            val addr = entriesAddress + 4 + i*8
             data.getInt(addr) to data.getInt(addr + 4)
-        }.toMap()
+        }
     }
 
     companion object {
@@ -47,16 +47,16 @@ class DiskTrieDictionary(
 
             return DiskTrieDictionary(ByteBuffer.wrap(os.toByteArray()))
         }
+
         private fun AbstractTrieDictionary.Node.write(dos: DataOutputStream): Int {
             val childrenMap = children.mapValues { (_, node) -> node.write(dos) }
             val start = dos.size()
-            dos.writeShort(children.size)
+            dos.writeInt(children.size)
             childrenMap.forEach { (c, addr) ->
                 dos.writeInt(c)
                 dos.writeInt(addr)
             }
-            val entries = this.entries
-            dos.writeShort(entries.size)
+            dos.writeInt(entries.size)
             entries.forEach { entry ->
                 dos.writeInt(entry.key)
                 dos.writeInt(entry.value)

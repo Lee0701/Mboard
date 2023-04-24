@@ -200,6 +200,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
         val inputConnection = currentInputConnection ?: return
         inputConnection.deleteSurroundingText(beforeLength, afterLength)
+        updateTextAroundCursor()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

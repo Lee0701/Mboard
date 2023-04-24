@@ -17,11 +17,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.Normalizer
+import java.util.PriorityQueue
 
 class PredictingInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val dictionary: AbstractTrieDictionary,
-    private val vocab: Map<Int, Pair<String, Int>>,
+    private val vocab: List<Pair<String, Int>>,
+    private val prefixDict: AbstractTrieDictionary,
+    private val ngramDict: AbstractTrieDictionary,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, CandidateListener {
     private var job: Job? = null
@@ -39,6 +41,7 @@ class PredictingInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
+        convert()
     }
 
     override fun onDelete() {
@@ -52,14 +55,14 @@ class PredictingInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        convert()
     }
 
     override fun onFinishComposing() {
+        val reconvert = composingWordStack.isNotEmpty() || composingChar.isNotEmpty()
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
-        convert()
+        if(reconvert) convert()
     }
 
     override fun onCommitText(text: CharSequence) {
@@ -84,21 +87,19 @@ class PredictingInputEngine(
     }
 
     override fun onItemClicked(candidate: Candidate) {
-        if(candidate is DefaultHanjaCandidate) {
-            listener.onCommitText(candidate.text)
-            composingWordStack += currentComposing
-            composingChar = ""
-            if(inputEngine is HangulInputEngine) inputEngine.clearStack()
+        listener.onCommitText(candidate.text)
+        composingWordStack += currentComposing
+        composingChar = ""
+        if(inputEngine is HangulInputEngine) inputEngine.clearStack()
 
-            val newComposingText = currentComposing.drop(candidate.text.length)
-            composingWordStack.clear()
-            newComposingText.indices.forEach { i ->
-                composingWordStack += newComposingText.take(i + 1)
-            }
-            listener.onComposingText(newComposingText)
-            updateView()
-            convert()
+        val newComposingText = currentComposing.drop(candidate.text.length)
+        composingWordStack.clear()
+        newComposingText.indices.forEach { i ->
+            composingWordStack += newComposingText.take(i + 1)
         }
+        listener.onComposingText(newComposingText)
+        updateView()
+        convert()
     }
 
     override fun onSystemKey(code: Int): Boolean {
@@ -113,21 +114,86 @@ class PredictingInputEngine(
 
     private fun convert() {
         val job = job
-        if(job != null && job.isActive) return
-        val key = Normalizer.normalize(currentComposing, Normalizer.Form.NFD)
+        if(job != null && job.isActive) job.cancel()
+        if(currentComposing.isNotEmpty()) {
+            this.job = CoroutineScope(Dispatchers.IO).launch {
+                val key = getKey(currentComposing)
+                val candidates = prefixDict.searchPrefix(key).mapNotNull { (index, value) -> vocab.getOrNull(index)
+                    ?.let { (text, freq) -> DefaultCandidate(text, freq.toFloat()) } }
+                    .sortedByDescending { it.score }.take(10)
+                launch(Dispatchers.Main) {
+                    onCandidates(candidates)
+                }
+            }
+        } else {
+            this.job = CoroutineScope(Dispatchers.IO).launch {
+                val tokens = tokenize(beforeText.takeLast(10))
+                val candidates = search(tokens)
+                    .mapNotNull { (k, v) -> vocab.getOrNull(k)?.first?.let { it to v } }
+                    .map { (v, prob) -> DefaultCandidate(v, prob.toFloat()) }
+                    .sortedByDescending { it.score }.take(10)
+                launch(Dispatchers.Main) {
+                    onCandidates(candidates)
+                }
+            }
+        }
+    }
+
+    private fun search(context: List<Int>): Map<Int, Int> {
+        val results = (5 downTo 1).map { n -> ngramDict.search(context.takeLast(n)) }
+        val found = results.filter { it.isNotEmpty() }.fold(mapOf<Int, Int>()) { acc, map ->
+            (acc.keys + map.keys).map { key -> key to ((acc[key] ?: 1) * (map[key]?: 1)) }.toMap() }
+        return found.toMap()
+    }
+
+    private fun tokenize(text: String): List<Int> {
+        val key = getKey(text)
+        val resultByIndex = key.indices.map { mutableListOf<Pair<Int, Int>>() }
+        for(i in key.indices) {
+            for(j in key.size downTo i) {
+                val k = key.subList(i, j)
+                if(k.isEmpty()) continue
+                val value = prefixDict.search(k)
+                if(value.isNotEmpty()) {
+                    resultByIndex[i] += value.entries.first().key to k.size
+                }
+            }
+        }
+
+        data class IncompleteWord(
+            val indices: List<Int>,
+            val len: Int,
+            val score: Int,
+        ): Comparable<IncompleteWord> {
+            override fun compareTo(other: IncompleteWord): Int =
+                compareBy<IncompleteWord> { it.len }.compare(this, other)
+        }
+
+        val pq = PriorityQueue<IncompleteWord>()
+        resultByIndex.firstOrNull()
+            ?.map { (id, len) -> IncompleteWord(listOf(id), len, vocab.getOrNull(id)?.second ?: 0) }
+            ?.forEach { pq.offer(it) }
+        while(pq.isNotEmpty()) {
+            val c = pq.poll() ?: continue
+//            val len = if(c.indices.lastOrNull() == 0x20) c.len-1 else c.len
+            if(c.len == key.size) {
+                return c.indices
+            }
+            resultByIndex[c.len].forEach { (id, len) ->
+                pq.offer(IncompleteWord(c.indices + id, c.len + len, c.score + (vocab.getOrNull(id)?.second ?: 0)))
+            }
+        }
+        return listOf()
+    }
+
+    private fun getKey(text: String): List<Int> {
+        return Normalizer.normalize(text, Normalizer.Form.NFD)
             .map {
                 return@map if(Hangul.isConsonant(it.code)) Hangul.consonantToCho(it.code)
                 else if(Hangul.isVowel(it.code)) Hangul.vowelToJung(it.code)
+                else if(it == ' ') '_'.code
                 else it.code
             }
-        this.job = CoroutineScope(Dispatchers.IO).launch {
-            val candidates = dictionary.searchPrefix(key)
-                .mapNotNull { (index, value) -> vocab[index]?.let { (text, freq) -> DefaultCandidate(text, freq.toFloat()) } }
-                .sortedByDescending { it.score }.take(10)
-            launch(Dispatchers.Main) {
-                onCandidates(candidates)
-            }
-        }
     }
 
     private fun updateView() {
@@ -138,7 +204,6 @@ class PredictingInputEngine(
         inputEngine.onReset()
         listener.onCandidates(listOf())
         updateView()
-        convert()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
