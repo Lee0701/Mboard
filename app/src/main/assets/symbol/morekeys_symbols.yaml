@@ -25,5 +25,6 @@ map:
   0xb6: symbol/soft_morekeys_pilcrow.yaml
   0x2b: symbol/soft_morekeys_plus.yaml
   0xa3: symbol/soft_morekeys_pound.yaml
+  0x20a9: symbol/soft_morekeys_won.yaml
   0x2f: symbol/soft_morekeys_question.yaml
   0x22: symbol/soft_morekeys_quote.yaml

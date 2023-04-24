@@ -1,0 +1,5 @@
+!<simple>
+map:
+  "KEYCODE_D":
+    base: 0x20a9
+    shift: 0x0024
