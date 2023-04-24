@@ -15,6 +15,8 @@ import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 import java.util.PriorityQueue
@@ -125,24 +127,30 @@ class PredictingInputEngine(
         if(job != null && job.isActive) job.cancel()
         this.job = CoroutineScope(Dispatchers.IO).launch {
             val key = getKey(currentComposing)
-            for(j in key.indices.reversed()) {
+            key.indices.reversed().map { j ->
                 val tokenized = tokenize(key.drop(j))
-                val string = tokenized.map { vocab.getOrNull(it)?.first }.dropLast(1).joinToString("")
-                val last = tokenized.lastOrNull()
-                    ?.let { vocab.getOrNull(it)?.first }
-                    ?.let { getKey(it) } ?: listOf()
-                if(last.isNotEmpty()) {
-                    val ngramResult = ngramDict.search(tokenized.dropLast(1))
-                    val prefixResult = prefixDict.searchPrefix(last)
-                    val candidates = prefixResult.mapNotNull { (index, _) ->
-                        val vocabResult = vocab.getOrNull(index)
-                        vocabResult?.let { (text, freq) ->
-                            val contextFreq = ngramResult[index] ?: 0
-                            DefaultCandidate(string + text, sqrt(freq.toFloat() * contextFreq)) }
-                    }.sortedByDescending { it.score }.take(10)
-                    launch(Dispatchers.Main) {
-                        onCandidates(candidates)
+                async {
+                    val string = tokenized.map { vocab.getOrNull(it)?.first }.dropLast(1).joinToString("")
+                    val last = tokenized.lastOrNull()
+                        ?.let { vocab.getOrNull(it)?.first }
+                        ?.let { getKey(it) } ?: listOf()
+                    if(last.isNotEmpty()) {
+                        val ngramResult = ngramDict.search(tokenized.dropLast(1))
+                        val prefixResult = prefixDict.searchPrefix(last)
+                        val candidates = prefixResult.mapNotNull { (index, _) ->
+                            val vocabResult = vocab.getOrNull(index)
+                            vocabResult?.let { (text, freq) ->
+                                val contextFreq = ngramResult[index]?.toFloat() ?: 1f
+                                DefaultCandidate(string + text, sqrt(freq.toFloat() * contextFreq)) }
+                        }.sortedByDescending { it.score }.take(10)
+                        return@async candidates
+                    } else {
+                        return@async listOf()
                     }
+                }
+            }.awaitAll().also { candidates ->
+                launch(Dispatchers.Main) {
+                    onCandidates(candidates.last())
                 }
             }
         }
