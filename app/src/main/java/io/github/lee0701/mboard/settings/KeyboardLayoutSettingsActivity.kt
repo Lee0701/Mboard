@@ -27,6 +27,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
     private var themeName: String = "theme_dynamic"
 
     var previewView: View? = null
+    var inputEngine: InputEngine? = null
     lateinit var preferenceDataStore: KeyboardLayoutPreferenceDataStore
 
     private val emptyKeyboardListener = object: KeyboardListener {
@@ -65,7 +66,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
         setContentView(R.layout.activity_keyboard_layout_settings)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, KeyboardSettingsFragment(file, preferenceDataStore))
+            .replace(R.id.settings, KeyboardSettingsFragment(preferenceDataStore))
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
@@ -78,6 +79,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
     private fun updateKeyboardView(preset: InputEnginePreset) {
         val engine = mod(preset).inflate(this, emptyInputEngineListener)
         val view = if(engine is SoftInputEngine) engine.initView(this) else null
+        this.inputEngine = engine
         this.previewView = view
         handler.post {
             this.findViewById<FrameLayout>(R.id.preview_wrapper)?.apply {
@@ -89,6 +91,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
     override fun onChange(preset: InputEnginePreset) {
         updateKeyboardView(preset)
+        inputEngine?.onReset()
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {
@@ -104,7 +107,6 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
     }
 
     class KeyboardSettingsFragment(
-        private val file: File,
         private val preferenceDataStore: KeyboardLayoutPreferenceDataStore,
     ): PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

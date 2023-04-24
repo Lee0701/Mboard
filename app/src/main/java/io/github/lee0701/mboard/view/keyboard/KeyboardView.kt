@@ -92,9 +92,9 @@ abstract class KeyboardView(
         maybeShowPreviewPopup(key, pointerId)
         fun repeater() {
             listener.onKeyClick(key.key.code, key.key.output)
-            handler.postDelayed({ repeater() }, repeatInterval)
+            handler?.postDelayed({ repeater() }, repeatInterval)
         }
-        handler.postDelayed({
+        handler?.postDelayed({
             if(key.key.repeatable || longPressAction == FlickLongPressAction.Repeat) {
                 repeater()
             } else if(showMoreKeys) {

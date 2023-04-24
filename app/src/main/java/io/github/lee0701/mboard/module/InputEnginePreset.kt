@@ -30,6 +30,7 @@ sealed interface InputEnginePreset {
 
     fun mutable(): Mutable
 
+    val defaultHeight: Boolean
     val unifyHeight: Boolean
     val rowHeight: Int
 
@@ -74,6 +75,7 @@ sealed interface InputEnginePreset {
         override val moreKeysTable: List<String> = listOf(),
         override val codeConvertTable: List<String> = listOf(),
         override val unifyHeight: Boolean = false,
+        override val defaultHeight: Boolean = true,
         override val rowHeight: Int = 55,
         override val autoUnlockShift: Boolean = true,
         override val showCandidatesView: Boolean = false,
@@ -97,6 +99,7 @@ sealed interface InputEnginePreset {
             return Mutable(
                 type = Type.Latin,
                 unifyHeight = this.unifyHeight,
+                defaultHeight = this.defaultHeight,
                 rowHeight = this.rowHeight,
                 autoUnlockShift = this.autoUnlockShift,
                 showCandidatesView = this.showCandidatesView,
@@ -118,6 +121,7 @@ sealed interface InputEnginePreset {
         override val codeConvertTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
         override val unifyHeight: Boolean = false,
+        override val defaultHeight: Boolean = true,
         override val rowHeight: Int = 55,
         override val autoUnlockShift: Boolean = true,
         override val showCandidatesView: Boolean = false,
@@ -155,6 +159,7 @@ sealed interface InputEnginePreset {
             return Mutable(
                 type = Type.Hangul,
                 unifyHeight = this.unifyHeight,
+                defaultHeight = this.defaultHeight,
                 rowHeight = this.rowHeight,
                 autoUnlockShift = this.autoUnlockShift,
                 showCandidatesView = this.showCandidatesView,
@@ -171,6 +176,7 @@ sealed interface InputEnginePreset {
     data class Mutable (
         var type: Type = Type.Latin,
         var unifyHeight: Boolean = false,
+        var defaultHeight: Boolean = true,
         var rowHeight: Int = 55,
         var autoUnlockShift: Boolean = true,
         var showCandidatesView: Boolean = false,
@@ -188,6 +194,7 @@ sealed interface InputEnginePreset {
                     moreKeysTable = moreKeysTable,
                     codeConvertTable = codeConvertTable,
                     unifyHeight = unifyHeight,
+                    defaultHeight = defaultHeight,
                     rowHeight = rowHeight,
                     showCandidatesView = showCandidatesView,
                     autoUnlockShift = autoUnlockShift,
@@ -199,6 +206,7 @@ sealed interface InputEnginePreset {
                         codeConvertTable = codeConvertTable,
                         combinationTable = combinationTable,
                         unifyHeight = unifyHeight,
+                        defaultHeight = defaultHeight,
                         rowHeight = rowHeight,
                         showCandidatesView = showCandidatesView,
                         autoUnlockShift = autoUnlockShift,

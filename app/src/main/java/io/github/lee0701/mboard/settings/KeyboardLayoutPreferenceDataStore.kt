@@ -30,7 +30,7 @@ class KeyboardLayoutPreferenceDataStore(
         InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable()
 
     init {
-        onChangeListener.onChange(preset.commit())
+        update()
     }
 
     override fun putString(key: String?, value: String?) {
@@ -53,17 +53,14 @@ class KeyboardLayoutPreferenceDataStore(
         when(key) {
             KEY_ROW_HEIGHT -> preset.rowHeight = value.toInt()
         }
-        onChangeListener.onChange(preset.commit())
+        update()
     }
 
     override fun putBoolean(key: String?, value: Boolean) {
         when(key) {
-            KEY_DEFAULT_HEIGHT -> {
-                preset.rowHeight =
-                    rootPreference.getFloat("appearance_keyboard_height", 55f).roundToInt()
-            }
+            KEY_DEFAULT_HEIGHT -> preset.defaultHeight = value
         }
-        onChangeListener.onChange(preset.commit())
+        update()
     }
 
     override fun getString(key: String?, defValue: String?): String? {
@@ -90,11 +87,18 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-        return super.getBoolean(key, defValue)
+        return when(key) {
+            KEY_DEFAULT_HEIGHT -> preset.defaultHeight
+            else -> defValue
+        }
     }
 
     fun write() {
         InputEnginePreset.yaml.encodeToStream(preset.commit(), file.outputStream())
+    }
+
+    fun update() {
+        onChangeListener.onChange(preset.commit())
     }
 
     interface OnChangeListener {
