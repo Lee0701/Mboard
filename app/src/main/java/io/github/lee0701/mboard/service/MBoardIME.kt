@@ -110,15 +110,22 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         }
 
         fun modExperimental(preset: InputEnginePreset): InputEnginePreset {
-            val expRowHeight: Int = TypedValue.applyDimension(
+            val expRowHeight: Int = if(preset.defaultHeight) rowHeight
+            else TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 preset.rowHeight.toFloat(),
                 resources.displayMetrics
             ).toInt()
             if(preset is InputEnginePreset.Hangul) {
-                return preset.copy(rowHeight = expRowHeight)
+                return preset.copy(
+                    rowHeight = expRowHeight,
+                    unifyHeight = unifyHeight
+                )
             } else if(preset is InputEnginePreset.Latin) {
-                return preset.copy(rowHeight = expRowHeight)
+                return preset.copy(
+                    rowHeight = expRowHeight,
+                    unifyHeight = unifyHeight
+                )
             } else {
                 return preset
             }

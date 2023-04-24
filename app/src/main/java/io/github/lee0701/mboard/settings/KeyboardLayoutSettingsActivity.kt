@@ -113,13 +113,18 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
             preferenceManager.preferenceDataStore = preferenceDataStore
             setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
             val rootPreference = PreferenceManager.getDefaultSharedPreferences(requireContext())
+            val defaultHeightValue = rootPreference.getFloat("appearance_keyboard_height", 55f)
 
             val defaultHeight = findPreference<SwitchPreference>("default_height")
             val rowHeight = findPreference<SliderPreference>("row_height")
-            defaultHeight?.setOnPreferenceChangeListener { preference, newValue ->
+            if(defaultHeight?.isChecked == true) {
+                rowHeight?.isEnabled = false
+                rowHeight?.setValue(defaultHeightValue)
+            }
+            defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
                 if(newValue == true) {
                     rowHeight?.isEnabled = false
-                    rowHeight?.setValue(rootPreference.getFloat("appearance_keyboard_height", 55f))
+                    rowHeight?.setValue(defaultHeightValue)
                 } else {
                     rowHeight?.isEnabled = true
                 }
