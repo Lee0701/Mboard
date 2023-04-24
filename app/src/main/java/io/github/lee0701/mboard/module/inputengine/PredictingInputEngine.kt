@@ -18,6 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.Normalizer
 import java.util.PriorityQueue
+import kotlin.math.sqrt
 
 class PredictingInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
@@ -41,7 +42,7 @@ class PredictingInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
-        convert()
+        predict()
     }
 
     override fun onDelete() {
@@ -58,18 +59,18 @@ class PredictingInputEngine(
     }
 
     override fun onFinishComposing() {
-        val reconvert = composingWordStack.isNotEmpty() || composingChar.isNotEmpty()
+        val reconvert = currentComposing.isNotEmpty()
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
-        if(reconvert) convert()
+        if(reconvert) predict()
     }
 
     override fun onCommitText(text: CharSequence) {
         if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
-        convert()
+        predict()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -99,7 +100,7 @@ class PredictingInputEngine(
         }
         listener.onComposingText(newComposingText)
         updateView()
-        convert()
+        predict()
     }
 
     override fun onSystemKey(code: Int): Boolean {
@@ -112,29 +113,53 @@ class PredictingInputEngine(
         return listener.onEditorAction(code)
     }
 
-    private fun convert() {
+    private fun predict() {
+        if(currentComposing.isNotEmpty()) {
+            predictCurrentWord()
+        } else {
+            predictNextWord()
+        }
+    }
+
+    private fun predictCurrentWord() {
         val job = job
         if(job != null && job.isActive) job.cancel()
-        if(currentComposing.isNotEmpty()) {
-            this.job = CoroutineScope(Dispatchers.IO).launch {
-                val key = getKey(currentComposing)
-                val candidates = prefixDict.searchPrefix(key).mapNotNull { (index, value) -> vocab.getOrNull(index)
-                    ?.let { (text, freq) -> DefaultCandidate(text, freq.toFloat()) } }
-                    .sortedByDescending { it.score }.take(10)
-                launch(Dispatchers.Main) {
-                    onCandidates(candidates)
+        this.job = CoroutineScope(Dispatchers.IO).launch {
+            val key = getKey(currentComposing)
+            for(j in key.indices.reversed()) {
+                val tokenized = tokenize(key.drop(j))
+                val string = tokenized.map { vocab.getOrNull(it)?.first }.dropLast(1).joinToString("")
+                val last = tokenized.lastOrNull()
+                    ?.let { vocab.getOrNull(it)?.first }
+                    ?.let { getKey(it) } ?: listOf()
+                if(last.isNotEmpty()) {
+                    val ngramResult = ngramDict.search(tokenized.dropLast(1))
+                    val prefixResult = prefixDict.searchPrefix(last)
+                    val candidates = prefixResult.mapNotNull { (index, _) ->
+                        val vocabResult = vocab.getOrNull(index)
+                        vocabResult?.let { (text, freq) ->
+                            val contextFreq = ngramResult[index] ?: 0
+                            DefaultCandidate(string + text, sqrt(freq.toFloat() * contextFreq)) }
+                    }.sortedByDescending { it.score }.take(10)
+                    launch(Dispatchers.Main) {
+                        onCandidates(candidates)
+                    }
                 }
             }
-        } else {
-            this.job = CoroutineScope(Dispatchers.IO).launch {
-                val tokens = tokenize(beforeText.takeLast(10))
-                val candidates = search(tokens)
-                    .mapNotNull { (k, v) -> vocab.getOrNull(k)?.first?.let { it to v } }
-                    .map { (v, prob) -> DefaultCandidate(v, prob.toFloat()) }
-                    .sortedByDescending { it.score }.take(10)
-                launch(Dispatchers.Main) {
-                    onCandidates(candidates)
-                }
+        }
+    }
+
+    private fun predictNextWord() {
+        val job = job
+        if(job != null && job.isActive) job.cancel()
+        this.job = CoroutineScope(Dispatchers.IO).launch {
+            val tokens = tokenize(getKey(beforeText.takeLast(10)))
+            val candidates = search(tokens)
+                .mapNotNull { (k, v) -> vocab.getOrNull(k)?.first?.let { it to v } }
+                .map { (text, prob) -> DefaultCandidate(text.let { if(it == "_") " " else it }, prob.toFloat()) }
+                .sortedByDescending { it.score }.take(10)
+            launch(Dispatchers.Main) {
+                onCandidates(candidates)
             }
         }
     }
@@ -142,12 +167,12 @@ class PredictingInputEngine(
     private fun search(context: List<Int>): Map<Int, Int> {
         val results = (5 downTo 1).map { n -> ngramDict.search(context.takeLast(n)) }
         val found = results.filter { it.isNotEmpty() }.fold(mapOf<Int, Int>()) { acc, map ->
-            (acc.keys + map.keys).map { key -> key to ((acc[key] ?: 1) * (map[key]?: 1)) }.toMap() }
+            (acc.keys + map.keys).associateWith { key -> ((acc[key] ?: 1) * (map[key] ?: 1)) }
+        }
         return found.toMap()
     }
 
-    private fun tokenize(text: String): List<Int> {
-        val key = getKey(text)
+    private fun tokenize(key: List<Int>): List<Int> {
         val resultByIndex = key.indices.map { mutableListOf<Pair<Int, Int>>() }
         for(i in key.indices) {
             for(j in key.size downTo i) {
@@ -166,16 +191,16 @@ class PredictingInputEngine(
             val score: Int,
         ): Comparable<IncompleteWord> {
             override fun compareTo(other: IncompleteWord): Int =
-                compareBy<IncompleteWord> { it.len }.compare(this, other)
+                compareByDescending<IncompleteWord> { it.len }.compare(this, other)
         }
 
         val pq = PriorityQueue<IncompleteWord>()
         resultByIndex.firstOrNull()
             ?.map { (id, len) -> IncompleteWord(listOf(id), len, vocab.getOrNull(id)?.second ?: 0) }
             ?.forEach { pq.offer(it) }
+
         while(pq.isNotEmpty()) {
             val c = pq.poll() ?: continue
-//            val len = if(c.indices.lastOrNull() == 0x20) c.len-1 else c.len
             if(c.len == key.size) {
                 return c.indices
             }
