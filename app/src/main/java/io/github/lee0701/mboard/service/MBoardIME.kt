@@ -130,11 +130,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hangulSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "ko")
         val experimentalModule = modExperimental(yaml.decodeFromStream(File(filesDir, "arst.yaml").inputStream()))
 
-        val latinInputEngine = latinModule.inflate(this)
-        val latinSymbolInputEngine = latinSymbolModule.inflate(this)
-        val hangulInputEngine = hangulModule.inflate(this)
-        val hangulSymbolInputEngine = hangulSymbolModule.inflate(this)
-        val experimentalInputEngine = experimentalModule.inflate(this)
+        val latinInputEngine = latinModule.inflate(this, this)
+        val latinSymbolInputEngine = latinSymbolModule.inflate(this, this)
+        val hangulInputEngine = hangulModule.inflate(this, this)
+        val hangulSymbolInputEngine = hangulSymbolModule.inflate(this, this)
+        val experimentalInputEngine = experimentalModule.inflate(this, this)
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = latinSymbolInputEngine

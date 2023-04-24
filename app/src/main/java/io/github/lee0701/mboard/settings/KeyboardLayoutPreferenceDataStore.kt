@@ -1,16 +1,37 @@
 package io.github.lee0701.mboard.settings
 
+import android.content.Context
 import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
+import kotlin.math.roundToInt
 
 class KeyboardLayoutPreferenceDataStore(
+    val context: Context,
     val file: File,
-    val preset: InputEnginePreset.Mutable =
-        InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable(),
+    val onChangeListener: OnChangeListener,
 ): PreferenceDataStore() {
+    val rootPreference = PreferenceManager.getDefaultSharedPreferences(context)
+
+    constructor(
+        context: Context,
+        file: File,
+        onChange: () -> Unit,
+    ): this(context, file, object: OnChangeListener {
+        override fun onChange(preset: InputEnginePreset) {
+            onChange()
+        }
+    })
+
+    val preset: InputEnginePreset.Mutable =
+        InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable()
+
+    init {
+        onChangeListener.onChange(preset.commit())
+    }
 
     override fun putString(key: String?, value: String?) {
         super.putString(key, value)
@@ -32,10 +53,17 @@ class KeyboardLayoutPreferenceDataStore(
         when(key) {
             KEY_ROW_HEIGHT -> preset.rowHeight = value.toInt()
         }
+        onChangeListener.onChange(preset.commit())
     }
 
     override fun putBoolean(key: String?, value: Boolean) {
-        super.putBoolean(key, value)
+        when(key) {
+            KEY_DEFAULT_HEIGHT -> {
+                preset.rowHeight =
+                    rootPreference.getFloat("appearance_keyboard_height", 55f).roundToInt()
+            }
+        }
+        onChangeListener.onChange(preset.commit())
     }
 
     override fun getString(key: String?, defValue: String?): String? {
@@ -69,7 +97,12 @@ class KeyboardLayoutPreferenceDataStore(
         InputEnginePreset.yaml.encodeToStream(preset.commit(), file.outputStream())
     }
 
+    interface OnChangeListener {
+        fun onChange(preset: InputEnginePreset)
+    }
+
     companion object {
+        const val KEY_DEFAULT_HEIGHT = "default_height"
         const val KEY_ROW_HEIGHT = "row_height"
     }
 }

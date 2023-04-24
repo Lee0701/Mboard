@@ -19,6 +19,8 @@
     <string name="pref_appearance_keyboard_height_title">키보드 높이</string>
     <string name="pref_appearance_unify_height_title">키보드 높이 통일</string>
     <string name="pref_appearance_unify_height_summary">전체 키보드 높이를 항상 같게 합니다.</string>
+    <string name="pref_appearance_default_height_title">기본 높이 사용</string>
+    <string name="pref_appearance_default_height_summary">기본 높이 설정을 그대로 사용합니다.</string>
     <string name="pref_appearance_keyboard_view_type_title">키보드 뷰 유형</string>
     <string name="pref_appearance_keyboard_view_type_summary">성능 문제가 있을 경우 이 설정을 변경해 보세요.</string>
     <string name="keybaord_view_type_canvas">캔버스</string>

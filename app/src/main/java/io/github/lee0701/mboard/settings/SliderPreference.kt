@@ -43,6 +43,7 @@ class SliderPreference(
             widgetView.removeAllViews()
             val slider = LayoutInflater.from(context).inflate(R.layout.pref_slider_widget_content, null, false) as Slider
             try {
+                slider.isEnabled = this.isEnabled
                 slider.valueFrom = this.valueFrom
                 slider.valueTo = this.valueTo
                 slider.stepSize = this.stepSize

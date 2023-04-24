@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <io.github.lee0701.mboard.settings.SwitchPreference
+        app:key="default_height"
+        app:defaultValue="false"
+        app:title="@string/pref_appearance_default_height_title"
+        app:summary="@string/pref_appearance_default_height_summary" />
+
     <io.github.lee0701.mboard.settings.SliderPreference
         app:key="row_height"
         app:valueFrom="30.0"

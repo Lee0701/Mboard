@@ -17,7 +17,6 @@ class EnterKeyboardSettingsPreference(
         val a = context.obtainStyledAttributes(attrs, R.styleable.EnterKeyboardSettingsPreference)
         fileName = a.getString(R.styleable.EnterKeyboardSettingsPreference_fileName) ?: "default.yaml"
         a.recycle()
-
         layoutResource = R.layout.preference_inline
     }
 

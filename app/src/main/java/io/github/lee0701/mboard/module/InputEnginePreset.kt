@@ -19,14 +19,14 @@ import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.MBoardIME
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
 
 @Serializable
 sealed interface InputEnginePreset {
 
-    fun inflate(ime: MBoardIME): InputEngine
+    fun inflate(context: Context, listener: InputEngine.Listener): InputEngine
 
     fun mutable(): Mutable
 
@@ -78,10 +78,10 @@ sealed interface InputEnginePreset {
         override val autoUnlockShift: Boolean = true,
         override val showCandidatesView: Boolean = false,
     ): InputEnginePreset {
-        override fun inflate(ime: MBoardIME): InputEngine {
-            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
-            val convertTable = loadConvertTable(ime, names = codeConvertTable)
+        override fun inflate(context: Context, listener: InputEngine.Listener): InputEngine {
+            val keyboard = loadSoftKeyboards(context, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(context, names = moreKeysTable)
+            val convertTable = loadConvertTable(context, names = codeConvertTable)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
                 getInputEngine = { listener -> CodeConverterInputEngine(convertTable, moreKeysTable, listener) },
@@ -89,7 +89,7 @@ sealed interface InputEnginePreset {
                 rowHeight = rowHeight,
                 autoUnlockShift = autoUnlockShift,
                 showCandidatesView = showCandidatesView,
-                listener = ime,
+                listener = listener,
             )
         }
 
@@ -124,13 +124,14 @@ sealed interface InputEnginePreset {
         val enableHanjaConversion: Boolean = false,
         val enableHanjaPrediction: Boolean = false,
     ): InputEnginePreset {
-        override fun inflate(ime: MBoardIME): InputEngine {
-            val keyboard = loadSoftKeyboards(ime, names = softKeyboard)
-            val moreKeysTable = loadMoreKeysTable(ime, names = moreKeysTable)
-            val convertTable = loadConvertTable(ime, names = codeConvertTable)
-            val combinationTable = loadCombinationTable(ime, names = combinationTable)
+        override fun inflate(context: Context, listener: InputEngine.Listener): InputEngine {
+            val keyboard = loadSoftKeyboards(context, names = softKeyboard)
+            val moreKeysTable = loadMoreKeysTable(context, names = moreKeysTable)
+            val convertTable = loadConvertTable(context, names = codeConvertTable)
+            val combinationTable = loadCombinationTable(context, names = combinationTable)
+            // TODO: Temporary workaround
             val (converter, predictor) =
-                if(enableHanjaConversion)createHanjaConverter(ime, prediction = enableHanjaPrediction)
+                if(enableHanjaConversion && context is MBoardIME) createHanjaConverter(context, prediction = enableHanjaPrediction)
                 else (null to null)
             return BasicSoftInputEngine(
                 keyboard = keyboard,
@@ -147,7 +148,7 @@ sealed interface InputEnginePreset {
                 rowHeight = rowHeight,
                 autoUnlockShift = autoUnlockShift,
                 showCandidatesView = showCandidatesView,
-                listener = ime,
+                listener = listener,
             )
         }
         override fun mutable(): Mutable {
