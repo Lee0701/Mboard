@@ -31,10 +31,9 @@
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
-    <!--        Too early to be released -->
-
     <io.github.lee0701.mboard.settings.PreferenceCategory
-        app:title="@string/pref_header_input_title">
+        app:key="input_layer"
+        app:title="@string/pref_input_header_title">
 
         <io.github.lee0701.mboard.settings.ListPreference
             app:key="input_engine_type"
@@ -44,11 +43,11 @@
             app:title="@string/pref_input_engine_type_title"
             app:useSimpleSummaryProvider="true" />
 
-    </io.github.lee0701.mboard.settings.PreferenceCategory>
-
-    <io.github.lee0701.mboard.settings.PreferenceCategory
-        app:key="input_type_hangul_header"
-        app:title="@string/pref_input_type_hangul_header_title">
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="input_show_candidates"
+            app:defaultValue="false"
+            app:title="@string/pref_input_show_candidates_title"
+            app:summary="@string/pref_input_show_candidates_summary" />
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="input_hanja_conversion"

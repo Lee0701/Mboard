@@ -11,6 +11,7 @@ import io.github.lee0701.mboard.service.KeyboardState
 class CodeConverterInputEngine(
     private val convertTable: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
+    private val autoUnlockShift: Boolean,
     override val listener: InputEngine.Listener,
 ): InputEngine {
 

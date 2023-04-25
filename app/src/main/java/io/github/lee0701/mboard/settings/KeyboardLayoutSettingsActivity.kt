@@ -119,10 +119,18 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
             fun updateByEngineType(newValue: Any?) {
                 hangulHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
-                val (entries, values) =
-                    if(newValue == InputEnginePreset.Type.Hangul.name)
+                val (entries, values) = when(newValue) {
+                    InputEnginePreset.Type.Hangul.name -> {
                         R.array.preset_hangul_entries to R.array.preset_hangul_values
-                    else R.array.preset_latin_entries to R.array.preset_latin_values
+                    }
+                    InputEnginePreset.Type.Latin.name -> {
+                        R.array.preset_latin_entries to R.array.preset_latin_values
+                    }
+                    InputEnginePreset.Type.Symbols.name -> {
+                        R.array.preset_symbol_entries to R.array.preset_symbol_values
+                    }
+                    else -> return
+                }
                 layoutPreset?.setEntries(entries)
                 layoutPreset?.setEntryValues(values)
             }

@@ -35,9 +35,6 @@ data class InputEnginePreset(
 ) {
 
     fun inflate(context: Context, rootListener: InputEngine.Listener): InputEngine {
-        val rootPreference = PreferenceManager.getDefaultSharedPreferences(context)
-        val screenMode = rootPreference.getString("layout_screen_mode", "mobile")
-
         val softKeyboard = loadSoftKeyboards(context, names = layout.softKeyboard)
         val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
@@ -82,11 +79,20 @@ data class InputEnginePreset(
                     CodeConverterInputEngine(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
+                        autoUnlockShift = autoUnlockShift,
                         listener = listener,
                     )
                 }
                 Type.Hangul -> {
                     getHangulInputEngine(listener)
+                }
+                Type.Symbols -> {
+                    CodeConverterInputEngine(
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        autoUnlockShift = autoUnlockShift,
+                        listener = listener,
+                    )
                 }
             }
         }
@@ -135,7 +141,7 @@ data class InputEnginePreset(
 
     @Serializable
     enum class Type {
-        Latin, Hangul
+        Latin, Hangul, Symbols
     }
 
     @Serializable

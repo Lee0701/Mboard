@@ -367,6 +367,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             val hangulPreset = loadPreset(context, hangulFileName, "preset/preset_3set_390.yaml")
                 ?: InputEnginePreset().apply { showToast(hangulFileName) }
             val symbolPreset = loadPreset(context, symbolFileName, "preset/preset_symbol_g.yaml")
+
                 ?: InputEnginePreset().apply { showToast(symbolFileName) }
             return Triple(latinPreset, hangulPreset, symbolPreset)
         }

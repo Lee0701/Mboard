@@ -70,6 +70,7 @@ class KeyboardLayoutPreferenceDataStore(
     override fun putBoolean(key: String?, value: Boolean) {
         when(key) {
             KEY_DEFAULT_HEIGHT -> preset.size.defaultHeight = value
+            KEY_SHOW_CANDIDATES -> preset.showCandidatesView = value
             KEY_HANJA_CONVERSION -> preset.hanja.conversion = value
             KEY_HANJA_PREDICTION -> preset.hanja.prediction = value
             KEY_HANJA_SORT_BY_CONTEXT -> preset.hanja.sortByContext = value
@@ -110,6 +111,7 @@ class KeyboardLayoutPreferenceDataStore(
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
         return when(key) {
             KEY_DEFAULT_HEIGHT -> preset.size.defaultHeight
+            KEY_SHOW_CANDIDATES -> preset.showCandidatesView
             KEY_HANJA_CONVERSION -> preset.hanja.conversion
             KEY_HANJA_PREDICTION -> preset.hanja.prediction
             KEY_HANJA_SORT_BY_CONTEXT -> preset.hanja.sortByContext
@@ -139,6 +141,7 @@ class KeyboardLayoutPreferenceDataStore(
         const val KEY_ENGINE_TYPE = "input_engine_type"
         const val KEY_LAYOUT_PRESET = "input_layout_preset"
 
+        const val KEY_SHOW_CANDIDATES = "input_show_candidates"
         const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
         const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
         const val KEY_HANJA_SORT_BY_CONTEXT = "input_hanja_sort_by_context"
