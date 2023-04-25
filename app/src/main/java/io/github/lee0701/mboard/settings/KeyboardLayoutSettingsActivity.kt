@@ -121,17 +121,17 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
             val engineType = findPreference<ListPreference>(KEY_ENGINE_TYPE)
             val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
             val hangulHeader = findPreference<PreferenceCategory>(KEY_ENGINE_TYPE_HANGUL_HEADER)
-//            val mainLayout = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_MAIN_LAYOUT)
 
             fun updateByEngineType(newValue: Any?) {
+                println(newValue)
                 hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
                 val (entries, values) =
                     if(newValue == InputEnginePreset.Type.Hangul.name)
-                        R.array.main_layout_hangul_entries to R.array.main_layout_hangul_values
-                    else R.array.main_layout_latin_entries to R.array.main_layout_latin_values
-//                mainLayout?.setEntries(entries)
-//                mainLayout?.setEntryValues(values)
-//                mainLayout?.setValueIndex(0)
+                        R.array.preset_hangul_entries to R.array.preset_hangul_values
+                    else R.array.preset_latin_entries to R.array.preset_latin_values
+                layoutPreset?.setEntries(entries)
+                layoutPreset?.setEntryValues(values)
+                layoutPreset?.setValueIndex(0)
             }
             engineType?.setOnPreferenceChangeListener { _, newValue ->
                 updateByEngineType(newValue)

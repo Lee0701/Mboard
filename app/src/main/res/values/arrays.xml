@@ -111,7 +111,7 @@
 <!--        <item>full</item>-->
     </string-array>
 
-    <string-array name="preset_hangul">
+    <string-array name="preset_hangul_entries">
         <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>
         <item>@string/layout_3set_391</item>
@@ -133,7 +133,7 @@
         <item>preset/preset_3set_393_old_hangul.yaml</item>
     </string-array>
 
-    <string-array name="preset_latin">
+    <string-array name="preset_latin_entries">
         <item>@string/layout_latin_qwerty</item>
         <item>@string/layout_latin_dvorak</item>
         <item>@string/layout_latin_colemak</item>
@@ -145,7 +145,7 @@
         <item>preset/preset_latin_colemak.yaml</item>
     </string-array>
 
-    <string-array name="preset_symbol">
+    <string-array name="preset_symbol_entries">
         <item>@string/layout_symbol_a</item>
         <item>@string/layout_symbol_b</item>
         <item>@string/layout_symbol_g</item>
@@ -155,26 +155,6 @@
         <item>preset/preset_symbol_a.yaml</item>
         <item>preset/preset_symbol_b.yaml</item>
         <item>preset/preset_symbol_g.yaml</item>
-    </string-array>
-
-    <string-array name="main_layout_hangul_entries">
-        <item>@string/layout_2set_ks5002</item>
-        <item>@string/layout_3set_390</item>
-    </string-array>
-
-    <string-array name="main_layout_hangul_values">
-        <item>main_layout/layout_2set_ks5002.yaml</item>
-        <item>main_layout/layout_3set_390.yaml</item>
-    </string-array>
-
-    <string-array name="main_layout_latin_entries">
-        <item>@string/layout_latin_qwerty</item>
-        <item>@string/layout_latin_colemak</item>
-    </string-array>
-
-    <string-array name="main_layout_latin_values">
-        <item>main_layout/layout_latin_qwerty.yaml</item>
-        <item>main_layout/layout_latin_colemak.yaml</item>
     </string-array>
 
 </resources>
