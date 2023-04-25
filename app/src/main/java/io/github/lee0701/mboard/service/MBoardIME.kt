@@ -122,7 +122,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                 resources.displayMetrics
             ).toInt()
             return preset.copy(
-                size = size,
+                size = size.copy(rowHeight = expRowHeight),
             )
         }
 
@@ -361,7 +361,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if(sharedPreferences != null) reload(sharedPreferences, true)
+        if(sharedPreferences != null) {
+            sharedPreferences.edit().putBoolean("requested_restart", false).apply()
+            reload(sharedPreferences, true)
+        }
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {

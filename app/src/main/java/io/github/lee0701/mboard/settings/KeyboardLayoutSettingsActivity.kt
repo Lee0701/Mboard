@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.settings
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -28,7 +29,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
     var previewView: View? = null
     var inputEngine: InputEngine? = null
-    lateinit var preferenceDataStore: KeyboardLayoutPreferenceDataStore
+    var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
 
     private val emptyKeyboardListener = object: KeyboardListener {
         override fun onKeyClick(code: Int, output: String?) = Unit
@@ -50,7 +51,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val rootPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         val fileName = intent.getStringExtra("fileName") ?: "default.yaml"
         val file = File(filesDir, fileName)
@@ -59,20 +60,20 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
             file.outputStream().write(input.readBytes())
         }
 
-        keyboardViewType = preferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
-        themeName = preferences.getString("appearance_theme", "theme_dynamic") ?: themeName
+        keyboardViewType = rootPreferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
+        themeName = rootPreferences.getString("appearance_theme", "theme_dynamic") ?: themeName
 
-        preferenceDataStore = KeyboardLayoutPreferenceDataStore(this, file, this)
+        val preferenceDataStore = KeyboardLayoutPreferenceDataStore(this, file, this)
         setContentView(R.layout.activity_keyboard_layout_settings)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings, KeyboardSettingsFragment(preferenceDataStore))
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        this.preferenceDataStore = preferenceDataStore
     }
 
     override fun onDestroy() {
-        preferenceDataStore.write()
         super.onDestroy()
     }
 
@@ -89,9 +90,13 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
         }
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun onChange(preset: InputEnginePreset) {
+        val rootPreference = PreferenceManager.getDefaultSharedPreferences(this)
+        rootPreference.edit().putBoolean("requested_restart", true).commit()
         updateKeyboardView(preset)
         inputEngine?.onReset()
+        preferenceDataStore?.write()
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {
@@ -110,19 +115,22 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = preferenceDataStore
             setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
+
             val rootPreference = PreferenceManager.getDefaultSharedPreferences(requireContext())
             val defaultHeightValue = rootPreference.getFloat("appearance_keyboard_height", 55f)
 
             val defaultHeight = findPreference<SwitchPreference>(KeyboardLayoutPreferenceDataStore.KEY_DEFAULT_HEIGHT)
             val rowHeight = findPreference<SliderPreference>(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT)
 
-            rowHeight?.isEnabled = defaultHeight?.isChecked != true
-            if(defaultHeight?.isEnabled == true) rowHeight?.setValue(defaultHeightValue)
-            defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
-                rowHeight?.isEnabled = newValue != true
+            fun updateByDefaultHeight(newValue: Any?) {
+                rowHeight?.isEnabled = newValue == false
                 if(newValue == true) rowHeight?.setValue(defaultHeightValue)
+            }
+            defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
+                updateByDefaultHeight(newValue)
                 true
             }
+            updateByDefaultHeight(defaultHeight?.isChecked)
 
             val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
             val hangulHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE_HANGUL_HEADER)

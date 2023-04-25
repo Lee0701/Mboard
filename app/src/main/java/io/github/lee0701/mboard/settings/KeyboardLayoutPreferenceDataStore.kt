@@ -34,11 +34,6 @@ class KeyboardLayoutPreferenceDataStore(
         when(key) {
             KEY_ENGINE_TYPE -> preset.type = InputEnginePreset.Type.valueOf(value ?: "Latin")
             KEY_MAIN_LAYOUT -> preset.mainLayout = value ?: "default.yaml"
-//            KEY_MAIN_LAYOUT -> {
-//                val screenMode = rootPreference.getString("layout_screen_mode", "mobile")
-//                val fileName = value ?: "preset/preset_%s_latin_qwerty.yaml".format(screenMode)
-//                preset.layout = InputEnginePreset.yaml.decodeFromStream(context.assets.open(fileName))
-//            }
         }
         update()
     }
@@ -135,7 +130,7 @@ class KeyboardLayoutPreferenceDataStore(
 
         const val KEY_ENGINE_TYPE = "input_engine_type"
         const val KEY_MAIN_LAYOUT = "input_main_layout"
-        
+
         const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
         const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
         const val KEY_HANJA_SORT_BY_CONTEXT = "input_hanja_sort_by_context"
