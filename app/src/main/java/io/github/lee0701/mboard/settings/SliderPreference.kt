@@ -64,10 +64,10 @@ class SliderPreference(
     }
 
     override fun onSetInitialValue(defaultValue: Any?) {
-        setValue(getPersistedFloat(defaultValue as? Float ?: valueFrom))
+        setInitialValue(getPersistedFloat(defaultValue as? Float ?: valueFrom))
     }
 
-    fun setValue(value: Float) {
+    private fun setInitialValue(value: Float) {
         // Always persist/notify the first time.
         val changed = this.value != value
         if(changed || !this.valueSet) {

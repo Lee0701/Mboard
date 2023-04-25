@@ -362,8 +362,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if(sharedPreferences != null) {
-            sharedPreferences.edit().putBoolean("requested_restart", false).apply()
-            reload(sharedPreferences, true)
+            if(key == "requested_restart") {
+                if(sharedPreferences.getBoolean(key, false)) reload(sharedPreferences, true)
+            } else {
+                reload(sharedPreferences, true)
+            }
         }
     }
 

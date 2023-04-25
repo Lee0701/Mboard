@@ -15,6 +15,7 @@ import io.github.lee0701.mboard.input.Candidate
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.view.keyboard.FlickDirection
 import io.github.lee0701.mboard.view.keyboard.KeyboardListener
 import java.io.File
@@ -93,10 +94,11 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
     @SuppressLint("ApplySharedPref")
     override fun onChange(preset: InputEnginePreset) {
         val rootPreference = PreferenceManager.getDefaultSharedPreferences(this)
-        rootPreference.edit().putBoolean("requested_restart", true).commit()
+        preferenceDataStore?.write()
+        rootPreference.edit().putBoolean("requested_restart", true).apply()
+        rootPreference.edit().putBoolean("requested_restart", false).apply()
         updateKeyboardView(preset)
         inputEngine?.onReset()
-        preferenceDataStore?.write()
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {
@@ -124,13 +126,13 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             fun updateByDefaultHeight(newValue: Any?) {
                 rowHeight?.isEnabled = newValue == false
-                if(newValue == true) rowHeight?.setValue(defaultHeightValue)
+                if(newValue == true) preferenceDataStore.putFloat(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT, defaultHeightValue)
             }
             defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
                 updateByDefaultHeight(newValue)
                 true
             }
-            updateByDefaultHeight(defaultHeight?.isChecked)
+            updateByDefaultHeight(preferenceDataStore.getBoolean(KEY_DEFAULT_HEIGHT, true))
 
             val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
             val hangulHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE_HANGUL_HEADER)
@@ -138,12 +140,10 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             fun updateByEngineType(newValue: Any?) {
                 hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
-                val entries =
-                    if(newValue == InputEnginePreset.Type.Hangul.name) R.array.main_layout_hangul_entries
-                    else R.array.main_layout_latin_entries
-                val values =
-                    if(newValue == InputEnginePreset.Type.Hangul.name) R.array.main_layout_hangul_values
-                    else R.array.main_layout_latin_values
+                val (entries, values) =
+                    if(newValue == InputEnginePreset.Type.Hangul.name)
+                        R.array.main_layout_hangul_entries to R.array.main_layout_hangul_values
+                    else R.array.main_layout_latin_entries to R.array.main_layout_latin_values
                 mainLayout?.setEntries(entries)
                 mainLayout?.setEntryValues(values)
                 mainLayout?.setValueIndex(0)
