@@ -34,10 +34,7 @@ data class InputEnginePreset(
     val rowHeight: Int = 55,
     val autoUnlockShift: Boolean = true,
     val candidatesView: Boolean = false,
-    val hanjaConversion: Boolean = false,
-    val hanjaPrediction: Boolean = false,
-    val hanjaSortByContext: Boolean = false,
-    val hanjaAdditionalDictionaries: MutableSet<String> = mutableSetOf(),
+    val hanja: Hanja = Hanja(),
 ) {
 
     fun inflate(context: Context, rootListener: InputEngine.Listener): InputEngine {
@@ -47,10 +44,14 @@ data class InputEnginePreset(
         val combinationTable = loadCombinationTable(context, names = combinationTable)
 
         val getHangulInputEngine = { listener: InputEngine.Listener ->
-            if(hanjaConversion) {
+            if(hanja.conversion) {
                 // TODO: Temporary workaround
                 val (converter, predictor) = if(context is MBoardIME) {
-                    createHanjaConverter(context, prediction = hanjaPrediction, sortByContext = hanjaSortByContext)
+                    createHanjaConverter(
+                        context,
+                        prediction = hanja.prediction,
+                        sortByContext = hanja.sortByContext,
+                    )
                 } else {
                     (null to null)
                 }
@@ -131,28 +132,22 @@ data class InputEnginePreset(
             moreKeysTable = this.moreKeysTable,
             codeConvertTable = this.codeConvertTable,
             combinationTable = this.combinationTable,
-            enableHanjaConversion = this.hanjaConversion,
-            enableHanjaPrediction = this.hanjaPrediction,
-            hanjaSortByContext = this.hanjaSortByContext,
-            hanjaAdditionalDictionaries = this.hanjaAdditionalDictionaries,
+            hanja = this.hanja.mutable(),
         )
     }
 
     data class Mutable (
         var type: Type = Type.Latin,
+        var softKeyboard: List<String> = listOf(),
+        var moreKeysTable: List<String> = listOf(),
+        var codeConvertTable: List<String> = listOf(),
+        var combinationTable: List<String> = listOf(),
         var unifyHeight: Boolean = false,
         var defaultHeight: Boolean = true,
         var rowHeight: Int = 55,
         var autoUnlockShift: Boolean = true,
         var showCandidatesView: Boolean = false,
-        var enableHanjaConversion: Boolean = false,
-        var enableHanjaPrediction: Boolean = false,
-        var hanjaSortByContext: Boolean = false,
-        var hanjaAdditionalDictionaries: MutableSet<String> = mutableSetOf(),
-        var softKeyboard: List<String> = listOf(),
-        var moreKeysTable: List<String> = listOf(),
-        var codeConvertTable: List<String> = listOf(),
-        var combinationTable: List<String> = listOf(),
+        var hanja: Hanja.Mutable = Hanja.Mutable()
     ) {
         fun commit(): InputEnginePreset {
             return InputEnginePreset(
@@ -166,10 +161,7 @@ data class InputEnginePreset(
                 rowHeight = rowHeight,
                 candidatesView = showCandidatesView,
                 autoUnlockShift = autoUnlockShift,
-                hanjaConversion = enableHanjaConversion,
-                hanjaPrediction = enableHanjaPrediction,
-                hanjaSortByContext = hanjaSortByContext,
-                hanjaAdditionalDictionaries = hanjaAdditionalDictionaries,
+                hanja = hanja.commit(),
             )
         }
     }
@@ -177,6 +169,39 @@ data class InputEnginePreset(
     @Serializable
     enum class Type {
         Latin, Hangul
+    }
+
+    @Serializable
+    data class Hanja(
+        val conversion: Boolean = false,
+        val prediction: Boolean = false,
+        val sortByContext: Boolean = false,
+        val additionalDictionaries: Set<String> = mutableSetOf(),
+    ) {
+        fun mutable(): Mutable {
+            return Mutable(
+                conversion = conversion,
+                prediction = prediction,
+                sortByContext = sortByContext,
+                additionalDictionaries = additionalDictionaries.toMutableSet(),
+            )
+        }
+
+        data class Mutable(
+            var conversion: Boolean = false,
+            var prediction: Boolean = false,
+            var sortByContext: Boolean = false,
+            var additionalDictionaries: MutableSet<String> = mutableSetOf(),
+        ) {
+            fun commit(): Hanja {
+                return Hanja(
+                    conversion = conversion,
+                    prediction = prediction,
+                    sortByContext = sortByContext,
+                    additionalDictionaries = additionalDictionaries,
+                )
+            }
+        }
     }
 
     companion object {

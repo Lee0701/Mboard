@@ -71,9 +71,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             if(hanjaConversionEnabled && hanjaPredictionEnabled) {
                 return preset.copy(
                     candidatesView = true,
-                    hanjaConversion = true,
-                    hanjaPrediction = true,
-                    hanjaSortByContext = hanjaSortByContext,
+                    hanja = InputEnginePreset.Hanja(
+                        conversion = true,
+                        prediction = true,
+                        sortByContext = hanjaSortByContext,
+                    ),
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )
@@ -81,9 +83,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             if(hanjaConversionEnabled) {
                 return preset.copy(
                     candidatesView = true,
-                    hanjaConversion = true,
-                    hanjaPrediction = false,
-                    hanjaSortByContext = hanjaSortByContext,
+                    hanja = InputEnginePreset.Hanja(
+                        conversion = true,
+                        prediction = false,
+                        sortByContext = hanjaSortByContext,
+                    ),
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )

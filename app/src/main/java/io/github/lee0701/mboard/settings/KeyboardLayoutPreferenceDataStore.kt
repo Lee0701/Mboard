@@ -39,7 +39,7 @@ class KeyboardLayoutPreferenceDataStore(
 
     override fun putStringSet(key: String?, values: MutableSet<String>?) {
         when(key) {
-            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries = values ?: mutableSetOf()
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanja.additionalDictionaries = values ?: mutableSetOf()
         }
         update()
     }
@@ -62,9 +62,9 @@ class KeyboardLayoutPreferenceDataStore(
     override fun putBoolean(key: String?, value: Boolean) {
         when(key) {
             KEY_DEFAULT_HEIGHT -> preset.defaultHeight = value
-            KEY_HANJA_CONVERSION -> preset.enableHanjaConversion = value
-            KEY_HANJA_PREDICTION -> preset.enableHanjaPrediction = value
-            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanjaSortByContext = value
+            KEY_HANJA_CONVERSION -> preset.hanja.conversion = value
+            KEY_HANJA_PREDICTION -> preset.hanja.prediction = value
+            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanja.sortByContext = value
         }
         update()
     }
@@ -78,7 +78,7 @@ class KeyboardLayoutPreferenceDataStore(
 
     override fun getStringSet(key: String?, defValues: MutableSet<String>?): MutableSet<String>? {
         return when(key) {
-            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanja.additionalDictionaries
             else -> defValues
         }
     }
@@ -101,9 +101,9 @@ class KeyboardLayoutPreferenceDataStore(
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
         return when(key) {
             KEY_DEFAULT_HEIGHT -> preset.defaultHeight
-            KEY_HANJA_CONVERSION -> preset.enableHanjaConversion
-            KEY_HANJA_PREDICTION -> preset.enableHanjaPrediction
-            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanjaSortByContext
+            KEY_HANJA_CONVERSION -> preset.hanja.conversion
+            KEY_HANJA_PREDICTION -> preset.hanja.prediction
+            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanja.sortByContext
             else -> defValue
         }
     }
