@@ -121,6 +121,8 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     companion object {
+        const val KEY_ENGINE_TYPE_HANGUL_HEADER = "input_type_hangul_header"
+
         const val KEY_DEFAULT_HEIGHT = "appearance_default_height"
         const val KEY_ROW_HEIGHT = "appearance_row_height"
 

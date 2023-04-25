@@ -37,6 +37,7 @@
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
+        app:key="input_type_hangul_header"
         app:title="@string/pref_input_type_hangul_header_title">
 
         <io.github.lee0701.mboard.settings.SwitchPreference

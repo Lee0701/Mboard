@@ -115,17 +115,19 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             val defaultHeight = findPreference<SwitchPreference>(KeyboardLayoutPreferenceDataStore.KEY_DEFAULT_HEIGHT)
             val rowHeight = findPreference<SliderPreference>(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT)
-            if(defaultHeight?.isChecked == true) {
-                rowHeight?.isEnabled = false
-                rowHeight?.setValue(defaultHeightValue)
-            }
+            rowHeight?.isEnabled = defaultHeight?.isChecked != true
+            if(defaultHeight?.isEnabled == true) rowHeight?.setValue(defaultHeightValue)
             defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
-                if(newValue == true) {
-                    rowHeight?.isEnabled = false
-                    rowHeight?.setValue(defaultHeightValue)
-                } else {
-                    rowHeight?.isEnabled = true
-                }
+                rowHeight?.isEnabled = newValue != true
+                if(newValue == true) rowHeight?.setValue(defaultHeightValue)
+                true
+            }
+
+            val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
+            val hangulHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE_HANGUL_HEADER)
+            hangulHeader?.isEnabled = engineType?.value == InputEnginePreset.Type.Hangul.name
+            engineType?.setOnPreferenceChangeListener { _, newValue ->
+                hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
                 true
             }
         }
