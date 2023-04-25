@@ -121,7 +121,7 @@ data class InputEnginePreset(
 
     fun mutable(): Mutable {
         return Mutable(
-            type = Type.Latin,
+            type = this.type,
             unifyHeight = this.unifyHeight,
             defaultHeight = this.defaultHeight,
             rowHeight = this.rowHeight,

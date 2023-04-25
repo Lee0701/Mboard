@@ -39,7 +39,7 @@ class KeyboardLayoutPreferenceDataStore(
 
     override fun putStringSet(key: String?, values: MutableSet<String>?) {
         when(key) {
-            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries = values ?: mutableSetOf()
         }
         update()
     }
@@ -78,7 +78,7 @@ class KeyboardLayoutPreferenceDataStore(
 
     override fun getStringSet(key: String?, defValues: MutableSet<String>?): MutableSet<String>? {
         return when(key) {
-            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries.toMutableSet()
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries
             else -> defValues
         }
     }
