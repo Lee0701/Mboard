@@ -55,9 +55,10 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
         val rootPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         val fileName = intent.getStringExtra("fileName") ?: "default.yaml"
+        val template = intent.getStringExtra("template") ?: "default.yaml"
         val file = File(filesDir, fileName)
         if(!file.exists()) {
-            val input = assets.open("preset/arst.yaml")
+            val input = assets.open(template)
             file.outputStream().write(input.readBytes())
         }
 
@@ -136,7 +137,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
             val hangulHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE_HANGUL_HEADER)
-            val mainLayout = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_MAIN_LAYOUT)
+//            val mainLayout = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_MAIN_LAYOUT)
 
             fun updateByEngineType(newValue: Any?) {
                 hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
@@ -144,9 +145,9 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
                     if(newValue == InputEnginePreset.Type.Hangul.name)
                         R.array.main_layout_hangul_entries to R.array.main_layout_hangul_values
                     else R.array.main_layout_latin_entries to R.array.main_layout_latin_values
-                mainLayout?.setEntries(entries)
-                mainLayout?.setEntryValues(values)
-                mainLayout?.setValueIndex(0)
+//                mainLayout?.setEntries(entries)
+//                mainLayout?.setEntryValues(values)
+//                mainLayout?.setValueIndex(0)
             }
             engineType?.setOnPreferenceChangeListener { _, newValue ->
                 updateByEngineType(newValue)

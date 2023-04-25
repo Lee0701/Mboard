@@ -34,13 +34,13 @@
             app:title="@string/pref_input_engine_type_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="input_main_layout"
-            app:entries="@array/empty"
-            app:entryValues="@array/empty"
-            app:defaultValue="main_layout/layout_%s_latin_qwerty.yaml"
-            app:title="@string/pref_input_main_layout_title"
-            app:useSimpleSummaryProvider="true" />
+<!--        <io.github.lee0701.mboard.settings.ListPreference-->
+<!--            app:key="input_main_layout"-->
+<!--            app:entries="@array/empty"-->
+<!--            app:entryValues="@array/empty"-->
+<!--            app:defaultValue="main_layout/layout_%s_latin_qwerty.yaml"-->
+<!--            app:title="@string/pref_input_main_layout_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 

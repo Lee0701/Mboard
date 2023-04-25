@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.service
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.appcompat.view.ContextThemeWrapper
@@ -23,7 +25,6 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.BasicSoftInputEngine
 import io.github.lee0701.mboard.input.Candidate
 import io.github.lee0701.mboard.input.DefaultHanjaCandidate
-import io.github.lee0701.mboard.input.DirectInputEngine
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
@@ -47,96 +48,72 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
     private fun reload(pref: SharedPreferences, force: Boolean = false) {
         val screenMode = pref.getString("layout_screen_mode", "mobile")
-        val latinFilename = pref.getString("layout_latin_preset", null)?.format(screenMode) ?: "preset/preset_mobile_latin_qwerty.yaml"
-        val hangulFilename = pref.getString("layout_hangul_preset", null)?.format(screenMode) ?: "preset/preset_mobile_2set_ks5002.yaml"
-        val symbolFilename = pref.getString("layout_symbol_preset", null)?.format(screenMode) ?: "preset/preset_mobile_symbol_g.yaml"
-        val yaml = InputEnginePreset.yaml
 
         val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
         val rowHeight: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
             pref.getFloat("appearance_keyboard_height", 55f), resources.displayMetrics).toInt()
 
-        val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
-        val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
-        val hanjaSortByContext = pref.getBoolean("input_hanja_sort_by_context", false)
-
-        val size = InputEnginePreset.Size(
-            unifyHeight = unifyHeight,
-            rowHeight = rowHeight,
-        )
-
-        fun modLatin(preset: InputEnginePreset): InputEnginePreset {
-            return preset.copy(
-                size = size,
+        fun modSize(size: InputEnginePreset.Size): InputEnginePreset.Size {
+            val rowHeight: Int = if(size.defaultHeight) rowHeight
+            else TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                size.rowHeight.toFloat(),
+                resources.displayMetrics
+            ).toInt()
+            return size.copy(
+                unifyHeight = unifyHeight,
+                rowHeight = rowHeight
             )
         }
 
-        fun modHangul(preset: InputEnginePreset): InputEnginePreset {
-            if(hanjaConversionEnabled && hanjaPredictionEnabled) {
-                return preset.copy(
-                    candidatesView = true,
-                    hanja = InputEnginePreset.Hanja(
-                        conversion = true,
-                        prediction = true,
-                        sortByContext = hanjaSortByContext,
-                    ),
-                    size = size,
-                )
-            }
-            if(hanjaConversionEnabled) {
-                return preset.copy(
-                    candidatesView = true,
-                    hanja = InputEnginePreset.Hanja(
-                        conversion = true,
-                        prediction = false,
-                        sortByContext = hanjaSortByContext,
-                    ),
-                    size = size,
-                )
-            }
-            return preset.copy(
-                size = size,
+        fun modFilenames(fileNames: List<String>): List<String> {
+            return fileNames.map { it.format(screenMode) }
+        }
+
+        fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
+            return InputEnginePreset.Layout(
+                softKeyboard = modFilenames(layout.softKeyboard),
+                moreKeysTable = modFilenames(layout.moreKeysTable),
+                codeConvertTable = modFilenames(layout.codeConvertTable),
+                combinationTable = modFilenames(layout.combinationTable),
             )
         }
 
+        fun modPreset(preset: InputEnginePreset): InputEnginePreset {
+            return preset.copy(
+                layout = modLayout(preset.layout),
+                size = modSize(preset.size),
+            )
+        }
+
+        fun modLatin(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
+        fun modHangul(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
         fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
             return when(language) {
                 "ko" -> preset.copy(
                     layout = preset.layout.copy(
-                        codeConvertTable = preset.layout.codeConvertTable + "symbol/table_currency_won.yaml",
-                        moreKeysTable = preset.layout.moreKeysTable + "symbol/morekeys_symbols_hangul.yaml",
+                        softKeyboard = modFilenames(preset.layout.softKeyboard),
+                        moreKeysTable = modFilenames(preset.layout.moreKeysTable) + "symbol/morekeys_symbols_hangul.yaml",
+                        codeConvertTable = modFilenames(preset.layout.codeConvertTable) + "symbol/table_currency_won.yaml",
+                        combinationTable = modFilenames(preset.layout.combinationTable),
                     ),
-                    size = size,
+                    size = modSize(preset.size),
                 )
-                else -> preset.copy(
-                    size = size,
-                )
+                else -> modPreset(preset)
             }
         }
 
-        fun modExperimental(preset: InputEnginePreset): InputEnginePreset {
-            val expRowHeight: Int = if(preset.size.defaultHeight) rowHeight
-            else TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                preset.size.rowHeight.toFloat(),
-                resources.displayMetrics
-            ).toInt()
-            return preset.copy(
-                size = size.copy(rowHeight = expRowHeight),
-            )
-        }
+        val (latinPreset, hangulPreset, symbolPreset) = loadPresets(this)
 
-        val latinModule = modLatin(yaml.decodeFromStream(assets.open(latinFilename)))
-        val latinSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "en")
-        val hangulModule = modHangul(yaml.decodeFromStream(assets.open(hangulFilename)))
-        val hangulSymbolModule = modSymbol(yaml.decodeFromStream(assets.open(symbolFilename)), "ko")
-        val experimentalModule = modExperimental(yaml.decodeFromStream(File(filesDir, "arst.yaml").inputStream()))
+        val latinModule = modLatin(latinPreset)
+        val latinSymbolModule = modSymbol(symbolPreset, "en")
+        val hangulModule = modHangul(hangulPreset)
+        val hangulSymbolModule = modSymbol(symbolPreset, "ko")
 
         val latinInputEngine = latinModule.inflate(this, this)
         val latinSymbolInputEngine = latinSymbolModule.inflate(this, this)
         val hangulInputEngine = hangulModule.inflate(this, this)
         val hangulSymbolInputEngine = hangulSymbolModule.inflate(this, this)
-        val experimentalInputEngine = experimentalModule.inflate(this, this)
 
         if(latinInputEngine is BasicSoftInputEngine) {
             latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
@@ -147,20 +124,15 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
             hangulInputEngine.alternativeInputEngine = latinInputEngine
         }
 
-        val empty = DirectInputEngine(this)
-
         val engines = listOf(
             latinInputEngine,
             hangulInputEngine,
             latinSymbolInputEngine,
             hangulSymbolInputEngine,
-            experimentalInputEngine,
         )
-
         val table = arrayOf(
             intArrayOf(0, 2),
             intArrayOf(1, 3),
-            intArrayOf(4, 4),
         )
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
@@ -377,5 +349,43 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
     override fun onEvaluateInputViewShown(): Boolean {
         return super.onEvaluateInputViewShown()
+    }
+
+    companion object {
+        fun loadPresets(context: Context): Triple<InputEnginePreset, InputEnginePreset, InputEnginePreset> {
+            fun showToast(fileName: String) {
+                val msg = context.getString(R.string.msg_preset_load_failed, fileName)
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+            }
+
+            val latinFileName = "preset_latin.yaml"
+            val hangulFileName = "preset_hangul.yaml"
+            val symbolFileName = "preset_symbol.yaml"
+
+            val latinPreset = loadPreset(context, latinFileName, "preset/preset_latin_qwerty.yaml")
+                ?: InputEnginePreset().apply { showToast(latinFileName) }
+            val hangulPreset = loadPreset(context, hangulFileName, "preset/preset_3set_390.yaml")
+                ?: InputEnginePreset().apply { showToast(hangulFileName) }
+            val symbolPreset = loadPreset(context, symbolFileName, "preset/preset_symbol_g.yaml")
+                ?: InputEnginePreset().apply { showToast(symbolFileName) }
+            return Triple(latinPreset, hangulPreset, symbolPreset)
+        }
+
+        private fun loadPreset(context: Context, fileName: String, defaultFilename: String): InputEnginePreset? {
+            val fromFilesDir = kotlin.runCatching {
+                InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(File(context.filesDir, fileName).inputStream())
+            }
+            if(fromFilesDir.isSuccess) return fromFilesDir.getOrNull()
+            val fromAssets = kotlin.runCatching {
+                InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(context.assets.open(fileName))
+            }
+            if(fromAssets.isSuccess) return fromAssets.getOrNull()
+            val defaultFromAssets = kotlin.runCatching {
+                InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(context.assets.open(defaultFilename))
+            }
+            if(defaultFromAssets.isSuccess) return defaultFromAssets.getOrNull()
+            return null
+        }
+
     }
 }

@@ -33,7 +33,6 @@ class KeyboardLayoutPreferenceDataStore(
     override fun putString(key: String?, value: String?) {
         when(key) {
             KEY_ENGINE_TYPE -> preset.type = InputEnginePreset.Type.valueOf(value ?: "Latin")
-            KEY_MAIN_LAYOUT -> preset.mainLayout = value ?: "default.yaml"
         }
         update()
     }
@@ -73,7 +72,6 @@ class KeyboardLayoutPreferenceDataStore(
     override fun getString(key: String?, defValue: String?): String? {
         return when(key) {
             KEY_ENGINE_TYPE -> preset.type.name
-            KEY_MAIN_LAYOUT -> preset.mainLayout
             else -> defValue
         }
     }

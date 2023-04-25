@@ -3,6 +3,10 @@
 
     <string name="msg_hanja_converter_not_found">한자 변환 기능을 사용하려면 사용하려면 漢字變換器를 설치해 주세요.</string>
     <string name="msg_hanja_converter_donation_not_found">한자 예측 기능을 사용하려면 사용하려면 漢字變換器 후원판을 설치해 주세요.</string>
+    <string name="msg_preset_load_failed">입력 설정(%s)을 불러올 수 없습니다.</string>
+
+    <string name="title_activity_import_export">불러오기 / 내보내기</string>
+    <string name="title_activity_keyboard_layout">키보드 설정</string>
 
     <string name="title_activity_settings">mBoard 설정</string>
 
@@ -36,6 +40,9 @@
     <string name="pref_layout_hangul_preset_title">한글 키보드 배열</string>
     <string name="pref_layout_latin_preset_title">로마자 키보드 배열</string>
     <string name="pref_layout_symbol_preset_title">기호 키보드 배열</string>
+    <string name="pref_layout_hangul_settings_title">한글 키보드 설정</string>
+    <string name="pref_layout_latin_settings_title">로마자 키보드 설정</string>
+    <string name="pref_layout_symbol_settings_title">기호 키보드 설정</string>
     <string name="layout_2set_ks5002">두벌식 KS 표준</string>
     <string name="layout_2set_old_hangul">두벌식 옛한글</string>
     <string name="layout_3set_390">세벌식 3–90</string>

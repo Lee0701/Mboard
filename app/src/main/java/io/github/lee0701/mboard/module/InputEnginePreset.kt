@@ -19,6 +19,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
+import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
 import io.github.lee0701.mboard.service.MBoardIME
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -27,7 +28,6 @@ import kotlinx.serialization.modules.EmptySerializersModule
 data class InputEnginePreset(
     val type: Type = Type.Latin,
     val size: Size = Size(),
-    val mainLayout: String = "",
     val layout: Layout = Layout(),
     val autoUnlockShift: Boolean = true,
     val candidatesView: Boolean = false,
@@ -38,21 +38,10 @@ data class InputEnginePreset(
         val rootPreference = PreferenceManager.getDefaultSharedPreferences(context)
         val screenMode = rootPreference.getString("layout_screen_mode", "mobile")
 
-        val fileName = mainLayout.format(screenMode)
-        val mainLayout =
-            if(fileName.isNotEmpty()) yaml.decodeFromStream<Layout>(context.assets.open(fileName))
-            else Layout()
-        val override = Layout(layout.softKeyboard, layout.moreKeysTable, layout.codeConvertTable, layout.combinationTable)
-
-        val layout = ResolvedLayout(
-            context = context,
-            layout = Layout(
-                softKeyboard = override.softKeyboard.ifEmpty { mainLayout.softKeyboard },
-                moreKeysTable = override.moreKeysTable.ifEmpty { mainLayout.moreKeysTable },
-                codeConvertTable = override.codeConvertTable.ifEmpty { mainLayout.codeConvertTable },
-                combinationTable = override.combinationTable.ifEmpty { mainLayout.combinationTable },
-            ),
-        )
+        val softKeyboard = loadSoftKeyboards(context, names = layout.softKeyboard)
+        val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
+        val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
+        val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
 
         val getHangulInputEngine = { listener: InputEngine.Listener ->
             if(hanja.conversion) {
@@ -68,21 +57,21 @@ data class InputEnginePreset(
                 }
                 HanjaConverterInputEngine(
                     { l -> HangulInputEngine(
-                        layout.convertTable,
-                        layout.moreKeysTable,
-                        layout.combinationTable,
-                        l
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        jamoCombinationTable = combinationTable,
+                        listener = l,
                     ) },
                     converter,
                     predictor,
-                    listener
+                    listener,
                 )
             } else {
                 HangulInputEngine(
-                    layout.convertTable,
-                    layout.moreKeysTable,
-                    layout.combinationTable,
-                    listener
+                    convertTable = convertTable,
+                    moreKeysTable = moreKeysTable,
+                    jamoCombinationTable = combinationTable,
+                    listener,
                 )
             }
         }
@@ -91,9 +80,9 @@ data class InputEnginePreset(
             when(type) {
                 Type.Latin -> {
                     CodeConverterInputEngine(
-                        layout.convertTable,
-                        layout.moreKeysTable,
-                        listener
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        listener = listener,
                     )
                 }
                 Type.Hangul -> {
@@ -104,7 +93,7 @@ data class InputEnginePreset(
 
         return BasicSoftInputEngine(
             getInputEngine = getInputEngine,
-            keyboard = layout.softKeyboard,
+            keyboard = softKeyboard,
             unifyHeight = size.unifyHeight,
             rowHeight = size.rowHeight,
             autoUnlockShift = autoUnlockShift,
@@ -113,22 +102,12 @@ data class InputEnginePreset(
         )
     }
 
-    private data class ResolvedLayout(
-        val context: Context,
-        val layout: Layout,
-        val softKeyboard: Keyboard = loadSoftKeyboards(context, names = layout.softKeyboard),
-        val moreKeysTable: MoreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable),
-        val convertTable: CodeConvertTable = loadConvertTable(context, names = layout.codeConvertTable),
-        val combinationTable: JamoCombinationTable = loadCombinationTable(context, names = layout.combinationTable),
-    )
-
     fun mutable(): Mutable {
         return Mutable(
             type = this.type,
             size = size.mutable(),
             autoUnlockShift = this.autoUnlockShift,
             showCandidatesView = this.candidatesView,
-            mainLayout = this.mainLayout,
             layout = this.layout.mutable(),
             hanja = this.hanja.mutable(),
         )
@@ -137,7 +116,6 @@ data class InputEnginePreset(
     data class Mutable (
         var type: Type = Type.Latin,
         var size: Size.Mutable = Size.Mutable(),
-        var mainLayout: String = "default.yaml",
         var layout: Layout.Mutable = Layout.Mutable(),
         var autoUnlockShift: Boolean = true,
         var showCandidatesView: Boolean = false,
@@ -147,7 +125,6 @@ data class InputEnginePreset(
             return InputEnginePreset(
                 type = type,
                 size = size.commit(),
-                mainLayout = mainLayout,
                 layout = layout.commit(),
                 candidatesView = showCandidatesView,
                 autoUnlockShift = autoUnlockShift,
@@ -284,7 +261,7 @@ data class InputEnginePreset(
         private fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
             val resolved = names.map { filename ->
                 yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-            return resolved.reduce { acc, input -> acc + input }
+            return resolved.fold(SimpleCodeConvertTable() as CodeConvertTable) { acc, input -> acc + input }
         }
 
         private fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {

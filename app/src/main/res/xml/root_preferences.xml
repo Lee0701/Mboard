@@ -72,29 +72,20 @@
             app:title="@string/pref_layout_screen_mode_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="layout_hangul_preset"
-            app:defaultValue="preset/preset_%s_3set_390.yaml"
-            app:entries="@array/preset_hangul"
-            app:entryValues="@array/preset_hangul_values"
-            app:title="@string/pref_layout_hangul_preset_title"
-            app:useSimpleSummaryProvider="true" />
+        <io.github.lee0701.mboard.settings.EnterKeyboardSettingsPreference
+            app:fileName="preset_hangul.yaml"
+            app:template="preset/preset_3set_390.yaml"
+            app:title="@string/pref_layout_hangul_settings_title" />
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="layout_latin_preset"
-            app:defaultValue="preset/preset_%s_latin_qwerty.yaml"
-            app:entries="@array/preset_latin"
-            app:entryValues="@array/preset_latin_values"
-            app:title="@string/pref_layout_latin_preset_title"
-            app:useSimpleSummaryProvider="true" />
+        <io.github.lee0701.mboard.settings.EnterKeyboardSettingsPreference
+            app:fileName="preset_latin.yaml"
+            app:template="preset/preset_latin_qwerty.yaml"
+            app:title="@string/pref_layout_latin_settings_title" />
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="layout_symbol_preset"
-            app:defaultValue="preset/preset_%s_symbol_g.yaml"
-            app:entries="@array/preset_symbol"
-            app:entryValues="@array/preset_symbol_values"
-            app:title="@string/pref_layout_symbol_preset_title"
-            app:useSimpleSummaryProvider="true" />
+        <io.github.lee0701.mboard.settings.EnterKeyboardSettingsPreference
+            app:fileName="preset_symbol.yaml"
+            app:template="preset/preset_symbol_g.yaml"
+            app:title="@string/pref_layout_symbol_settings_title" />
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
@@ -230,9 +221,6 @@
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
         app:title="@string/pref_header_about_title">
-
-        <io.github.lee0701.mboard.settings.EnterKeyboardSettingsPreference
-            app:fileName="arst.yaml" />
 
         <io.github.lee0701.mboard.settings.StartActivityPreference
             android:title="@string/pref_about_app_info_title"

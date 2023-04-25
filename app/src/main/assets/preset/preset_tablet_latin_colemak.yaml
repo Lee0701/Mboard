@@ -1,7 +1,0 @@
-type: "Latin"
-layout:
-  softKeyboard:
-  - "common/soft_qwerty_tablet_with_semicolon.yaml"
-  codeConvertTable:
-  - "symbol/table_custom_keys.yaml"
-  - "latin/table_latin_colemak.yaml"

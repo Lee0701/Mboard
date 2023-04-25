@@ -12,12 +12,12 @@ class EnterKeyboardSettingsPreference(
 ): Preference(context, attrs) {
 
     private val fileName: String
-    private val typeName: String
+    private val template: String
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.EnterKeyboardSettingsPreference)
         fileName = a.getString(R.styleable.EnterKeyboardSettingsPreference_fileName) ?: "default.yaml"
-        typeName = a.getString(R.styleable.EnterKeyboardSettingsPreference_typeName) ?: "Latin"
+        template = a.getString(R.styleable.EnterKeyboardSettingsPreference_template) ?: "default.yaml"
         a.recycle()
         layoutResource = R.layout.preference_inline
     }
@@ -26,7 +26,7 @@ class EnterKeyboardSettingsPreference(
         super.onClick()
         val intent = Intent(context, KeyboardLayoutSettingsActivity::class.java)
         intent.putExtra("fileName", fileName)
-        intent.putExtra("typeName", typeName)
+        intent.putExtra("template", template)
         context.startActivity(intent)
     }
 }

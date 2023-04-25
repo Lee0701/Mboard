@@ -1,7 +1,7 @@
 type: "Latin"
 layout:
   softKeyboard:
-  - "common/soft_qwerty_mobile.yaml"
+  - "common/soft_mobile_qwerty.yaml"
   moreKeysTable:
   - "symbol/morekeys_symbols.yaml"
   codeConvertTable:

@@ -158,19 +158,23 @@
     </string-array>
 
     <string-array name="main_layout_hangul_entries">
+        <item>@string/layout_2set_ks5002</item>
         <item>@string/layout_3set_390</item>
     </string-array>
 
     <string-array name="main_layout_hangul_values">
-        <item>main_layout/layout_mobile_3set_390.yaml</item>
+        <item>main_layout/layout_2set_ks5002.yaml</item>
+        <item>main_layout/layout_3set_390.yaml</item>
     </string-array>
 
     <string-array name="main_layout_latin_entries">
+        <item>@string/layout_latin_qwerty</item>
         <item>@string/layout_latin_colemak</item>
     </string-array>
 
     <string-array name="main_layout_latin_values">
-        <item>main_layout/layout_mobile_latin_colemak.yaml</item>
+        <item>main_layout/layout_latin_qwerty.yaml</item>
+        <item>main_layout/layout_latin_colemak.yaml</item>
     </string-array>
 
 </resources>

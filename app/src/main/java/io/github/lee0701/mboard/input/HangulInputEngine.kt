@@ -12,7 +12,7 @@ import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 data class HangulInputEngine(
-    private val table: CodeConvertTable,
+    private val convertTable: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
     private val jamoCombinationTable: JamoCombinationTable,
     override val listener: InputEngine.Listener,
@@ -36,8 +36,8 @@ data class HangulInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         val converted =
-            if(table is LayeredCodeConvertTable) table.get(layerIdByHangulState, code, state)
-            else table.get(code, state)
+            if(convertTable is LayeredCodeConvertTable) convertTable.get(layerIdByHangulState, code, state)
+            else convertTable.get(code, state)
         if(converted == null) {
             val char = keyCharacterMap.get(code, state.asMetaState())
             onReset()
@@ -73,9 +73,9 @@ data class HangulInputEngine(
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
         val table =
-            if(table is LayeredCodeConvertTable)
-                table.get(layerIdByHangulState) ?: table.get(BASE_LAYER_NAME)
-            else table
+            if(convertTable is LayeredCodeConvertTable)
+                convertTable.get(layerIdByHangulState) ?: convertTable.get(BASE_LAYER_NAME)
+            else convertTable
         val codeMap = table?.getAllForState(state).orEmpty().mapValues { (_, output) ->
             val ch = output and 0xffffff
             if(Hangul.isModernJamo(ch)) {

@@ -15,17 +15,21 @@ class BasicCandidatesViewManager(
     val listener: Listener
 ) {
 
-    private lateinit var binding: CandidatesViewBinding
-    private lateinit var adapter: Adapter
+    private var binding: CandidatesViewBinding? = null
+    private var adapter: Adapter? = null
 
     fun initView(context: Context): View {
-        binding = CandidatesViewBinding.inflate(LayoutInflater.from(context), null, false)
-        adapter = Adapter(context) { listener.onItemClicked(it) }
+        val binding = CandidatesViewBinding.inflate(LayoutInflater.from(context), null, false)
+        val adapter = Adapter(context) { listener.onItemClicked(it) }
         binding.recyclerView.adapter = adapter
+        this.binding = binding
+        this.adapter = adapter
         return binding.root
     }
 
     fun showCandidates(candidates: List<Candidate>) {
+        val adapter = this.adapter ?: return
+        val binding = this.binding ?: return
         adapter.submitList(candidates) {
             binding.recyclerView.scrollToPosition(0)
         }

@@ -9,7 +9,7 @@ import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverterInputEngine(
-    private val table: CodeConvertTable,
+    private val convertTable: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {
@@ -17,7 +17,7 @@ class CodeConverterInputEngine(
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
 
     override fun onKey(code: Int, state: KeyboardState) {
-        val converted = table.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())
+        val converted = convertTable.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())
         listener.onCommitText(converted.toChar().toString())
     }
 
@@ -33,7 +33,7 @@ class CodeConverterInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val codeMap = table.getAllForState(state).mapValues { (_, code) -> code.toChar().toString() }
+        val codeMap = convertTable.getAllForState(state).mapValues { (_, code) -> code.toChar().toString() }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 
@@ -43,7 +43,7 @@ class CodeConverterInputEngine(
 
     override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
         return moreKeysTable.map.mapNotNull { (code, value) ->
-            val key = table.getReversed(code, SimpleCodeConvertTable.EntryKey.fromKeyboardState(state))
+            val key = convertTable.getReversed(code, SimpleCodeConvertTable.EntryKey.fromKeyboardState(state))
             if(key == null) null
             else key to value
         }.toMap()

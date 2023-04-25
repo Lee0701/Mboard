@@ -43,12 +43,12 @@ class ImportExportActivity: AppCompatActivity() {
 //        upgradeTables(tables)
 
         val keyboards = listOf(
-//            "common/soft_qwerty_mobile.yaml",
+//            "common/soft_mobile_qwerty.yaml",
             "hangul_3set/soft_390_mobile.yaml",
             "hangul_3set/soft_391_mobile.yaml",
 //            "latin/soft_qwerty_mobile_dvorak_custom.yaml",
 //            "soft_qwerty_mobile_with_num.yaml",
-//            "common/soft_qwerty_mobile_with_semicolon.yaml",
+//            "common/soft_mobile_qwerty_with_semicolon.yaml",
         )
 //        upgradeKeyboards(keyboards)
 //        generatePreset()
@@ -109,7 +109,7 @@ class ImportExportActivity: AppCompatActivity() {
 
     private fun generatePreset() {
 //        val h2 = InputEnginePreset.Hangul(
-//            softKeyboard = listOf("common/soft_qwerty_tablet.yaml"),
+//            softKeyboard = listOf("common/soft_tablet_qwerty.yaml"),
 //            codeConvertTable = listOf("hangul_2set/table_ks5002.yaml"),
 //            combinationTable = listOf("hangul_2set/comb_ks5002.yaml"),
 //        )

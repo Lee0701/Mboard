@@ -1,9 +1,0 @@
-softKeyboard:
-- "hangul_3set/soft_390_mobile.yaml"
-codeConvertTable:
-- "symbol/table_custom_keys.yaml"
-- "hangul_3set/table_390.yaml"
-combinationTable:
-- "hangul_3set/comb_3set_cho.yaml"
-- "hangul_3set/comb_3set_jung.yaml"
-- "hangul_3set/comb_3set_jong.yaml"
