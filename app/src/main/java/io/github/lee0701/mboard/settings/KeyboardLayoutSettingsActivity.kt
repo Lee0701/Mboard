@@ -18,6 +18,7 @@ import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE_HANGUL_HEADER
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_INPUT_HEADER
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_LAYOUT_PRESET
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
 import io.github.lee0701.mboard.view.keyboard.FlickDirection
@@ -66,8 +67,8 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
     }
 
     class KeyboardSettingsFragment(
-        val fileName: String,
-        val template: String,
+        private val fileName: String,
+        private val template: String,
     ): PreferenceFragmentCompat(),
         KeyboardLayoutPreferenceDataStore.OnChangeListener {
         private val handler: Handler = Handler(Looper.getMainLooper())
@@ -79,24 +80,17 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
         var inputEngine: InputEngine? = null
         var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             val context = context ?: return
             val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
             val file = File(context.filesDir, fileName)
             if(!file.exists()) {
-                val input = context.assets.open(template)
-                file.outputStream().write(input.readBytes())
+                file.outputStream().write(context.assets.open(template).readBytes())
             }
 
             keyboardViewType = rootPreferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
             themeName = rootPreferences.getString("appearance_theme", "theme_dynamic") ?: themeName
-        }
-
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            val context = context ?: return
-            val file = File(context.filesDir, fileName)
             val preferenceDataStore = KeyboardLayoutPreferenceDataStore(context, file, this)
             this.preferenceDataStore = preferenceDataStore
             preferenceManager.preferenceDataStore = preferenceDataStore
@@ -120,28 +114,30 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
             val engineType = findPreference<ListPreference>(KEY_ENGINE_TYPE)
             val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
+            val inputHeader = findPreference<PreferenceCategory>(KEY_INPUT_HEADER)
             val hangulHeader = findPreference<PreferenceCategory>(KEY_ENGINE_TYPE_HANGUL_HEADER)
 
             fun updateByEngineType(newValue: Any?) {
-                println(newValue)
-                hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
+                hangulHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
                 val (entries, values) =
                     if(newValue == InputEnginePreset.Type.Hangul.name)
                         R.array.preset_hangul_entries to R.array.preset_hangul_values
                     else R.array.preset_latin_entries to R.array.preset_latin_values
                 layoutPreset?.setEntries(entries)
                 layoutPreset?.setEntryValues(values)
-                layoutPreset?.setValueIndex(0)
             }
             engineType?.setOnPreferenceChangeListener { _, newValue ->
                 updateByEngineType(newValue)
+                layoutPreset?.setValueIndex(0)
                 true
             }
             updateByEngineType(engineType?.value)
+            engineType?.isVisible = false
 
             layoutPreset?.setOnPreferenceChangeListener { _, newValue ->
                 if(newValue !is String) return@setOnPreferenceChangeListener true
-                val preset = InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(requireContext().assets.open(newValue))
+                val newLayout = InputEnginePreset.yaml
+                    .decodeFromStream<InputEnginePreset>(requireContext().assets.open(newValue)).layout
 
                 true
             }

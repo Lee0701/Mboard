@@ -6,11 +6,12 @@ import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
+import java.lang.Exception
 
 class KeyboardLayoutPreferenceDataStore(
-    val context: Context,
-    val file: File,
-    val onChangeListener: OnChangeListener,
+    private val context: Context,
+    private val file: File,
+    private val onChangeListener: OnChangeListener,
 ): PreferenceDataStore() {
 
     constructor(
@@ -33,6 +34,13 @@ class KeyboardLayoutPreferenceDataStore(
     override fun putString(key: String?, value: String?) {
         when(key) {
             KEY_ENGINE_TYPE -> preset.type = InputEnginePreset.Type.valueOf(value ?: "Latin")
+            KEY_LAYOUT_PRESET -> {
+                val assetFileName = value ?: return
+                val newLayout = InputEnginePreset.yaml
+                    .decodeFromStream<InputEnginePreset>(context.assets.open(assetFileName)).layout
+                preset.layout = newLayout.mutable()
+                write()
+            }
         }
         update()
     }
@@ -72,6 +80,7 @@ class KeyboardLayoutPreferenceDataStore(
     override fun getString(key: String?, defValue: String?): String? {
         return when(key) {
             KEY_ENGINE_TYPE -> preset.type.name
+            KEY_LAYOUT_PRESET -> null
             else -> defValue
         }
     }
@@ -121,13 +130,14 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     companion object {
+        const val KEY_INPUT_HEADER = "pref_header_input_title"
         const val KEY_ENGINE_TYPE_HANGUL_HEADER = "input_type_hangul_header"
 
         const val KEY_DEFAULT_HEIGHT = "soft_keyboard_default_height"
         const val KEY_ROW_HEIGHT = "soft_keyboard_row_height"
 
         const val KEY_ENGINE_TYPE = "input_engine_type"
-        const val KEY_LAYOUT_PRESET = "input_load_preset"
+        const val KEY_LAYOUT_PRESET = "input_layout_preset"
 
         const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
         const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
