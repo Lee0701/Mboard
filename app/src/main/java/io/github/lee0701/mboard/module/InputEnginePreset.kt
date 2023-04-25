@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.module
 
 import android.content.Context
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
@@ -25,23 +26,33 @@ import kotlinx.serialization.modules.EmptySerializersModule
 @Serializable
 data class InputEnginePreset(
     val type: Type = Type.Latin,
-    val softKeyboard: List<String> = listOf(),
-    val moreKeysTable: List<String> = listOf(),
-    val codeConvertTable: List<String> = listOf(),
-    val combinationTable: List<String> = listOf(),
-    val unifyHeight: Boolean = false,
-    val defaultHeight: Boolean = true,
-    val rowHeight: Int = 55,
+    val size: Size = Size(),
+    val mainLayout: String = "",
+    val layout: Layout = Layout(),
     val autoUnlockShift: Boolean = true,
     val candidatesView: Boolean = false,
     val hanja: Hanja = Hanja(),
 ) {
 
     fun inflate(context: Context, rootListener: InputEngine.Listener): InputEngine {
-        val keyboard = loadSoftKeyboards(context, names = softKeyboard)
-        val moreKeysTable = loadMoreKeysTable(context, names = moreKeysTable)
-        val convertTable = loadConvertTable(context, names = codeConvertTable)
-        val combinationTable = loadCombinationTable(context, names = combinationTable)
+        val rootPreference = PreferenceManager.getDefaultSharedPreferences(context)
+        val screenMode = rootPreference.getString("layout_screen_mode", "mobile")
+
+        val fileName = mainLayout.format(screenMode)
+        val mainLayout =
+            if(fileName.isNotEmpty()) yaml.decodeFromStream<Layout>(context.assets.open(fileName))
+            else Layout()
+        val override = Layout(layout.softKeyboard, layout.moreKeysTable, layout.codeConvertTable, layout.combinationTable)
+
+        val layout = ResolvedLayout(
+            context = context,
+            layout = Layout(
+                softKeyboard = override.softKeyboard.ifEmpty { mainLayout.softKeyboard },
+                moreKeysTable = override.moreKeysTable.ifEmpty { mainLayout.moreKeysTable },
+                codeConvertTable = override.codeConvertTable.ifEmpty { mainLayout.codeConvertTable },
+                combinationTable = override.combinationTable.ifEmpty { mainLayout.combinationTable },
+            ),
+        )
 
         val getHangulInputEngine = { listener: InputEngine.Listener ->
             if(hanja.conversion) {
@@ -56,16 +67,21 @@ data class InputEnginePreset(
                     (null to null)
                 }
                 HanjaConverterInputEngine(
-                    { l -> HangulInputEngine(convertTable, moreKeysTable, combinationTable, l) },
+                    { l -> HangulInputEngine(
+                        layout.convertTable,
+                        layout.moreKeysTable,
+                        layout.combinationTable,
+                        l
+                    ) },
                     converter,
                     predictor,
                     listener
                 )
             } else {
                 HangulInputEngine(
-                    convertTable,
-                    moreKeysTable,
-                    combinationTable,
+                    layout.convertTable,
+                    layout.moreKeysTable,
+                    layout.combinationTable,
                     listener
                 )
             }
@@ -74,7 +90,11 @@ data class InputEnginePreset(
         val getInputEngine = { listener: InputEngine.Listener ->
             when(type) {
                 Type.Latin -> {
-                    CodeConverterInputEngine(convertTable, moreKeysTable, listener)
+                    CodeConverterInputEngine(
+                        layout.convertTable,
+                        layout.moreKeysTable,
+                        listener
+                    )
                 }
                 Type.Hangul -> {
                     getHangulInputEngine(listener)
@@ -84,67 +104,41 @@ data class InputEnginePreset(
 
         return BasicSoftInputEngine(
             getInputEngine = getInputEngine,
-            keyboard = keyboard,
-            unifyHeight = unifyHeight,
-            rowHeight = rowHeight,
+            keyboard = layout.softKeyboard,
+            unifyHeight = size.unifyHeight,
+            rowHeight = size.rowHeight,
             autoUnlockShift = autoUnlockShift,
             showCandidatesView = candidatesView,
             listener = rootListener,
         )
     }
 
-    private fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
-        val resolved = names.map { filename ->
-            yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
-        }
-        return resolved.fold(Keyboard()) { acc, input -> acc + input }
-    }
-
-    private fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
-        val resolved = names.map { filename ->
-            yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
-        return resolved.reduce { acc, input -> acc + input }
-    }
-
-    private fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
-        val resolved = names.map { filename ->
-            yaml.decodeFromStream<JamoCombinationTable>(context.assets.open(filename)) }
-        return resolved.fold(JamoCombinationTable()) { acc, input -> acc + input }
-    }
-
-    private fun loadMoreKeysTable(context: Context, names: List<String>): MoreKeysTable {
-        val resolved = names.map { filename ->
-            val refMap = yaml.decodeFromStream<MoreKeysTable.RefMap>(context.assets.open(filename))
-            refMap.resolve(context.assets, yaml)
-        }
-        return resolved.fold(MoreKeysTable()) { acc, input -> acc + input }
-    }
+    private data class ResolvedLayout(
+        val context: Context,
+        val layout: Layout,
+        val softKeyboard: Keyboard = loadSoftKeyboards(context, names = layout.softKeyboard),
+        val moreKeysTable: MoreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable),
+        val convertTable: CodeConvertTable = loadConvertTable(context, names = layout.codeConvertTable),
+        val combinationTable: JamoCombinationTable = loadCombinationTable(context, names = layout.combinationTable),
+    )
 
     fun mutable(): Mutable {
         return Mutable(
             type = this.type,
-            unifyHeight = this.unifyHeight,
-            defaultHeight = this.defaultHeight,
-            rowHeight = this.rowHeight,
+            size = size.mutable(),
             autoUnlockShift = this.autoUnlockShift,
             showCandidatesView = this.candidatesView,
-            softKeyboard = this.softKeyboard,
-            moreKeysTable = this.moreKeysTable,
-            codeConvertTable = this.codeConvertTable,
-            combinationTable = this.combinationTable,
+            mainLayout = this.mainLayout,
+            layout = this.layout.mutable(),
             hanja = this.hanja.mutable(),
         )
     }
 
     data class Mutable (
         var type: Type = Type.Latin,
-        var softKeyboard: List<String> = listOf(),
-        var moreKeysTable: List<String> = listOf(),
-        var codeConvertTable: List<String> = listOf(),
-        var combinationTable: List<String> = listOf(),
-        var unifyHeight: Boolean = false,
-        var defaultHeight: Boolean = true,
-        var rowHeight: Int = 55,
+        var size: Size.Mutable = Size.Mutable(),
+        var mainLayout: String = "default.yaml",
+        var layout: Layout.Mutable = Layout.Mutable(),
         var autoUnlockShift: Boolean = true,
         var showCandidatesView: Boolean = false,
         var hanja: Hanja.Mutable = Hanja.Mutable()
@@ -152,13 +146,9 @@ data class InputEnginePreset(
         fun commit(): InputEnginePreset {
             return InputEnginePreset(
                 type = type,
-                softKeyboard = softKeyboard,
-                moreKeysTable = moreKeysTable,
-                codeConvertTable = codeConvertTable,
-                combinationTable = combinationTable,
-                unifyHeight = unifyHeight,
-                defaultHeight = defaultHeight,
-                rowHeight = rowHeight,
+                size = size.commit(),
+                mainLayout = mainLayout,
+                layout = layout.commit(),
                 candidatesView = showCandidatesView,
                 autoUnlockShift = autoUnlockShift,
                 hanja = hanja.commit(),
@@ -169,6 +159,68 @@ data class InputEnginePreset(
     @Serializable
     enum class Type {
         Latin, Hangul
+    }
+
+    @Serializable
+    data class Size(
+        val unifyHeight: Boolean = false,
+        val defaultHeight: Boolean = true,
+        val rowHeight: Int = 55,
+    ) {
+        fun mutable(): Mutable {
+            return Mutable(
+                unifyHeight = unifyHeight,
+                defaultHeight = defaultHeight,
+                rowHeight = rowHeight,
+            )
+        }
+
+        data class Mutable(
+            var unifyHeight: Boolean = false,
+            var defaultHeight: Boolean = true,
+            var rowHeight: Int = 55,
+        ) {
+            fun commit(): Size {
+                return Size(
+                    unifyHeight = unifyHeight,
+                    defaultHeight = defaultHeight,
+                    rowHeight = rowHeight,
+                )
+            }
+        }
+    }
+
+    @Serializable
+    data class Layout(
+        val softKeyboard: List<String> = listOf(),
+        val moreKeysTable: List<String> = listOf(),
+        val codeConvertTable: List<String> = listOf(),
+        val combinationTable: List<String> = listOf(),
+    ) {
+        fun mutable(): Mutable {
+            return Mutable(
+                softKeyboard = softKeyboard,
+                moreKeysTable = moreKeysTable,
+                codeConvertTable = codeConvertTable,
+                combinationTable = combinationTable,
+            )
+        }
+
+        data class Mutable(
+            var softKeyboard: List<String> = listOf(),
+            var moreKeysTable: List<String> = listOf(),
+            var codeConvertTable: List<String> = listOf(),
+            var combinationTable: List<String> = listOf(),
+        ) {
+            fun commit(): Layout {
+                return Layout(
+                    softKeyboard = softKeyboard,
+                    moreKeysTable = moreKeysTable,
+                    codeConvertTable = codeConvertTable,
+                    combinationTable = combinationTable,
+                )
+            }
+        }
     }
 
     @Serializable
@@ -220,6 +272,33 @@ data class InputEnginePreset(
             else Toast.makeText(ime, R.string.msg_hanja_converter_not_found, Toast.LENGTH_LONG).show()
 
             return null to null
+        }
+
+        private fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
+            val resolved = names.map { filename ->
+                yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+            }
+            return resolved.fold(Keyboard()) { acc, input -> acc + input }
+        }
+
+        private fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
+            val resolved = names.map { filename ->
+                yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
+            return resolved.reduce { acc, input -> acc + input }
+        }
+
+        private fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
+            val resolved = names.map { filename ->
+                yaml.decodeFromStream<JamoCombinationTable>(context.assets.open(filename)) }
+            return resolved.fold(JamoCombinationTable()) { acc, input -> acc + input }
+        }
+
+        private fun loadMoreKeysTable(context: Context, names: List<String>): MoreKeysTable {
+            val resolved = names.map { filename ->
+                val refMap = yaml.decodeFromStream<MoreKeysTable.RefMap>(context.assets.open(filename))
+                refMap.resolve(context.assets, yaml)
+            }
+            return resolved.fold(MoreKeysTable()) { acc, input -> acc + input }
         }
 
     }

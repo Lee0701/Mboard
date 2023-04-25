@@ -96,7 +96,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {
         return preset.copy(
-            rowHeight = modHeight(preset.rowHeight),
+            size = InputEnginePreset.Size(rowHeight = modHeight(preset.size.rowHeight)),
         )
     }
 
@@ -115,6 +115,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             val defaultHeight = findPreference<SwitchPreference>(KeyboardLayoutPreferenceDataStore.KEY_DEFAULT_HEIGHT)
             val rowHeight = findPreference<SliderPreference>(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT)
+
             rowHeight?.isEnabled = defaultHeight?.isChecked != true
             if(defaultHeight?.isEnabled == true) rowHeight?.setValue(defaultHeightValue)
             defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
@@ -125,11 +126,25 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
 
             val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
             val hangulHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE_HANGUL_HEADER)
-            hangulHeader?.isEnabled = engineType?.value == InputEnginePreset.Type.Hangul.name
-            engineType?.setOnPreferenceChangeListener { _, newValue ->
+            val mainLayout = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_MAIN_LAYOUT)
+
+            fun updateByEngineType(newValue: Any?) {
                 hangulHeader?.isEnabled = newValue == InputEnginePreset.Type.Hangul.name
+                val entries =
+                    if(newValue == InputEnginePreset.Type.Hangul.name) R.array.main_layout_hangul_entries
+                    else R.array.main_layout_latin_entries
+                val values =
+                    if(newValue == InputEnginePreset.Type.Hangul.name) R.array.main_layout_hangul_values
+                    else R.array.main_layout_latin_values
+                mainLayout?.setEntries(entries)
+                mainLayout?.setEntryValues(values)
+                mainLayout?.setValueIndex(0)
+            }
+            engineType?.setOnPreferenceChangeListener { _, newValue ->
+                updateByEngineType(newValue)
                 true
             }
+            updateByEngineType(engineType?.value)
         }
     }
 }

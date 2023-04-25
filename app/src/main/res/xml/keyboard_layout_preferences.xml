@@ -4,16 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
-        app:title="@string/pref_header_appearance_title">
+        app:title="@string/pref_soft_keyboard_header_title">
 
         <io.github.lee0701.mboard.settings.SwitchPreference
-            app:key="appearance_default_height"
+            app:key="soft_keyboard_default_height"
             app:defaultValue="false"
             app:title="@string/pref_appearance_default_height_title"
             app:summary="@string/pref_appearance_default_height_summary" />
 
         <io.github.lee0701.mboard.settings.SliderPreference
-            app:key="appearance_row_height"
+            app:key="soft_keyboard_row_height"
             app:valueFrom="30.0"
             app:valueTo="100.0"
             app:stepSize="5.0"
@@ -32,6 +32,14 @@
             app:entries="@array/input_engine_type_entries"
             app:entryValues="@array/input_engine_type_values"
             app:title="@string/pref_input_engine_type_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="input_main_layout"
+            app:entries="@array/empty"
+            app:entryValues="@array/empty"
+            app:defaultValue="main_layout/layout_%s_latin_qwerty.yaml"
+            app:title="@string/pref_input_main_layout_title"
             app:useSimpleSummaryProvider="true" />
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>

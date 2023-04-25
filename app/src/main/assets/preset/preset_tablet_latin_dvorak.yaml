@@ -1,7 +1,7 @@
----
-!<latin>
-softKeyboard:
-- "latin/soft_qwerty_tablet_dvorak_custom.yaml"
-codeConvertTable:
-- "symbol/table_custom_keys.yaml"
-- "latin/table_latin_dvorak.yaml"
+type: "Latin"
+layout:
+  softKeyboard:
+  - "latin/soft_qwerty_tablet_dvorak_custom.yaml"
+  codeConvertTable:
+  - "symbol/table_custom_keys.yaml"
+  - "latin/table_latin_dvorak.yaml"

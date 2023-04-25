@@ -1,10 +1,10 @@
----
-!<latin>
-softKeyboard:
-- "common/soft_qwerty_mobile.yaml"
-moreKeysTable:
-- "symbol/morekeys_symbols.yaml"
-codeConvertTable:
-- "symbol/table_custom_keys.yaml"
-- "symbol/table_symbol_a.yaml"
-autoUnlockShift: false
+type: "Latin"
+layout:
+  softKeyboard:
+  - "common/soft_qwerty_mobile.yaml"
+  moreKeysTable:
+  - "symbol/morekeys_symbols.yaml"
+  codeConvertTable:
+  - "symbol/table_custom_keys.yaml"
+  - "symbol/table_symbol_a.yaml"
+  autoUnlockShift: false

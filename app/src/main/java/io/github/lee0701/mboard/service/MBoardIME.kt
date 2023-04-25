@@ -60,10 +60,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
         val hanjaSortByContext = pref.getBoolean("input_hanja_sort_by_context", false)
 
+        val size = InputEnginePreset.Size(
+            unifyHeight = unifyHeight,
+            rowHeight = rowHeight,
+        )
+
         fun modLatin(preset: InputEnginePreset): InputEnginePreset {
             return preset.copy(
-                unifyHeight = unifyHeight,
-                rowHeight = rowHeight,
+                size = size,
             )
         }
 
@@ -76,8 +80,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                         prediction = true,
                         sortByContext = hanjaSortByContext,
                     ),
-                    unifyHeight = unifyHeight,
-                    rowHeight = rowHeight,
+                    size = size,
                 )
             }
             if(hanjaConversionEnabled) {
@@ -88,41 +91,38 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                         prediction = false,
                         sortByContext = hanjaSortByContext,
                     ),
-                    unifyHeight = unifyHeight,
-                    rowHeight = rowHeight,
+                    size = size,
                 )
             }
             return preset.copy(
-                unifyHeight = unifyHeight,
-                rowHeight = rowHeight,
+                size = size,
             )
         }
 
         fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
             return when(language) {
                 "ko" -> preset.copy(
-                    codeConvertTable = preset.codeConvertTable + "symbol/table_currency_won.yaml",
-                    moreKeysTable = preset.moreKeysTable + "symbol/morekeys_symbols_hangul.yaml",
-                    unifyHeight = unifyHeight,
-                    rowHeight = rowHeight,
+                    layout = preset.layout.copy(
+                        codeConvertTable = preset.layout.codeConvertTable + "symbol/table_currency_won.yaml",
+                        moreKeysTable = preset.layout.moreKeysTable + "symbol/morekeys_symbols_hangul.yaml",
+                    ),
+                    size = size,
                 )
                 else -> preset.copy(
-                    unifyHeight = unifyHeight,
-                    rowHeight = rowHeight,
+                    size = size,
                 )
             }
         }
 
         fun modExperimental(preset: InputEnginePreset): InputEnginePreset {
-            val expRowHeight: Int = if(preset.defaultHeight) rowHeight
+            val expRowHeight: Int = if(preset.size.defaultHeight) rowHeight
             else TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                preset.rowHeight.toFloat(),
+                preset.size.rowHeight.toFloat(),
                 resources.displayMetrics
             ).toInt()
             return preset.copy(
-                rowHeight = expRowHeight,
-                unifyHeight = unifyHeight,
+                size = size,
             )
         }
 

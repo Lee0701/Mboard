@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="InconsistentArrays">
 
+    <string-array name="empty">
+    </string-array>
+
     <string-array name="appearance_themes">
         <item>@string/theme_static</item>
     </string-array>
@@ -152,6 +155,22 @@
         <item>preset/preset_%s_symbol_a.yaml</item>
         <item>preset/preset_%s_symbol_b.yaml</item>
         <item>preset/preset_%s_symbol_g.yaml</item>
+    </string-array>
+
+    <string-array name="main_layout_hangul_entries">
+        <item>@string/layout_3set_390</item>
+    </string-array>
+
+    <string-array name="main_layout_hangul_values">
+        <item>main_layout/layout_mobile_3set_390.yaml</item>
+    </string-array>
+
+    <string-array name="main_layout_latin_entries">
+        <item>@string/layout_latin_colemak</item>
+    </string-array>
+
+    <string-array name="main_layout_latin_values">
+        <item>main_layout/layout_mobile_latin_colemak.yaml</item>
     </string-array>
 
 </resources>

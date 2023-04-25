@@ -1,11 +1,12 @@
 type: "Hangul"
-softKeyboard:
-- "common/soft_qwerty_mobile_with_slash.yaml"
-codeConvertTable:
-- "symbol/table_custom_keys.yaml"
-- "hangul_3set/table_shin_original.yaml"
-combinationTable:
-- "hangul_3set/comb_391_jung_strict.yaml"
-- "hangul_3set/comb_3set_cho.yaml"
-- "hangul_3set/comb_3set_jung.yaml"
-- "hangul_3set/comb_3set_jong.yaml"
+layout:
+  softKeyboard:
+  - "common/soft_qwerty_mobile_with_slash.yaml"
+  codeConvertTable:
+  - "symbol/table_custom_keys.yaml"
+  - "hangul_3set/table_shin_original.yaml"
+  combinationTable:
+  - "hangul_3set/comb_391_jung_strict.yaml"
+  - "hangul_3set/comb_3set_cho.yaml"
+  - "hangul_3set/comb_3set_jung.yaml"
+  - "hangul_3set/comb_3set_jong.yaml"

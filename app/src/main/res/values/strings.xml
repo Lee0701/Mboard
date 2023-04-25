@@ -100,5 +100,8 @@
     <string name="pref_about_more_apps_summary">Discover more apps from this app\'s developer.</string>
     <string name="pref_about_oss_licenses_title">Open source Licenses</string>
 
+    <string name="pref_soft_keyboard_header_title">On-screen Keyboard</string>
+    <string name="pref_input_main_layout_title">Main Layout</string>
+
     <string name="pref_input_type_hangul_header_title">Hangul Input</string>
 </resources>
