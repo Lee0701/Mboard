@@ -58,6 +58,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
         val hanjaConversionEnabled = pref.getBoolean("input_hanja_conversion", false)
         val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
+        val hanjaSortByContext = pref.getBoolean("input_hanja_sort_by_context", false)
 
         fun modLatin(preset: InputEnginePreset): InputEnginePreset {
             return preset.copy(
@@ -72,6 +73,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                     candidatesView = true,
                     hanjaConversion = true,
                     hanjaPrediction = true,
+                    hanjaSortByContext = hanjaSortByContext,
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )
@@ -81,6 +83,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                     candidatesView = true,
                     hanjaConversion = true,
                     hanjaPrediction = false,
+                    hanjaSortByContext = hanjaSortByContext,
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )

@@ -18,7 +18,7 @@ object HanjaConverterBuilder {
     private const val commonPackageName = "io.github.lee0701.converter"
     private const val donationPackageName = "io.github.lee0701.converter.donation"
 
-    fun build(context: Context): Pair<HanjaConverter?, Predictor?> {
+    fun build(context: Context, usePrediction: Boolean, sortByContext: Boolean): Pair<HanjaConverter?, Predictor?> {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         val list = listOf(donationPackageName, commonPackageName)
@@ -30,8 +30,6 @@ object HanjaConverterBuilder {
 
         val converters: MutableList<HanjaConverter> = mutableListOf()
         val isDonation = converterContext.packageName == donationPackageName
-        val usePrediction = true
-        val sortByContext = preferences.getBoolean("input_hanja_sort_by_context", false)
 
         val tfliteAvailable = isDonation && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && (usePrediction || sortByContext)
         val tfLitePredictor = if(tfliteAvailable) {

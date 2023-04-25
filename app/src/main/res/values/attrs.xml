@@ -35,6 +35,7 @@
     </declare-styleable>
 
     <declare-styleable name="EnterKeyboardSettingsPreference">
+        <attr name="typeName" format="string" />
         <attr name="fileName" format="string" />
     </declare-styleable>
 </resources>

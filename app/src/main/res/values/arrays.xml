@@ -51,6 +51,16 @@
         <item>seek</item>
     </string-array>
 
+    <string-array name="input_engine_type_entries">
+        <item>@string/pref_input_engine_latin</item>
+        <item>@string/pref_input_engine_hangul</item>
+    </string-array>
+
+    <string-array name="input_engine_type_values">
+        <item>Latin</item>
+        <item>Hangul</item>
+    </string-array>
+
     <string-array name="long_press_actions">
         <item>@string/flick_action_none</item>
         <item>@string/long_press_action_repeat</item>

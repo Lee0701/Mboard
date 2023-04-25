@@ -2,7 +2,6 @@ package io.github.lee0701.mboard.settings
 
 import android.content.Context
 import androidx.preference.PreferenceDataStore
-import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
@@ -13,7 +12,6 @@ class KeyboardLayoutPreferenceDataStore(
     val file: File,
     val onChangeListener: OnChangeListener,
 ): PreferenceDataStore() {
-    val rootPreference = PreferenceManager.getDefaultSharedPreferences(context)
 
     constructor(
         context: Context,
@@ -33,11 +31,17 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     override fun putString(key: String?, value: String?) {
-        super.putString(key, value)
+        when(key) {
+            KEY_ENGINE_TYPE -> preset.type = InputEnginePreset.Type.valueOf(value ?: "Latin")
+        }
+        update()
     }
 
     override fun putStringSet(key: String?, values: MutableSet<String>?) {
-        super.putStringSet(key, values)
+        when(key) {
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries
+        }
+        update()
     }
 
     override fun putInt(key: String?, value: Int) {
@@ -58,16 +62,25 @@ class KeyboardLayoutPreferenceDataStore(
     override fun putBoolean(key: String?, value: Boolean) {
         when(key) {
             KEY_DEFAULT_HEIGHT -> preset.defaultHeight = value
+            KEY_HANJA_CONVERSION -> preset.enableHanjaConversion = value
+            KEY_HANJA_PREDICTION -> preset.enableHanjaPrediction = value
+            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanjaSortByContext = value
         }
         update()
     }
 
     override fun getString(key: String?, defValue: String?): String? {
-        return super.getString(key, defValue)
+        return when(key) {
+            KEY_ENGINE_TYPE -> preset.type.name
+            else -> defValue
+        }
     }
 
     override fun getStringSet(key: String?, defValues: MutableSet<String>?): MutableSet<String>? {
-        return super.getStringSet(key, defValues)
+        return when(key) {
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanjaAdditionalDictionaries.toMutableSet()
+            else -> defValues
+        }
     }
 
     override fun getInt(key: String?, defValue: Int): Int {
@@ -88,6 +101,9 @@ class KeyboardLayoutPreferenceDataStore(
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
         return when(key) {
             KEY_DEFAULT_HEIGHT -> preset.defaultHeight
+            KEY_HANJA_CONVERSION -> preset.enableHanjaConversion
+            KEY_HANJA_PREDICTION -> preset.enableHanjaPrediction
+            KEY_HANJA_SORT_BY_CONTEXT -> preset.hanjaSortByContext
             else -> defValue
         }
     }
@@ -105,7 +121,13 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     companion object {
-        const val KEY_DEFAULT_HEIGHT = "default_height"
-        const val KEY_ROW_HEIGHT = "row_height"
+        const val KEY_DEFAULT_HEIGHT = "appearance_default_height"
+        const val KEY_ROW_HEIGHT = "appearance_row_height"
+
+        const val KEY_ENGINE_TYPE = "input_engine_type"
+        const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
+        const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
+        const val KEY_HANJA_SORT_BY_CONTEXT = "input_hanja_sort_by_context"
+        const val KEY_HANJA_ADDITIONAL_DICTIONARIES = "input_hanja_additional_dictionaries"
     }
 }

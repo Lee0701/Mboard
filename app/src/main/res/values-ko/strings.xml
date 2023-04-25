@@ -62,6 +62,9 @@
     <string name="person_name">인명</string>
     <string name="metro_station">도시철도 역명</string>
     <string name="newly_coined">신조어</string>
+    <string name="pref_input_engine_type_title">입력 처리기 종류</string>
+    <string name="pref_input_engine_latin">로마자</string>
+    <string name="pref_input_engine_hangul">한글</string>
 
     <string name="pref_header_behaviour_title">작동</string>
     <string name="pref_behaviour_double_tap_gap_title">더블클릭 간격</string>
@@ -94,4 +97,5 @@
     <string name="pref_about_more_apps_summary">개발자의 다른 앱을 확인해 보세요.</string>
     <string name="pref_about_oss_licenses_title">오픈소스 라이선스</string>
 
+    <string name="pref_input_type_hangul_header_title">한글 입력</string>
 </resources>

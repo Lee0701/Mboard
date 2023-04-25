@@ -36,6 +36,8 @@ data class InputEnginePreset(
     val candidatesView: Boolean = false,
     val hanjaConversion: Boolean = false,
     val hanjaPrediction: Boolean = false,
+    val hanjaSortByContext: Boolean = false,
+    val hanjaAdditionalDictionaries: MutableSet<String> = mutableSetOf(),
 ) {
 
     fun inflate(context: Context, rootListener: InputEngine.Listener): InputEngine {
@@ -48,7 +50,7 @@ data class InputEnginePreset(
             if(hanjaConversion) {
                 // TODO: Temporary workaround
                 val (converter, predictor) = if(context is MBoardIME) {
-                    createHanjaConverter(context, prediction = hanjaPrediction)
+                    createHanjaConverter(context, prediction = hanjaPrediction, sortByContext = hanjaSortByContext)
                 } else {
                     (null to null)
                 }
@@ -125,12 +127,14 @@ data class InputEnginePreset(
             rowHeight = this.rowHeight,
             autoUnlockShift = this.autoUnlockShift,
             showCandidatesView = this.candidatesView,
-            enableHanjaConversion = this.hanjaConversion,
-            enableHanjaPrediction = this.hanjaPrediction,
             softKeyboard = this.softKeyboard,
             moreKeysTable = this.moreKeysTable,
             codeConvertTable = this.codeConvertTable,
             combinationTable = this.combinationTable,
+            enableHanjaConversion = this.hanjaConversion,
+            enableHanjaPrediction = this.hanjaPrediction,
+            hanjaSortByContext = this.hanjaSortByContext,
+            hanjaAdditionalDictionaries = this.hanjaAdditionalDictionaries,
         )
     }
 
@@ -143,6 +147,8 @@ data class InputEnginePreset(
         var showCandidatesView: Boolean = false,
         var enableHanjaConversion: Boolean = false,
         var enableHanjaPrediction: Boolean = false,
+        var hanjaSortByContext: Boolean = false,
+        var hanjaAdditionalDictionaries: MutableSet<String> = mutableSetOf(),
         var softKeyboard: List<String> = listOf(),
         var moreKeysTable: List<String> = listOf(),
         var codeConvertTable: List<String> = listOf(),
@@ -160,6 +166,10 @@ data class InputEnginePreset(
                 rowHeight = rowHeight,
                 candidatesView = showCandidatesView,
                 autoUnlockShift = autoUnlockShift,
+                hanjaConversion = enableHanjaConversion,
+                hanjaPrediction = enableHanjaPrediction,
+                hanjaSortByContext = hanjaSortByContext,
+                hanjaAdditionalDictionaries = hanjaAdditionalDictionaries,
             )
         }
     }
@@ -173,14 +183,14 @@ data class InputEnginePreset(
         private val yamlConfig = YamlConfiguration(encodeDefaults = false)
         val yaml = Yaml(EmptySerializersModule(), yamlConfig)
 
-        private fun createHanjaConverter(ime: MBoardIME, prediction: Boolean): Pair<HanjaConverter?, Predictor?> {
+        private fun createHanjaConverter(ime: MBoardIME, prediction: Boolean, sortByContext: Boolean): Pair<HanjaConverter?, Predictor?> {
             if(prediction) {
-                val (converter, predictor) = HanjaConverterBuilder.build(ime)
+                val (converter, predictor) = HanjaConverterBuilder.build(ime, true, sortByContext)
                 if(converter != null && predictor != null) return converter to predictor
                 else Toast.makeText(ime, R.string.msg_hanja_converter_donation_not_found, Toast.LENGTH_LONG).show()
             }
 
-            val (converter, _) = HanjaConverterBuilder.build(ime)
+            val (converter, _) = HanjaConverterBuilder.build(ime, false, sortByContext)
             if(converter != null) return converter to null
             else Toast.makeText(ime, R.string.msg_hanja_converter_not_found, Toast.LENGTH_LONG).show()
 
