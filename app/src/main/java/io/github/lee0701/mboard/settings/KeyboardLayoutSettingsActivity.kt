@@ -55,7 +55,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
         val fileName = intent.getStringExtra("fileName") ?: "default.yaml"
         val file = File(filesDir, fileName)
         if(!file.exists()) {
-            val input = assets.open("preset/preset_mobile_3set_391_strict.yaml")
+            val input = assets.open("preset/arst.yaml")
             file.outputStream().write(input.readBytes())
         }
 
@@ -95,11 +95,9 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity(),
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {
-        return when(preset) {
-            is InputEnginePreset.Latin -> preset.copy(rowHeight = modHeight(preset.rowHeight))
-            is InputEnginePreset.Hangul -> preset.copy(rowHeight = modHeight(preset.rowHeight))
-            else -> preset
-        }
+        return preset.copy(
+            rowHeight = modHeight(preset.rowHeight),
+        )
     }
 
     private fun modHeight(height: Int): Int {

@@ -19,9 +19,10 @@ class HanjaConverterInputEngine(
     private val predictor: Predictor?,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, BasicCandidatesViewManager.Listener {
-    private var job: Job? = null
 
-    private val inputEngine: InputEngine = getInputEngine(this)
+    private var job: Job? = null
+    private val inputEngine = getInputEngine(this)
+
     private val composingWordStack: MutableList<String> = mutableListOf()
     private var composingChar: String = ""
     private var beforeText = ""
@@ -99,7 +100,7 @@ class HanjaConverterInputEngine(
 
     override fun onEditorAction(code: Int) {
         onReset()
-        return listener.onEditorAction(code)
+        listener.onEditorAction(code)
     }
 
     private fun convert() {

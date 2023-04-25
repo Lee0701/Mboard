@@ -1,4 +1,6 @@
-type: "Hangul"
+type: Hangul
+candidatesView: true
+hanjaConversion: true
 softKeyboard:
 - "hangul_3set/soft_391_mobile.yaml"
 codeConvertTable:

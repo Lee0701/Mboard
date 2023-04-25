@@ -1,5 +1,4 @@
----
-!<hangul>
+type: "Hangul"
 softKeyboard:
 - "hangul_3set/soft_390_mobile.yaml"
 codeConvertTable:

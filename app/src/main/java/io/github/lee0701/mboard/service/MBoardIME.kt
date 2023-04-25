@@ -60,7 +60,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val hanjaPredictionEnabled = pref.getBoolean("input_hanja_prediction", false)
 
         fun modLatin(preset: InputEnginePreset): InputEnginePreset {
-            if(preset !is InputEnginePreset.Latin) return preset
             return preset.copy(
                 unifyHeight = unifyHeight,
                 rowHeight = rowHeight,
@@ -68,21 +67,20 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         }
 
         fun modHangul(preset: InputEnginePreset): InputEnginePreset {
-            if(preset !is InputEnginePreset.Hangul) return preset
             if(hanjaConversionEnabled && hanjaPredictionEnabled) {
                 return preset.copy(
-                    showCandidatesView = true,
-                    enableHanjaConversion = true,
-                    enableHanjaPrediction = true,
+                    candidatesView = true,
+                    hanjaConversion = true,
+                    hanjaPrediction = true,
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )
             }
             if(hanjaConversionEnabled) {
                 return preset.copy(
-                    showCandidatesView = true,
-                    enableHanjaConversion = true,
-                    enableHanjaPrediction = false,
+                    candidatesView = true,
+                    hanjaConversion = true,
+                    hanjaPrediction = false,
                     unifyHeight = unifyHeight,
                     rowHeight = rowHeight,
                 )
@@ -94,7 +92,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         }
 
         fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
-            if(preset !is InputEnginePreset.Latin) return preset
             return when(language) {
                 "ko" -> preset.copy(
                     codeConvertTable = preset.codeConvertTable + "symbol/table_currency_won.yaml",
@@ -116,19 +113,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                 preset.rowHeight.toFloat(),
                 resources.displayMetrics
             ).toInt()
-            if(preset is InputEnginePreset.Hangul) {
-                return preset.copy(
-                    rowHeight = expRowHeight,
-                    unifyHeight = unifyHeight
-                )
-            } else if(preset is InputEnginePreset.Latin) {
-                return preset.copy(
-                    rowHeight = expRowHeight,
-                    unifyHeight = unifyHeight
-                )
-            } else {
-                return preset
-            }
+            return preset.copy(
+                rowHeight = expRowHeight,
+                unifyHeight = unifyHeight,
+            )
         }
 
         val latinModule = modLatin(yaml.decodeFromStream(assets.open(latinFilename)))

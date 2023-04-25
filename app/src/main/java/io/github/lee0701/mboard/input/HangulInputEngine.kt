@@ -11,7 +11,7 @@ import io.github.lee0701.mboard.module.table.LayeredCodeConvertTable.Companion.B
 import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 
-class HangulInputEngine(
+data class HangulInputEngine(
     private val table: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
     private val jamoCombinationTable: JamoCombinationTable,

@@ -7,7 +7,6 @@ import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
-import kotlin.math.roundToInt
 
 class KeyboardLayoutPreferenceDataStore(
     val context: Context,
@@ -26,7 +25,7 @@ class KeyboardLayoutPreferenceDataStore(
         }
     })
 
-    val preset: InputEnginePreset.Mutable =
+    private val preset: InputEnginePreset.Mutable =
         InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable()
 
     init {

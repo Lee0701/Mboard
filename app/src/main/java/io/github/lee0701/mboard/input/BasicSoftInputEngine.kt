@@ -19,8 +19,8 @@ import io.github.lee0701.mboard.view.keyboard.StackedViewKeyboardView
 import io.github.lee0701.mboard.view.keyboard.Themes
 
 class BasicSoftInputEngine(
-    private val keyboard: Keyboard,
     getInputEngine: (InputEngine.Listener) -> InputEngine,
+    private val keyboard: Keyboard,
     private val autoUnlockShift: Boolean = true,
     override val showCandidatesView: Boolean = false,
     override val listener: InputEngine.Listener,

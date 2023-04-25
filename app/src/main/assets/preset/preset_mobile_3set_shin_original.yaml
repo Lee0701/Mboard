@@ -1,5 +1,4 @@
----
-!<hangul>
+type: "Hangul"
 softKeyboard:
 - "common/soft_qwerty_mobile_with_slash.yaml"
 codeConvertTable:
