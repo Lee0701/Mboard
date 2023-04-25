@@ -3,6 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <io.github.lee0701.mboard.settings.ListPreference
+        app:key="input_load_preset"
+        app:entries="@array/empty"
+        app:entryValues="@array/empty"
+        app:defaultValue="preset/preset_latin_qwerty.yaml"
+        app:title="@string/pref_layout_preset_title"
+        app:summary="@string/pref_layout_preset_summary"
+        app:useSimpleSummaryProvider="true" />
+
     <io.github.lee0701.mboard.settings.PreferenceCategory
         app:title="@string/pref_soft_keyboard_header_title">
 
@@ -23,26 +32,20 @@
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
-    <io.github.lee0701.mboard.settings.PreferenceCategory
-        app:title="@string/pref_header_input_title">
+    <!--        Too early to be released -->
 
-        <io.github.lee0701.mboard.settings.ListPreference
-            app:key="input_engine_type"
-            app:defaultValue="Latin"
-            app:entries="@array/input_engine_type_entries"
-            app:entryValues="@array/input_engine_type_values"
-            app:title="@string/pref_input_engine_type_title"
-            app:useSimpleSummaryProvider="true" />
+<!--    <io.github.lee0701.mboard.settings.PreferenceCategory-->
+<!--        app:title="@string/pref_header_input_title">-->
 
 <!--        <io.github.lee0701.mboard.settings.ListPreference-->
-<!--            app:key="input_main_layout"-->
-<!--            app:entries="@array/empty"-->
-<!--            app:entryValues="@array/empty"-->
-<!--            app:defaultValue="main_layout/layout_%s_latin_qwerty.yaml"-->
-<!--            app:title="@string/pref_input_main_layout_title"-->
+<!--            app:key="input_engine_type"-->
+<!--            app:defaultValue="Latin"-->
+<!--            app:entries="@array/input_engine_type_entries"-->
+<!--            app:entryValues="@array/input_engine_type_values"-->
+<!--            app:title="@string/pref_input_engine_type_title"-->
 <!--            app:useSimpleSummaryProvider="true" />-->
 
-    </io.github.lee0701.mboard.settings.PreferenceCategory>
+<!--    </io.github.lee0701.mboard.settings.PreferenceCategory>-->
 
     <io.github.lee0701.mboard.settings.PreferenceCategory
         app:key="input_type_hangul_header"

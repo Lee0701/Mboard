@@ -127,7 +127,7 @@ class KeyboardLayoutPreferenceDataStore(
         const val KEY_ROW_HEIGHT = "soft_keyboard_row_height"
 
         const val KEY_ENGINE_TYPE = "input_engine_type"
-        const val KEY_MAIN_LAYOUT = "input_main_layout"
+        const val KEY_LAYOUT_PRESET = "input_load_preset"
 
         const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
         const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
