@@ -14,7 +14,10 @@ import io.github.lee0701.mboard.input.HangulInputEngine
 import io.github.lee0701.mboard.input.HanjaConverterBuilder
 import io.github.lee0701.mboard.input.HanjaConverterInputEngine
 import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.module.softkeyboard.Include
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.softkeyboard.Row
+import io.github.lee0701.mboard.module.softkeyboard.RowItem
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
@@ -256,9 +259,20 @@ data class InputEnginePreset(
             return null to null
         }
 
+        private fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
+            return row.keys.flatMap { rowItem ->
+                if(rowItem is Include) resolveSoftKeyIncludes(context,
+                    yaml.decodeFromStream(context.assets.open(rowItem.name)))
+                else listOf(rowItem)
+            }
+        }
+
         private fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
             val resolved = names.map { filename ->
-                yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+                val keyboard = yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+                keyboard.copy(
+                    rows = keyboard.rows.map { it.copy(resolveSoftKeyIncludes(context, it)) }
+                )
             }
             return resolved.fold(Keyboard()) { acc, input -> acc + input }
         }

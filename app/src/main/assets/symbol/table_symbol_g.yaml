@@ -37,7 +37,7 @@ map:
     base: 0x0023
     shift: 0x00a5
   "KEYCODE_D":
-    base: 0xc6d0
+    base: 0x00a3
     shift: 0x0024
   "KEYCODE_F":
     base: 0x005f
