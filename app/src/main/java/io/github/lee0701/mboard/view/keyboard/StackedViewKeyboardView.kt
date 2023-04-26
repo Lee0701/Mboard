@@ -58,25 +58,26 @@ open class StackedViewKeyboardView(
     }
 
     private fun initRowView(row: Row, theme: Theme): RowViewWrapper {
-        val wrappers = mutableListOf<KeyLikeViewWrapper>()
+        val wrappers = mutableListOf<RowItemViewWrapper>()
         val binding = KeyboardRowBinding.inflate(LayoutInflater.from(context), null, false).apply {
             root.layoutParams = LinearLayoutCompat.LayoutParams(
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT, 0
             ).apply {
                 weight = 1f
             }
-            row.keys.forEach { keyLike ->
-                when(keyLike) {
+            row.keys.forEach { rowItem ->
+                when(rowItem) {
                     is Key -> {
-                        val keyViewWrapper = initKeyView(keyLike, this, theme)
+                        val keyViewWrapper = initKeyView(rowItem, this, theme)
                         wrappers += keyViewWrapper
                         root.addView(keyViewWrapper.binding.root)
                     }
                     is Spacer -> {
-                        val spacerViewWrapper = initSpacerView(keyLike)
+                        val spacerViewWrapper = initSpacerView(rowItem)
                         wrappers += spacerViewWrapper
                         root.addView(spacerViewWrapper.binding.root)
                     }
+                    else -> {}
                 }
             }
         }
@@ -120,18 +121,18 @@ open class StackedViewKeyboardView(
     data class RowViewWrapper(
         val row: Row,
         val binding: KeyboardRowBinding,
-        val keyLikes: List<KeyLikeViewWrapper>,
+        val rowItems: List<RowItemViewWrapper>,
     ) {
-        val keys: List<KeyViewWrapper> = keyLikes.filterIsInstance<KeyViewWrapper>()
+        val keys: List<KeyViewWrapper> = rowItems.filterIsInstance<KeyViewWrapper>()
     }
 
-    interface KeyLikeViewWrapper
+    interface RowItemViewWrapper
 
     data class KeyViewWrapper(
         override val key: Key,
         private val row: KeyboardRowBinding,
         val binding: KeyboardKeyBinding,
-    ): KeyLikeViewWrapper, KeyWrapper {
+    ): RowItemViewWrapper, KeyWrapper {
         override val x: Int get() = binding.root.x.roundToInt()
         override val y: Int get() = row.root.y.roundToInt()
         override val width: Int get() = binding.root.width
@@ -143,7 +144,7 @@ open class StackedViewKeyboardView(
     data class SpacerViewWrapper(
         override val spacer: Spacer,
         val binding: KeyboardSpacerBinding,
-    ): KeyLikeViewWrapper, SpacerWrapper {
+    ): RowItemViewWrapper, SpacerWrapper {
         override val x: Int get() = binding.root.x.roundToInt()
         override val y: Int get() = binding.root.y.roundToInt()
         override val width: Int get() = binding.root.width

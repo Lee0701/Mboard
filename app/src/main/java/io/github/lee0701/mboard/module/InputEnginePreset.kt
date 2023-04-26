@@ -282,6 +282,5 @@ data class InputEnginePreset(
             }
             return resolved.fold(MoreKeysTable()) { acc, input -> acc + input }
         }
-
     }
 }

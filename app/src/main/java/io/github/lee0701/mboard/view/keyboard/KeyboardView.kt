@@ -56,7 +56,7 @@ abstract class KeyboardView(
     protected val keyStates: MutableMap<Key, Boolean> = mutableMapOf()
     private var popups: MutableMap<Int, KeyboardPopup> = mutableMapOf()
 
-    protected abstract val wrappedKeys: List<KeyLikeWrapper>
+    protected abstract val wrappedKeys: List<RowItemWrapper>
     protected val moreKeysKeyboards: MutableMap<Int, Keyboard> = mutableMapOf()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -271,20 +271,20 @@ abstract class KeyboardView(
         setMeasuredDimension(keyboardWidth, keyboardHeight)
     }
 
-    interface KeyLikeWrapper {
+    interface RowItemWrapper {
         val x: Int
         val y: Int
         val width: Int
         val height: Int
     }
 
-    interface KeyWrapper: KeyLikeWrapper {
+    interface KeyWrapper: RowItemWrapper {
         val key: Key
         val label: String?
         val icon: Drawable?
     }
 
-    interface SpacerWrapper: KeyLikeWrapper {
+    interface SpacerWrapper: RowItemWrapper {
         val spacer: Spacer
     }
 
