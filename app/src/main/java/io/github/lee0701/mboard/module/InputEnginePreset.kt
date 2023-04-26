@@ -18,6 +18,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Include
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.RowItem
+import io.github.lee0701.mboard.module.table.CharOverrideTable
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
@@ -40,6 +41,7 @@ data class InputEnginePreset(
         val softKeyboard = loadSoftKeyboards(context, names = layout.softKeyboard)
         val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
+        val overrideTable = loadOverrideTable(context, names = layout.overrideTable)
         val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
 
         val getHangulInputEngine = { listener: InputEngine.Listener ->
@@ -57,6 +59,7 @@ data class InputEnginePreset(
                 HanjaConverterInputEngine(
                     { l -> HangulInputEngine(
                         convertTable = convertTable,
+                        overrideTable = overrideTable,
                         moreKeysTable = moreKeysTable,
                         jamoCombinationTable = combinationTable,
                         listener = l,
@@ -69,6 +72,7 @@ data class InputEnginePreset(
                 HangulInputEngine(
                     convertTable = convertTable,
                     moreKeysTable = moreKeysTable,
+                    overrideTable = overrideTable,
                     jamoCombinationTable = combinationTable,
                     listener,
                 )
@@ -81,6 +85,7 @@ data class InputEnginePreset(
                     CodeConverterInputEngine(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
                         autoUnlockShift = autoUnlockShift,
                         listener = listener,
                     )
@@ -92,6 +97,7 @@ data class InputEnginePreset(
                     CodeConverterInputEngine(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
                         autoUnlockShift = autoUnlockShift,
                         listener = listener,
                     )
@@ -180,6 +186,7 @@ data class InputEnginePreset(
         val softKeyboard: List<String> = listOf(),
         val moreKeysTable: List<String> = listOf(),
         val codeConvertTable: List<String> = listOf(),
+        val overrideTable: List<String> = listOf(),
         val combinationTable: List<String> = listOf(),
     ) {
         fun mutable(): Mutable {
@@ -187,6 +194,7 @@ data class InputEnginePreset(
                 softKeyboard = softKeyboard,
                 moreKeysTable = moreKeysTable,
                 codeConvertTable = codeConvertTable,
+                overrideTable = overrideTable,
                 combinationTable = combinationTable,
             )
         }
@@ -195,6 +203,7 @@ data class InputEnginePreset(
             var softKeyboard: List<String> = listOf(),
             var moreKeysTable: List<String> = listOf(),
             var codeConvertTable: List<String> = listOf(),
+            var overrideTable: List<String> = listOf(),
             var combinationTable: List<String> = listOf(),
         ) {
             fun commit(): Layout {
@@ -202,6 +211,7 @@ data class InputEnginePreset(
                     softKeyboard = softKeyboard,
                     moreKeysTable = moreKeysTable,
                     codeConvertTable = codeConvertTable,
+                    overrideTable = overrideTable,
                     combinationTable = combinationTable,
                 )
             }
@@ -281,6 +291,12 @@ data class InputEnginePreset(
             val resolved = names.map { filename ->
                 yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
             return resolved.fold(SimpleCodeConvertTable() as CodeConvertTable) { acc, input -> acc + input }
+        }
+
+        private fun loadOverrideTable(context: Context, names: List<String>): CharOverrideTable {
+            val resolved = names.map { filename ->
+                yaml.decodeFromStream<CharOverrideTable>(context.assets.open(filename)) }
+            return resolved.fold(CharOverrideTable()) { acc, input -> acc + input }
         }
 
         private fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {

@@ -94,7 +94,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
                     layout = preset.layout.copy(
                         softKeyboard = modFilenames(preset.layout.softKeyboard),
                         moreKeysTable = modFilenames(preset.layout.moreKeysTable) + "symbol/morekeys_symbols_hangul.yaml",
-                        codeConvertTable = modFilenames(preset.layout.codeConvertTable) + "symbol/table_currency_won.yaml",
+                        codeConvertTable = modFilenames(preset.layout.codeConvertTable),
+                        overrideTable = modFilenames(preset.layout.overrideTable) + "symbol/override_currency_won.yaml",
                         combinationTable = modFilenames(preset.layout.combinationTable),
                     ),
                     size = modSize(preset.size),

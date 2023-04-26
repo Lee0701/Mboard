@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.input
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.table.CharOverrideTable
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.MoreKeysTable
 import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
@@ -10,6 +11,7 @@ import io.github.lee0701.mboard.service.KeyboardState
 
 class CodeConverterInputEngine(
     private val convertTable: CodeConvertTable,
+    private val overrideTable: CharOverrideTable,
     private val moreKeysTable: MoreKeysTable,
     private val autoUnlockShift: Boolean,
     override val listener: InputEngine.Listener,
@@ -19,7 +21,8 @@ class CodeConverterInputEngine(
 
     override fun onKey(code: Int, state: KeyboardState) {
         val converted = convertTable.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())
-        listener.onCommitText(converted.toChar().toString())
+        val override = overrideTable.get(converted) ?: converted
+        listener.onCommitText(override.toChar().toString())
     }
 
     override fun onDelete() {
@@ -34,7 +37,9 @@ class CodeConverterInputEngine(
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        val codeMap = convertTable.getAllForState(state).mapValues { (_, code) -> code.toChar().toString() }
+        val codeMap = convertTable.getAllForState(state)
+            .mapValues { (_, code) -> overrideTable.get(code) ?: code }
+            .mapValues { (_, code) -> code.toChar().toString() }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 

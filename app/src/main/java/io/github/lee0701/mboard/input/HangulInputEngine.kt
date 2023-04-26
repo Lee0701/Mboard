@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
 import io.github.lee0701.mboard.charset.Hangul
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.module.table.CharOverrideTable
 import io.github.lee0701.mboard.module.table.CodeConvertTable
 import io.github.lee0701.mboard.module.table.JamoCombinationTable
 import io.github.lee0701.mboard.module.table.LayeredCodeConvertTable
@@ -14,6 +15,7 @@ import io.github.lee0701.mboard.service.KeyboardState
 data class HangulInputEngine(
     private val convertTable: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
+    private val overrideTable: CharOverrideTable,
     private val jamoCombinationTable: JamoCombinationTable,
     override val listener: InputEngine.Listener,
 ): InputEngine {
@@ -43,7 +45,8 @@ data class HangulInputEngine(
             onReset()
             if(char > 0) listener.onCommitText(char.toChar().toString())
         } else {
-            val (text, hangulStates) = hangulCombiner.combine(hangulState, converted)
+            val override = overrideTable.get(converted)
+            val (text, hangulStates) = hangulCombiner.combine(hangulState, override ?: converted)
             if(text.isNotEmpty()) clearStack()
             this.stateStack += hangulStates
             listener.onCommitText(text)
@@ -76,15 +79,17 @@ data class HangulInputEngine(
             if(convertTable is LayeredCodeConvertTable)
                 convertTable.get(layerIdByHangulState) ?: convertTable.get(BASE_LAYER_NAME)
             else convertTable
-        val codeMap = table?.getAllForState(state).orEmpty().mapValues { (_, output) ->
-            val ch = output and 0xffffff
-            if(Hangul.isModernJamo(ch)) {
-                if(Hangul.isCho(ch)) Hangul.choToCompatConsonant(ch.toChar()).toString()
-                else if(Hangul.isJung(ch)) Hangul.jungToCompatVowel(ch.toChar()).toString()
-                else if(Hangul.isJong(ch)) Hangul.jongToCompatConsonant(ch.toChar()).toString()
-                else ch.toChar().toString()
-            } else ch.toChar().toString().orEmpty()
-        }
+        val codeMap = table?.getAllForState(state).orEmpty()
+            .mapValues { (_, code) -> overrideTable.get(code) ?: code }
+            .mapValues { (_, output) ->
+                val ch = output and 0xffffff
+                if(Hangul.isModernJamo(ch)) {
+                    if(Hangul.isCho(ch)) Hangul.choToCompatConsonant(ch.toChar()).toString()
+                    else if(Hangul.isJung(ch)) Hangul.jungToCompatVowel(ch.toChar()).toString()
+                    else if(Hangul.isJong(ch)) Hangul.jongToCompatConsonant(ch.toChar()).toString()
+                    else ch.toChar().toString()
+                } else ch.toChar().toString()
+            }
         return DirectInputEngine.getLabels(keyCharacterMap, state) + codeMap
     }
 
