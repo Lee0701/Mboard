@@ -54,6 +54,7 @@ class KeyboardLayoutPreviewAdapter(
                 disableTouch = !previewMode
             )
             val view = if(engine is SoftInputEngine) engine.initView(context) else null
+            engine.onReset()
             if(!previewMode) view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
             binding.rowWrapper.removeAllViews()
             if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)

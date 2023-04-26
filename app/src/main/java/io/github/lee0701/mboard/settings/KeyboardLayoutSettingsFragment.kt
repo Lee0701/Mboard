@@ -139,6 +139,7 @@ class KeyboardLayoutSettingsFragment(
         val engine = mod(preset).inflate(context, emptyInputEngineListener)
         frame.removeAllViews()
         if(engine is SoftInputEngine) frame.addView(engine.initView(context))
+        engine.onReset()
         frame.visibility = VISIBLE
     }
 
@@ -173,7 +174,6 @@ class KeyboardLayoutSettingsFragment(
         preferenceDataStore?.write()
         rootPreference.edit().putBoolean("requested_restart", true).apply()
         rootPreference.edit().putBoolean("requested_restart", false).apply()
-        inputEngine?.onReset()
         updateKeyboardView()
     }
 

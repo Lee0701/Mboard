@@ -2,3 +2,5 @@ rows:
 - keys:
   - !<key>
     output: "¿"
+  - !<key>
+    output: "‽"
