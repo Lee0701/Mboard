@@ -5,6 +5,7 @@ import androidx.preference.PreferenceDataStore
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import java.io.File
 
 class KeyboardLayoutPreferenceDataStore(
@@ -30,6 +31,12 @@ class KeyboardLayoutPreferenceDataStore(
         update()
     }
 
+    fun putKeyboards(list: List<String>) {
+        preset.layout.softKeyboard = list
+        write()
+        // Updating the view would cancel dragging, so should not be done.
+    }
+
     override fun putString(key: String?, value: String?) {
         when(key) {
             KEY_ENGINE_TYPE -> preset.type = InputEnginePreset.Type.valueOf(value ?: "Latin")
@@ -38,9 +45,9 @@ class KeyboardLayoutPreferenceDataStore(
                 val newLayout = InputEnginePreset.yaml
                     .decodeFromStream<InputEnginePreset>(context.assets.open(assetFileName)).layout
                 preset.layout = newLayout.mutable()
-                write()
             }
         }
+        write()
         update()
     }
 
@@ -48,6 +55,7 @@ class KeyboardLayoutPreferenceDataStore(
         when(key) {
             KEY_HANJA_ADDITIONAL_DICTIONARIES -> preset.hanja.additionalDictionaries = values ?: mutableSetOf()
         }
+        write()
         update()
     }
 

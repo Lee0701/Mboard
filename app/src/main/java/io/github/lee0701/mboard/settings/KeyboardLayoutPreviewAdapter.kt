@@ -1,9 +1,13 @@
 package io.github.lee0701.mboard.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.core.view.GestureDetectorCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,6 +22,7 @@ class KeyboardLayoutPreviewAdapter(
     val context: Context,
 ): ListAdapter<InputEnginePreset, KeyboardLayoutPreviewAdapter.ViewHolder>(DiffCallback()) {
 
+    var onItemLongPress: (ViewHolder) -> Unit = {}
     private var screenMode: String = "mobile"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,20 +34,28 @@ class KeyboardLayoutPreviewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.onBind(position, getItem(position))
+        holder.onBind(getItem(position))
     }
 
     inner class ViewHolder(
         private val binding: ListitemKeyboardLayoutPreviewRowBinding,
     ): RecyclerView.ViewHolder(binding.root) {
-        fun onBind(index: Int, preset: InputEnginePreset) {
+        private val gestureDetector = GestureDetectorCompat(context, object: GestureDetector.SimpleOnGestureListener() {
+            override fun onDown(e: MotionEvent): Boolean = true
+            override fun onLongPress(e: MotionEvent) = onItemLongPress(this@ViewHolder)
+        })
+        @SuppressLint("ClickableViewAccessibility")
+        fun onBind(preset: InputEnginePreset) {
             val context = binding.root.context
-            val engine = mod(preset).inflate(context,
-                KeyboardLayoutSettingsActivity.emptyInputEngineListener
+            val engine = mod(preset).inflate(
+                context,
+                KeyboardLayoutSettingsActivity.emptyInputEngineListener,
+                disableTouch = true
             )
             val view = if(engine is SoftInputEngine) engine.initView(context) else null
-            binding.root.removeAllViews()
-            if(engine is BasicSoftInputEngine) binding.root.addView(view)
+            view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
+            binding.rowWrapper.removeAllViews()
+            if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)
         }
     }
 
@@ -74,6 +87,7 @@ class KeyboardLayoutPreviewAdapter(
             softKeyboard = modFilenames(layout.softKeyboard),
             moreKeysTable = modFilenames(layout.moreKeysTable),
             codeConvertTable = modFilenames(layout.codeConvertTable),
+            overrideTable = modFilenames(layout.overrideTable),
             combinationTable = modFilenames(layout.combinationTable),
         )
     }

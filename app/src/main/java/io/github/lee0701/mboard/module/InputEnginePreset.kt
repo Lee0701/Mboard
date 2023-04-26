@@ -37,7 +37,7 @@ data class InputEnginePreset(
     val hanja: Hanja = Hanja(),
 ) {
 
-    fun inflate(context: Context, rootListener: InputEngine.Listener): InputEngine {
+    fun inflate(context: Context, rootListener: InputEngine.Listener, disableTouch: Boolean = false): InputEngine {
         val softKeyboard = loadSoftKeyboards(context, names = layout.softKeyboard)
         val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
@@ -113,6 +113,7 @@ data class InputEnginePreset(
             autoUnlockShift = autoUnlockShift,
             showCandidatesView = candidatesView,
             listener = rootListener,
+            disableTouch = disableTouch,
         )
     }
 

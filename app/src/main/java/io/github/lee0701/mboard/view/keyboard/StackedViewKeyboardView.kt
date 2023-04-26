@@ -18,7 +18,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Row
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
-open class StackedViewKeyboardView(
+class StackedViewKeyboardView(
     context: Context,
     attrs: AttributeSet?,
     keyboard: Keyboard,
@@ -27,7 +27,8 @@ open class StackedViewKeyboardView(
     listener: KeyboardListener,
     unifyHeight: Boolean,
     rowHeight: Int,
-): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener, unifyHeight, rowHeight) {
+    disableTouch: Boolean = false,
+): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener, unifyHeight, rowHeight, disableTouch) {
 
     private val keyboardViewWrapper = initKeyboardView(keyboard, theme, listener)
     override val wrappedKeys: List<KeyWrapper> = keyboardViewWrapper.keys.toList()

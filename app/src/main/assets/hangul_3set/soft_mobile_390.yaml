@@ -1,7 +1,7 @@
 rows:
 - keys:
   - !<include>
-    name: "common/row_numbers.yaml"
+    name: "common/row_number.yaml"
 - keys:
   - !<include>
     name: "common/row_qwerty_alpha_1.yaml"

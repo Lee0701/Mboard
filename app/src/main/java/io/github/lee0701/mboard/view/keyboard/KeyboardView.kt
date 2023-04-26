@@ -12,7 +12,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import androidx.preference.PreferenceManager
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.FlickLongPressAction
 import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
@@ -32,6 +31,7 @@ abstract class KeyboardView(
     protected val listener: KeyboardListener,
     unifyHeight: Boolean,
     rowHeight: Int,
+    private val disableTouch: Boolean = false,
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -61,6 +61,7 @@ abstract class KeyboardView(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(disableTouch) return false
         if(event == null) return super.onTouchEvent(event)
         val pointerId = event.getPointerId(event.actionIndex)
         val x = event.getX(event.actionIndex).roundToInt()

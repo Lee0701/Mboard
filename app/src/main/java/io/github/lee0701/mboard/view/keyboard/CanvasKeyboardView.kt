@@ -19,7 +19,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
 import kotlin.math.roundToInt
 
-open class CanvasKeyboardView(
+class CanvasKeyboardView(
     context: Context,
     attrs: AttributeSet?,
     keyboard: Keyboard,
@@ -30,7 +30,8 @@ open class CanvasKeyboardView(
     rowHeight: Int,
     val width: Int? = null,
     val height: Int? = null,
-): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener, unifyHeight, rowHeight) {
+    disableTouch: Boolean = false,
+): KeyboardView(context, attrs, keyboard, theme, popupOffsetY, listener, unifyHeight, rowHeight, disableTouch) {
 
     private val rect = Rect()
     private val bitmapPaint = Paint()

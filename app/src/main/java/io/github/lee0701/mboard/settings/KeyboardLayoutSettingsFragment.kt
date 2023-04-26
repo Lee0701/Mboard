@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
+import java.util.Collections
 import kotlin.math.roundToInt
 
 class KeyboardLayoutSettingsFragment(
@@ -31,14 +31,13 @@ class KeyboardLayoutSettingsFragment(
     private var keyboardViewType: String = "canvas"
     private var themeName: String = "theme_dynamic"
 
-    var previewView: View? = null
-    var inputEngine: InputEngine? = null
-    var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
+    private var inputEngine: InputEngine? = null
+    private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
         val context = context ?: return
-        val rootPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val screenMode = rootPreferences.getString("layout_screen_mode", "mobile") ?: "mobile"
         this.screenMode = screenMode
 
@@ -108,19 +107,26 @@ class KeyboardLayoutSettingsFragment(
 
     private fun updateKeyboardView(preset: InputEnginePreset) {
         val context = context ?: return
-        val engine = mod(preset).inflate(context,
-            KeyboardLayoutSettingsActivity.emptyInputEngineListener
-        )
-        val view = if(engine is SoftInputEngine) engine.initView(context) else null
-        this.inputEngine = engine
-        this.previewView = view
+        val presets = preset.layout.softKeyboard.map { keyboard ->
+            preset.copy(layout = preset.layout.copy(softKeyboard = listOf(keyboard))) }
+            .toMutableList()
         handler.post {
             val adapter = KeyboardLayoutPreviewAdapter(context)
-            activity?.findViewById<RecyclerView>(R.id.preview_recycler_view)?.apply {
-                this.adapter = adapter
-                this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
+                Collections.swap(presets, from.adapterPosition, to.adapterPosition)
+                adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
+                preferenceDataStore?.putKeyboards(presets.flatMap { it.layout.softKeyboard })
+                true
+            })
+            adapter.onItemLongPress = { viewHolder ->
+                touchHelper.startDrag(viewHolder)
             }
-            adapter.submitList(listOf(preset))
+            activity?.findViewById<RecyclerView>(R.id.preview_recycler_view)?.apply {
+                this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                this.adapter = adapter
+                touchHelper.attachToRecyclerView(this)
+            }
+            adapter.submitList(presets)
         }
     }
 
@@ -155,6 +161,22 @@ class KeyboardLayoutSettingsFragment(
 
     private fun modHeight(height: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height.toFloat(), resources.displayMetrics).roundToInt()
+    }
+
+    class TouchCallback(
+        val onMove: (ViewHolder, ViewHolder) -> Boolean,
+    ): ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: ViewHolder,
+            target: ViewHolder
+        ): Boolean {
+            return onMove(viewHolder, target)
+        }
+
+        override fun onSwiped(viewHolder: ViewHolder, direction: Int) = Unit
+
+        override fun isLongPressDragEnabled(): Boolean = false
     }
 
 }
