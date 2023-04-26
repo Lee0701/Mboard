@@ -71,6 +71,7 @@ class KeyboardLayoutPreferenceDataStore(
         when(key) {
             KEY_ROW_HEIGHT -> preset.size.rowHeight = value.toInt()
         }
+        write()
         update()
     }
 
@@ -82,6 +83,7 @@ class KeyboardLayoutPreferenceDataStore(
             KEY_HANJA_PREDICTION -> preset.hanja.prediction = value
             KEY_HANJA_SORT_BY_CONTEXT -> preset.hanja.sortByContext = value
         }
+        write()
         update()
     }
 

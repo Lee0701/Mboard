@@ -24,6 +24,16 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.InputEngine
 import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_ADDITIONAL_DICTIONARIES
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_CONVERSION
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_PREDICTION
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_SORT_BY_CONTEXT
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_INPUT_HEADER
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_LAYOUT_PRESET
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_SHOW_CANDIDATES
 import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
 import java.io.File
 import java.util.Collections
@@ -68,30 +78,55 @@ class KeyboardLayoutSettingsFragment(
 
         keyboardViewType = rootPreferences.getString("appearance_keyboard_view_type", "canvas") ?: keyboardViewType
         themeName = rootPreferences.getString("appearance_theme", "theme_dynamic") ?: themeName
-        val preferenceDataStore = KeyboardLayoutPreferenceDataStore(context, file, this)
-        this.preferenceDataStore = preferenceDataStore
-        preferenceManager.preferenceDataStore = preferenceDataStore
+        val pref = KeyboardLayoutPreferenceDataStore(context, file, this)
+        this.preferenceDataStore = pref
+        preferenceManager.preferenceDataStore = pref
 
         val rootPreference = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val defaultHeightValue = rootPreference.getFloat("appearance_keyboard_height", 55f)
 
-        val defaultHeight = findPreference<SwitchPreference>(KeyboardLayoutPreferenceDataStore.KEY_DEFAULT_HEIGHT)
-        val rowHeight = findPreference<SliderPreference>(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT)
+        val defaultHeight = findPreference<SwitchPreference>(KEY_DEFAULT_HEIGHT)
+        val rowHeight = findPreference<SliderPreference>(KEY_ROW_HEIGHT)
 
         fun updateByDefaultHeight(newValue: Any?) {
             rowHeight?.isEnabled = newValue == false
-            if(newValue == true) preferenceDataStore.putFloat(KeyboardLayoutPreferenceDataStore.KEY_ROW_HEIGHT, defaultHeightValue)
+            if(newValue == true) pref.putFloat(KEY_ROW_HEIGHT, defaultHeightValue)
         }
         defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
             updateByDefaultHeight(newValue)
             true
         }
-        updateByDefaultHeight(preferenceDataStore.getBoolean(KeyboardLayoutPreferenceDataStore.KEY_DEFAULT_HEIGHT, true))
+        updateByDefaultHeight(pref.getBoolean(KEY_DEFAULT_HEIGHT, true))
 
-        val engineType = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE)
-        val layoutPreset = findPreference<ListPreference>(KeyboardLayoutPreferenceDataStore.KEY_LAYOUT_PRESET)
-        val inputHeader = findPreference<PreferenceCategory>(KeyboardLayoutPreferenceDataStore.KEY_INPUT_HEADER)
+        val engineType = findPreference<ListPreference>(KEY_ENGINE_TYPE)
+        val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
+        val inputHeader = findPreference<PreferenceCategory>(KEY_INPUT_HEADER)
 
+        val showCandidates = findPreference<SwitchPreference>(KEY_SHOW_CANDIDATES)
+        val hanjaConversion = findPreference<SwitchPreference>(KEY_HANJA_CONVERSION)
+        val hanjaPrediction = findPreference<SwitchPreference>(KEY_HANJA_PREDICTION)
+        val sortByContext = findPreference<SwitchPreference>(KEY_HANJA_SORT_BY_CONTEXT)
+        val selectedItems = findPreference<MultiSelectListPreference>(KEY_HANJA_ADDITIONAL_DICTIONARIES)
+
+        fun updateByShowCandidates(newValue: Any?) {
+            val enabled = newValue == true
+            hanjaConversion?.isEnabled = enabled
+            hanjaPrediction?.isEnabled = enabled
+            sortByContext?.isEnabled = enabled
+            selectedItems?.isEnabled = enabled
+
+            showCandidates?.isChecked = preferenceDataStore?.getBoolean(KEY_SHOW_CANDIDATES, false) == true
+            hanjaConversion?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_CONVERSION, false) == true
+            hanjaPrediction?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_PREDICTION, false) == true
+            sortByContext?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_SORT_BY_CONTEXT, false) == true
+            val mutableSet = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf()) ?: mutableSetOf()
+        }
+        updateByShowCandidates(true)
+        showCandidates?.setOnPreferenceChangeListener { _, newValue ->
+            updateByShowCandidates(newValue)
+            true
+        }
+        
         fun updateByEngineType(newValue: Any?) {
             inputHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
             val (entries, values) = when(newValue) {
@@ -114,7 +149,7 @@ class KeyboardLayoutSettingsFragment(
             layoutPreset?.setValueIndex(0)
             true
         }
-        updateByEngineType(preferenceDataStore.getString(KeyboardLayoutPreferenceDataStore.KEY_ENGINE_TYPE, "Latin"))
+        updateByEngineType(pref.getString(KEY_ENGINE_TYPE, "Latin"))
         engineType?.isVisible = false
 
         layoutPreset?.setOnPreferenceChangeListener { _, newValue ->
