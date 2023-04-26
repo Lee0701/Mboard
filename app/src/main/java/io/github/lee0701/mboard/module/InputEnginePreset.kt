@@ -2,7 +2,6 @@ package io.github.lee0701.mboard.module
 
 import android.content.Context
 import android.widget.Toast
-import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream

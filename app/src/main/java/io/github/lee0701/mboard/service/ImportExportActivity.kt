@@ -9,7 +9,6 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
-import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.module.serialization.KeyCodeSerializer
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.table.CodeConvertTable
@@ -44,9 +43,9 @@ class ImportExportActivity: AppCompatActivity() {
 
         val keyboards = listOf(
 //            "common/soft_mobile_qwerty.yaml",
-            "hangul_3set/soft_390_mobile.yaml",
-            "hangul_3set/soft_391_mobile.yaml",
-//            "latin/soft_qwerty_mobile_dvorak_custom.yaml",
+            "hangul_3set/soft_%s_390.yaml",
+            "hangul_3set/soft_%s_391.yaml",
+//            "latin/soft_mobile_qwerty_dvorak_custom.yaml",
 //            "soft_qwerty_mobile_with_num.yaml",
 //            "common/soft_mobile_qwerty_with_semicolon.yaml",
         )

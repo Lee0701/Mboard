@@ -6,7 +6,6 @@ import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.module.InputEnginePreset
 import java.io.File
-import java.lang.Exception
 
 class KeyboardLayoutPreferenceDataStore(
     private val context: Context,
@@ -132,8 +131,7 @@ class KeyboardLayoutPreferenceDataStore(
     }
 
     companion object {
-        const val KEY_INPUT_HEADER = "pref_header_input_title"
-        const val KEY_ENGINE_TYPE_HANGUL_HEADER = "input_type_hangul_header"
+        const val KEY_INPUT_HEADER = "input_layer"
 
         const val KEY_DEFAULT_HEIGHT = "soft_keyboard_default_height"
         const val KEY_ROW_HEIGHT = "soft_keyboard_row_height"

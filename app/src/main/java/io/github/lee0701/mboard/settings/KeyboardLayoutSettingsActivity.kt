@@ -17,7 +17,6 @@ import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
-import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE_HANGUL_HEADER
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_INPUT_HEADER
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_LAYOUT_PRESET
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
@@ -73,6 +72,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
         KeyboardLayoutPreferenceDataStore.OnChangeListener {
         private val handler: Handler = Handler(Looper.getMainLooper())
 
+        private var screenMode: String = "mobile"
         private var keyboardViewType: String = "canvas"
         private var themeName: String = "theme_dynamic"
 
@@ -82,7 +82,9 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             val context = context ?: return
-            val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val rootPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+            val screenMode = rootPreferences.getString("layout_screen_mode", "mobile") ?: "mobile"
+            this.screenMode = screenMode
 
             val file = File(context.filesDir, fileName)
             if(!file.exists()) {
@@ -115,10 +117,9 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
             val engineType = findPreference<ListPreference>(KEY_ENGINE_TYPE)
             val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
             val inputHeader = findPreference<PreferenceCategory>(KEY_INPUT_HEADER)
-            val hangulHeader = findPreference<PreferenceCategory>(KEY_ENGINE_TYPE_HANGUL_HEADER)
 
             fun updateByEngineType(newValue: Any?) {
-                hangulHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
+                inputHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
                 val (entries, values) = when(newValue) {
                     InputEnginePreset.Type.Hangul.name -> {
                         R.array.preset_hangul_entries to R.array.preset_hangul_values
@@ -139,7 +140,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
                 layoutPreset?.setValueIndex(0)
                 true
             }
-            updateByEngineType(engineType?.value)
+            updateByEngineType(preferenceDataStore.getString(KEY_ENGINE_TYPE, "Latin"))
             engineType?.isVisible = false
 
             layoutPreset?.setOnPreferenceChangeListener { _, newValue ->
@@ -176,8 +177,22 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
         private fun mod(preset: InputEnginePreset): InputEnginePreset {
             return preset.copy(
+                layout = modLayout(preset.layout),
                 size = InputEnginePreset.Size(rowHeight = modHeight(preset.size.rowHeight)),
             )
+        }
+
+        private fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
+            return layout.copy(
+                softKeyboard = modFilenames(layout.softKeyboard),
+                moreKeysTable = modFilenames(layout.moreKeysTable),
+                codeConvertTable = modFilenames(layout.codeConvertTable),
+                combinationTable = modFilenames(layout.combinationTable),
+            )
+        }
+
+        private fun modFilenames(fileNames: List<String>): List<String> {
+            return fileNames.map { it.format(screenMode) }
         }
 
         private fun modHeight(height: Int): Int {
