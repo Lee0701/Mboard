@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.InputEngine
@@ -113,10 +115,12 @@ class KeyboardLayoutSettingsFragment(
         this.inputEngine = engine
         this.previewView = view
         handler.post {
-            activity?.findViewById<FrameLayout>(R.id.preview_wrapper)?.apply {
-                removeAllViews()
-                addView(view)
+            val adapter = KeyboardLayoutPreviewAdapter(context)
+            activity?.findViewById<RecyclerView>(R.id.preview_recycler_view)?.apply {
+                this.adapter = adapter
+                this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
+            adapter.submitList(listOf(preset))
         }
     }
 
@@ -125,8 +129,8 @@ class KeyboardLayoutSettingsFragment(
         preferenceDataStore?.write()
         rootPreference.edit().putBoolean("requested_restart", true).apply()
         rootPreference.edit().putBoolean("requested_restart", false).apply()
-        updateKeyboardView(preset)
         inputEngine?.onReset()
+        updateKeyboardView(preset)
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {

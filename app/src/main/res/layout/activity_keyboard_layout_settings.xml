@@ -7,8 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/preview_wrapper"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/preview_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_height="200dp" />
