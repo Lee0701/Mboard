@@ -1,4 +1,4 @@
-type: "Latin"
+type: "Symbol"
 layout:
   softKeyboard:
   - "common/soft_%s_qwerty_with_semicolon.yaml"

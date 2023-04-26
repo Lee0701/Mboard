@@ -85,7 +85,7 @@ data class InputEnginePreset(
                 Type.Hangul -> {
                     getHangulInputEngine(listener)
                 }
-                Type.Symbols -> {
+                Type.Symbol -> {
                     CodeConverterInputEngine(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
@@ -140,7 +140,7 @@ data class InputEnginePreset(
 
     @Serializable
     enum class Type {
-        Latin, Hangul, Symbols
+        Latin, Hangul, Symbol
     }
 
     @Serializable

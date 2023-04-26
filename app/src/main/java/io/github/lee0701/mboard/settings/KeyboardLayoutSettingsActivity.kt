@@ -127,7 +127,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
                     InputEnginePreset.Type.Latin.name -> {
                         R.array.preset_latin_entries to R.array.preset_latin_values
                     }
-                    InputEnginePreset.Type.Symbols.name -> {
+                    InputEnginePreset.Type.Symbol.name -> {
                         R.array.preset_symbol_entries to R.array.preset_symbol_values
                     }
                     else -> return

@@ -1,4 +1,4 @@
-type: "Latin"
+type: "Symbol"
 layout:
   softKeyboard:
   - "common/soft_%s_qwerty.yaml"
@@ -7,4 +7,4 @@ layout:
   codeConvertTable:
   - "symbol/table_custom_keys.yaml"
   - "symbol/table_symbol_a.yaml"
-  autoUnlockShift: false
+autoUnlockShift: false
