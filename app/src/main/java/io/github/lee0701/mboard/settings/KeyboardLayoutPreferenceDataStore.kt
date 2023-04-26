@@ -24,7 +24,7 @@ class KeyboardLayoutPreferenceDataStore(
         }
     })
 
-    private val preset: InputEnginePreset.Mutable =
+    val preset: InputEnginePreset.Mutable =
         InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable()
 
     init {

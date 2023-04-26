@@ -106,6 +106,8 @@
 
     <string name="pref_layout_preset_title">기본 키보드 배열</string>
     <string name="pref_layout_preset_summary">미리 설정된 배열을 불러옵니다.</string>
+    <string name="pref_layout_preview_mode_title">미리보기</string>
+    <string name="pref_layout_reorder_mode_title">순서 변경</string>
 
     <string name="pref_soft_keyboard_header_title">화면 키보드</string>
 

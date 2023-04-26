@@ -4,18 +4,27 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import androidx.recyclerview.widget.RecyclerView.INVISIBLE
+import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.InputEngine
+import io.github.lee0701.mboard.input.SoftInputEngine
 import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
 import java.io.File
 import java.util.Collections
 import kotlin.math.roundToInt
@@ -31,8 +40,19 @@ class KeyboardLayoutSettingsFragment(
     private var keyboardViewType: String = "canvas"
     private var themeName: String = "theme_dynamic"
 
+    private var previewMode: Boolean = false
+
     private var inputEngine: InputEngine? = null
     private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        setHasOptionsMenu(true)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
@@ -105,7 +125,24 @@ class KeyboardLayoutSettingsFragment(
         }
     }
 
-    private fun updateKeyboardView(preset: InputEnginePreset) {
+    private fun updateKeyboardView() {
+        val preset = preferenceDataStore?.preset?.commit() ?: return
+        activity?.findViewById<FrameLayout>(R.id.preview_mode_frame)?.visibility = INVISIBLE
+        activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)?.visibility = INVISIBLE
+        if(previewMode) updatePreviewMode(preset)
+        else updateReorderMode(preset)
+    }
+
+    private fun updatePreviewMode(preset: InputEnginePreset) {
+        val context = context ?: return
+        val frame = activity?.findViewById<FrameLayout>(R.id.preview_mode_frame) ?: return
+        val engine = mod(preset).inflate(context, emptyInputEngineListener)
+        frame.removeAllViews()
+        if(engine is SoftInputEngine) frame.addView(engine.initView(context))
+        frame.visibility = VISIBLE
+    }
+
+    private fun updateReorderMode(preset: InputEnginePreset) {
         val context = context ?: return
         val presets = preset.layout.softKeyboard.map { keyboard ->
             preset.copy(layout = preset.layout.copy(softKeyboard = listOf(keyboard))) }
@@ -121,12 +158,13 @@ class KeyboardLayoutSettingsFragment(
             adapter.onItemLongPress = { viewHolder ->
                 touchHelper.startDrag(viewHolder)
             }
-            activity?.findViewById<RecyclerView>(R.id.preview_recycler_view)?.apply {
+            val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)?.apply {
                 this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapter
                 touchHelper.attachToRecyclerView(this)
             }
             adapter.submitList(presets)
+            recyclerView?.visibility = VISIBLE
         }
     }
 
@@ -136,7 +174,36 @@ class KeyboardLayoutSettingsFragment(
         rootPreference.edit().putBoolean("requested_restart", true).apply()
         rootPreference.edit().putBoolean("requested_restart", false).apply()
         inputEngine?.onReset()
-        updateKeyboardView(preset)
+        updateKeyboardView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_keyboard_layout_setting, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val previewMode = menu.findItem(R.id.preview_mode)
+        val changeOrdersMode = menu.findItem(R.id.reorder_mode)
+        previewMode.isVisible = false
+        changeOrdersMode.isVisible = false
+        if(this.previewMode) changeOrdersMode.isVisible = true
+        else previewMode.isVisible = true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.preview_mode -> {
+                previewMode = true
+                updateKeyboardView()
+                true
+            }
+            R.id.reorder_mode -> {
+                previewMode = false
+                updateKeyboardView()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun mod(preset: InputEnginePreset): InputEnginePreset {

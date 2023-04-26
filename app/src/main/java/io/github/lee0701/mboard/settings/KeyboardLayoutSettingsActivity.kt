@@ -1,6 +1,8 @@
 package io.github.lee0701.mboard.settings
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.input.Candidate

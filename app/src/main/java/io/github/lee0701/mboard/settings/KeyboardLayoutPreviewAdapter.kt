@@ -20,6 +20,7 @@ import kotlin.math.roundToInt
 
 class KeyboardLayoutPreviewAdapter(
     val context: Context,
+    val previewMode: Boolean = false,
 ): ListAdapter<InputEnginePreset, KeyboardLayoutPreviewAdapter.ViewHolder>(DiffCallback()) {
 
     var onItemLongPress: (ViewHolder) -> Unit = {}
@@ -50,10 +51,10 @@ class KeyboardLayoutPreviewAdapter(
             val engine = mod(preset).inflate(
                 context,
                 KeyboardLayoutSettingsActivity.emptyInputEngineListener,
-                disableTouch = true
+                disableTouch = !previewMode
             )
             val view = if(engine is SoftInputEngine) engine.initView(context) else null
-            view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
+            if(!previewMode) view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
             binding.rowWrapper.removeAllViews()
             if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)
         }
