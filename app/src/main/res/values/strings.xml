@@ -108,6 +108,10 @@
     <string name="pref_layout_preset_summary">Load a layout from presets.</string>
     <string name="pref_layout_preview_mode_title">Preview Mode</string>
     <string name="pref_layout_reorder_mode_title">Change Orders</string>
+    <string name="pref_layout_add_component_title">Add a Component</string>
+    <string name="pref_layout_component_number_row_title">Number Row</string>
+    <string name="pref_layout_component_text_selection_title">Text Selection Tool</string>
+    <string name="pref_layout_component_number_language_tab_title">Language Switcher</string>
 
     <string name="pref_soft_keyboard_header_title">On-screen Keyboard</string>
 

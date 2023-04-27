@@ -6,6 +6,10 @@
         <item name="dialogCornerRadius">28dp</item>
     </style>
 
+    <style name="Theme.MBoard.Icon">
+        <item name="iconTint">@color/black</item>
+    </style>
+
     <style name="Theme.MBoard.Keyboard">
         <item name="background">@color/keyboard_bg_light</item>
     </style>

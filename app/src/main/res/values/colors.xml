@@ -34,4 +34,5 @@
     <color name="key_fg_dark">#f0f0f3</color>
     <color name="key_fg_dark_return">#191c1e</color>
 
+    <color name="icon_tint">@color/white</color>
 </resources>

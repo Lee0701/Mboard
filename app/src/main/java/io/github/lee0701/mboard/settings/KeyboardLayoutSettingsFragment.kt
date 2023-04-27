@@ -11,6 +11,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -46,14 +48,13 @@ class KeyboardLayoutSettingsFragment(
     KeyboardLayoutPreferenceDataStore.OnChangeListener {
     private val handler: Handler = Handler(Looper.getMainLooper())
 
+    private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
+
     private var screenMode: String = "mobile"
     private var keyboardViewType: String = "canvas"
     private var themeName: String = "theme_dynamic"
 
     private var previewMode: Boolean = false
-
-    private var inputEngine: InputEngine? = null
-    private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -237,6 +238,26 @@ class KeyboardLayoutSettingsFragment(
                 updateKeyboardView()
                 true
             }
+            R.id.add_component -> {
+                val dataStore = preferenceDataStore ?: return true
+                val bottomSheet = ChooseNewComponentBottomSheetFragment(
+                    types = listOf(ComponentType.NumberRow)
+                ) { componentType ->
+                    when(componentType) {
+                        ComponentType.NumberRow -> {
+                            dataStore.putKeyboards(modFilenames(listOf(NUMBER_ROW_ID)) +
+                                    dataStore.preset.layout.softKeyboard)
+                        }
+                        ComponentType.TextSelection -> {
+                        }
+                        ComponentType.LanguageTab -> {
+                        }
+                    }
+                    updateKeyboardView()
+                }
+                bottomSheet.show(childFragmentManager, ChooseNewComponentBottomSheetFragment.TAG)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -281,4 +302,19 @@ class KeyboardLayoutSettingsFragment(
         override fun isLongPressDragEnabled(): Boolean = false
     }
 
+    enum class ComponentType(
+        @DrawableRes val iconRes: Int,
+        @StringRes val titleRes: Int,
+    ) {
+        NumberRow(R.drawable.baseline_123_24,
+            R.string.pref_layout_component_number_row_title),
+        TextSelection(R.drawable.baseline_text_select_move_forward_character,
+            R.string.pref_layout_component_text_selection_title),
+        LanguageTab(R.drawable.baseline_language_24,
+            R.string.pref_layout_component_number_language_tab_title);
+    }
+
+    companion object {
+        const val NUMBER_ROW_ID = "common/soft_%s_number.yaml"
+    }
 }
