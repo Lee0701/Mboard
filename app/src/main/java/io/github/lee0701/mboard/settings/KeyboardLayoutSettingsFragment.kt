@@ -106,20 +106,20 @@ class KeyboardLayoutSettingsFragment(
         val hanjaConversion = findPreference<SwitchPreference>(KEY_HANJA_CONVERSION)
         val hanjaPrediction = findPreference<SwitchPreference>(KEY_HANJA_PREDICTION)
         val sortByContext = findPreference<SwitchPreference>(KEY_HANJA_SORT_BY_CONTEXT)
-        val selectedItems = findPreference<MultiSelectListPreference>(KEY_HANJA_ADDITIONAL_DICTIONARIES)
+        val additionalDictionaries = findPreference<MultiSelectListPreference>(KEY_HANJA_ADDITIONAL_DICTIONARIES)
 
         fun updateByShowCandidates(newValue: Any?) {
             val enabled = newValue == true
             hanjaConversion?.isEnabled = enabled
             hanjaPrediction?.isEnabled = enabled
             sortByContext?.isEnabled = enabled
-            selectedItems?.isEnabled = enabled
+            additionalDictionaries?.isEnabled = enabled
 
             showCandidates?.isChecked = preferenceDataStore?.getBoolean(KEY_SHOW_CANDIDATES, false) == true
             hanjaConversion?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_CONVERSION, false) == true
             hanjaPrediction?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_PREDICTION, false) == true
             sortByContext?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_SORT_BY_CONTEXT, false) == true
-            val mutableSet = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf()) ?: mutableSetOf()
+            additionalDictionaries?.values = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf()) ?: mutableSetOf()
         }
         updateByShowCandidates(true)
         showCandidates?.setOnPreferenceChangeListener { _, newValue ->
