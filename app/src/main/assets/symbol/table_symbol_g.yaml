@@ -67,7 +67,7 @@ map:
     base: 0x0022
     shift: 0x00a9
   "KEYCODE_C":
-    base: 0x005c
+    base: 0x0027
     shift: 0x00ae
   "KEYCODE_V":
     base: 0x003a

@@ -33,7 +33,7 @@ rows:
     width: 1.5
     type: "Modifier"
   - !<key>
-    code: "KEYCODE_COMMA_PERIOD"
+    code: "KEYCODE_PERIOD_COMMA"
     output: ","
     type: "AlphanumericAlt"
   - !<key>
