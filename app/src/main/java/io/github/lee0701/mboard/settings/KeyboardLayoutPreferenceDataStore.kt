@@ -14,16 +14,6 @@ class KeyboardLayoutPreferenceDataStore(
     private val onChangeListener: OnChangeListener,
 ): PreferenceDataStore() {
 
-    constructor(
-        context: Context,
-        file: File,
-        onChange: () -> Unit,
-    ): this(context, file, object: OnChangeListener {
-        override fun onChange(preset: InputEnginePreset) {
-            onChange()
-        }
-    })
-
     private val mutablePreset: InputEnginePreset.Mutable = kotlin.runCatching {
         InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable() }.getOrNull()
             ?: InputEnginePreset.Mutable()

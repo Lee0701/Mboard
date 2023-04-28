@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -180,6 +181,7 @@ class KeyboardLayoutSettingsFragment(
 
     private fun updateReorderMode(preset: InputEnginePreset) {
         val context = context ?: return
+        val preferenceDataStore = preferenceDataStore ?: return
         val components: MutableList<InputViewComponentType> = preset.components.toMutableList()
         val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)
 
@@ -187,7 +189,7 @@ class KeyboardLayoutSettingsFragment(
         val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
             Collections.swap(components, from.adapterPosition, to.adapterPosition)
             adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
-            preferenceDataStore?.putComponents(components.toList())
+            preferenceDataStore.putComponents(components.toList())
             true
         })
         adapter.onItemLongPress = { viewHolder ->
@@ -199,7 +201,8 @@ class KeyboardLayoutSettingsFragment(
                     val position = viewHolder.adapterPosition
                     components.removeAt(position)
                     adapter.notifyItemRemoved(position)
-                    preferenceDataStore?.putComponents(components.toList())
+                    preferenceDataStore.putComponents(components.toList())
+                    preferenceDataStore.update()
                 }
                 KeyboardLayoutPreviewAdapter.ItemMenuType.MoveUp -> {
                     val position = viewHolder.adapterPosition
