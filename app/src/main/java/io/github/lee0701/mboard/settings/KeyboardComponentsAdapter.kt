@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GestureDetectorCompat
-import androidx.core.view.children
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +15,10 @@ import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutComponentPrevi
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
 
-class KeyboardLayoutPreviewAdapter(
+class KeyboardComponentsAdapter(
     val context: Context,
     val previewMode: Boolean = false,
-): ListAdapter<InputEnginePreset, KeyboardLayoutPreviewAdapter.ViewHolder>(DiffCallback()) {
+): ListAdapter<InputEnginePreset, KeyboardComponentsAdapter.ViewHolder>(DiffCallback()) {
     val loader: PresetLoader = PresetLoader(context)
 
     var onItemLongPress: (ViewHolder) -> Unit = {}
