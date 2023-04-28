@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.module.keyboardview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.util.AttributeSet
@@ -32,6 +33,7 @@ abstract class KeyboardView(
     private val disableTouch: Boolean = false,
 ): FrameLayout(context, attrs) {
     protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val rect = Rect()
 
     open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels
     open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
@@ -260,8 +262,9 @@ abstract class KeyboardView(
     }
 
     private fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
+        getGlobalVisibleRect(rect)
         val x = getPopupX(key) + offsetX
-        val y = getPopupY(key) + offsetY
+        val y = getPopupY(key) + offsetY + rect.top
         popup.show(this, x.roundToInt(), y.roundToInt())
     }
 
