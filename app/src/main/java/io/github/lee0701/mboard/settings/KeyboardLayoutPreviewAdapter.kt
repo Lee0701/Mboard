@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GestureDetectorCompat
 import androidx.preference.PreferenceManager
@@ -24,6 +25,7 @@ class KeyboardLayoutPreviewAdapter(
 ): ListAdapter<InputEnginePreset, KeyboardLayoutPreviewAdapter.ViewHolder>(DiffCallback()) {
 
     var onItemLongPress: (ViewHolder) -> Unit = {}
+    var onItemMenuPress: (ItemMenuType, ViewHolder) -> Unit = { _, _ -> }
     private var screenMode: String = "mobile"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,6 +45,11 @@ class KeyboardLayoutPreviewAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         private val gestureDetector = GestureDetectorCompat(context, object: GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean = true
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                val visible = binding.menuOverlay.visibility == View.VISIBLE
+                binding.menuOverlay.visibility = if(visible) View.GONE else View.VISIBLE
+                return true
+            }
             override fun onLongPress(e: MotionEvent) = onItemLongPress(this@ViewHolder)
         })
         @SuppressLint("ClickableViewAccessibility")
@@ -58,6 +65,13 @@ class KeyboardLayoutPreviewAdapter(
             if(!previewMode) view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
             binding.rowWrapper.removeAllViews()
             if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)
+
+            binding.btnRemove.setOnClickListener {
+                onItemMenuPress(ItemMenuType.Remove, this)
+            }
+            binding.btnEdit.setOnClickListener {
+            }
+            binding.btnEdit.visibility = View.GONE
         }
     }
 
@@ -106,4 +120,7 @@ class KeyboardLayoutPreviewAdapter(
         ).roundToInt()
     }
 
+    enum class ItemMenuType {
+        Remove, Edit;
+    }
 }

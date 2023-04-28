@@ -188,6 +188,7 @@ class KeyboardLayoutSettingsFragment(
         val presets = preset.layout.softKeyboard.map { keyboard ->
             preset.copy(layout = preset.layout.copy(softKeyboard = listOf(keyboard))) }
             .toMutableList()
+        val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)
         handler.post {
             val adapter = KeyboardLayoutPreviewAdapter(context)
             val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
@@ -199,13 +200,24 @@ class KeyboardLayoutSettingsFragment(
             adapter.onItemLongPress = { viewHolder ->
                 touchHelper.startDrag(viewHolder)
             }
-            val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)?.apply {
+            adapter.onItemMenuPress = { type, viewHolder ->
+                when(type) {
+                    KeyboardLayoutPreviewAdapter.ItemMenuType.Remove -> {
+                        val position = viewHolder.adapterPosition
+                        presets.removeAt(position)
+                        adapter.notifyItemRemoved(position)
+                        preferenceDataStore?.putKeyboards(presets.flatMap { it.layout.softKeyboard })
+                    }
+                    else -> Unit
+                }
+            }
+            recyclerView?.apply {
                 this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapter
                 touchHelper.attachToRecyclerView(this)
+                adapter.submitList(presets)
+                this.visibility = VISIBLE
             }
-            adapter.submitList(presets)
-            recyclerView?.visibility = VISIBLE
         }
     }
 
