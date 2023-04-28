@@ -20,9 +20,15 @@ class SliderPreference(
     private val valueTo: Float
     private val stepSize: Float
 
-    private var value: Float = 0f
     private var valueSet: Boolean = false
-    private lateinit var slider: Slider
+    private var slider: Slider? = null
+
+    var value: Float
+        get() = getPersistedFloat(valueFrom)
+        set(v) {
+            persistFloat(v)
+            notifyChanged()
+        }
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference)
@@ -71,9 +77,8 @@ class SliderPreference(
         // Always persist/notify the first time.
         val changed = this.value != value
         if(changed || !this.valueSet) {
-            this.value = value
             this.valueSet = true
-            persistFloat(value)
+            this.value = value
             if(changed) {
                 notifyChanged()
             }

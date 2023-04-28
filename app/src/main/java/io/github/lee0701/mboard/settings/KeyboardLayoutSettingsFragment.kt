@@ -89,16 +89,6 @@ class KeyboardLayoutSettingsFragment(
         val defaultHeight = findPreference<SwitchPreference>(KEY_DEFAULT_HEIGHT)
         val rowHeight = findPreference<SliderPreference>(KEY_ROW_HEIGHT)
 
-        fun updateByDefaultHeight(newValue: Any?) {
-            rowHeight?.isEnabled = newValue == false
-            if(newValue == true) pref.putFloat(KEY_ROW_HEIGHT, defaultHeightValue)
-        }
-        defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
-            updateByDefaultHeight(newValue)
-            true
-        }
-        updateByDefaultHeight(pref.getBoolean(KEY_DEFAULT_HEIGHT, true))
-
         val engineType = findPreference<ListPreference>(KEY_ENGINE_TYPE)
         val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
         val inputHeader = findPreference<PreferenceCategory>(KEY_INPUT_HEADER)
@@ -109,8 +99,21 @@ class KeyboardLayoutSettingsFragment(
         val sortByContext = findPreference<SwitchPreference>(KEY_HANJA_SORT_BY_CONTEXT)
         val additionalDictionaries = findPreference<MultiSelectListPreference>(KEY_HANJA_ADDITIONAL_DICTIONARIES)
 
+        fun updateByDefaultHeight(newValue: Any?) {
+            val enabled = newValue != true
+            defaultHeight?.isChecked = !enabled
+            rowHeight?.isEnabled = enabled
+            if(!enabled) rowHeight?.value = defaultHeightValue
+        }
+        defaultHeight?.setOnPreferenceChangeListener { _, newValue ->
+            updateByDefaultHeight(newValue)
+            true
+        }
+        updateByDefaultHeight(pref.getBoolean(KEY_DEFAULT_HEIGHT, true))
+
         fun updateByShowCandidates(newValue: Any?) {
             val enabled = newValue == true
+            showCandidates?.isChecked = enabled
             hanjaConversion?.isEnabled = enabled
             hanjaPrediction?.isEnabled = enabled
             sortByContext?.isEnabled = enabled
@@ -122,12 +125,12 @@ class KeyboardLayoutSettingsFragment(
             sortByContext?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_SORT_BY_CONTEXT, false) == true
             additionalDictionaries?.values = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf()) ?: mutableSetOf()
         }
-        updateByShowCandidates(true)
         showCandidates?.setOnPreferenceChangeListener { _, newValue ->
             updateByShowCandidates(newValue)
             true
         }
-        
+        updateByShowCandidates(pref.getBoolean(KEY_SHOW_CANDIDATES, false))
+
         fun updateByEngineType(newValue: Any?) {
             inputHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
             val (entries, values) = when(newValue) {
@@ -159,6 +162,7 @@ class KeyboardLayoutSettingsFragment(
                 .decodeFromStream<InputEnginePreset>(requireContext().assets.open(newValue)).layout
             true
         }
+        updateKeyboardView()
     }
 
     private fun updateKeyboardView() {
