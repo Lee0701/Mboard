@@ -3,6 +3,7 @@ package io.github.lee0701.mboard.module.inputengine
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.LinearLayoutCompat
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.component.InputViewComponent
@@ -19,6 +20,7 @@ interface InputEngine {
     fun initView(context: Context): View? {
         val componentViews = components.map { it.initView(context) }
         return LinearLayoutCompat(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             orientation = LinearLayoutCompat.VERTICAL
             componentViews.forEach { addView(it) }
         }

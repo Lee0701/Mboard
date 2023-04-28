@@ -25,7 +25,7 @@ class ChooseNewComponentBottomSheetFragment(
         savedInstanceState: Bundle?
     ): View {
         val binding: BottomsheetChooseNewComponentBinding =
-            BottomsheetChooseNewComponentBinding.inflate(inflater, container, false)
+            BottomsheetChooseNewComponentBinding.inflate(inflater)
         val adapter = Adapter()
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

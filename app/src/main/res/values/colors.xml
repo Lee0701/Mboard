@@ -35,5 +35,5 @@
     <color name="key_fg_dark_return">#191c1e</color>
 
     <color name="icon_tint">@color/white</color>
-    <color name="transparent_background_tint">#44000000</color>
+    <color name="transparent_background_tint">#22000000</color>
 </resources>

@@ -2,21 +2,19 @@ package io.github.lee0701.mboard.settings
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.GestureDetectorCompat
-import androidx.preference.PreferenceManager
+import androidx.core.view.children
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutPreviewRowBinding
+import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutComponentPreviewRowBinding
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
-import kotlin.math.roundToInt
 
 class KeyboardLayoutPreviewAdapter(
     val context: Context,
@@ -28,7 +26,7 @@ class KeyboardLayoutPreviewAdapter(
     var onItemMenuPress: (ItemMenuType, ViewHolder) -> Unit = { _, _ -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListitemKeyboardLayoutPreviewRowBinding
+        return ViewHolder(ListitemKeyboardLayoutComponentPreviewRowBinding
             .inflate(LayoutInflater.from(context), null, false))
     }
 
@@ -37,7 +35,7 @@ class KeyboardLayoutPreviewAdapter(
     }
 
     inner class ViewHolder(
-        private val binding: ListitemKeyboardLayoutPreviewRowBinding,
+        private val binding: ListitemKeyboardLayoutComponentPreviewRowBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         private val gestureDetector = GestureDetectorCompat(context, object: GestureDetector.SimpleOnGestureListener() {
             override fun onDown(e: MotionEvent): Boolean = true
@@ -52,8 +50,8 @@ class KeyboardLayoutPreviewAdapter(
         fun onBind(preset: InputEnginePreset) {
             val context = binding.root.context
             val engine = loader.mod(preset).inflate(
-                context,
-                KeyboardLayoutSettingsActivity.emptyInputEngineListener,
+                context = context,
+                rootListener = KeyboardLayoutSettingsActivity.emptyInputEngineListener,
                 disableTouch = !previewMode
             )
             val view = engine.initView(context)

@@ -3,7 +3,6 @@ package io.github.lee0701.mboard.settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -37,15 +36,12 @@ import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Compa
 import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
 import java.io.File
 import java.util.Collections
-import kotlin.math.roundToInt
 
 class KeyboardLayoutSettingsFragment(
     private val fileName: String,
     private val template: String,
 ): PreferenceFragmentCompat(),
     KeyboardLayoutPreferenceDataStore.OnChangeListener {
-    private val handler: Handler = Handler(Looper.getMainLooper())
-
     private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
     private var loader: PresetLoader? = null
 
@@ -186,49 +182,48 @@ class KeyboardLayoutSettingsFragment(
         val context = context ?: return
         val components: MutableList<InputViewComponentType> = preset.components.toMutableList()
         val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)
-        handler.post {
-            val adapter = KeyboardLayoutPreviewAdapter(context)
-            val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
-                Collections.swap(components, from.adapterPosition, to.adapterPosition)
-                adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
-                preferenceDataStore?.putComponents(components.toList())
-                true
-            })
-            adapter.onItemLongPress = { viewHolder ->
-                touchHelper.startDrag(viewHolder)
-            }
-            adapter.onItemMenuPress = { type, viewHolder ->
-                when(type) {
-                    KeyboardLayoutPreviewAdapter.ItemMenuType.Remove -> {
-                        val position = viewHolder.adapterPosition
-                        components.removeAt(position)
-                        adapter.notifyItemRemoved(position)
-                        preferenceDataStore?.putComponents(components.toList())
-                    }
-                    KeyboardLayoutPreviewAdapter.ItemMenuType.MoveUp -> {
-                        val position = viewHolder.adapterPosition
-                        if(position - 1 in presets.indices) {
-                            Collections.swap(presets, position, position - 1)
-                            adapter.notifyItemMoved(position, position - 1)
-                        }
-                    }
-                    KeyboardLayoutPreviewAdapter.ItemMenuType.MoveDown -> {
-                        val position = viewHolder.adapterPosition
-                        if(position + 1 in presets.indices) {
-                            Collections.swap(presets, position, position + 1)
-                            adapter.notifyItemMoved(position, position + 1)
-                        }
-                    }
-                    else -> Unit
+
+        val adapter = KeyboardLayoutPreviewAdapter(context)
+        val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
+            Collections.swap(components, from.adapterPosition, to.adapterPosition)
+            adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
+            preferenceDataStore?.putComponents(components.toList())
+            true
+        })
+        adapter.onItemLongPress = { viewHolder ->
+            touchHelper.startDrag(viewHolder)
+        }
+        adapter.onItemMenuPress = { type, viewHolder ->
+            when(type) {
+                KeyboardLayoutPreviewAdapter.ItemMenuType.Remove -> {
+                    val position = viewHolder.adapterPosition
+                    components.removeAt(position)
+                    adapter.notifyItemRemoved(position)
+                    preferenceDataStore?.putComponents(components.toList())
                 }
+                KeyboardLayoutPreviewAdapter.ItemMenuType.MoveUp -> {
+                    val position = viewHolder.adapterPosition
+                    if(position - 1 in components.indices) {
+                        Collections.swap(components, position, position - 1)
+                        adapter.notifyItemMoved(position, position - 1)
+                    }
+                }
+                KeyboardLayoutPreviewAdapter.ItemMenuType.MoveDown -> {
+                    val position = viewHolder.adapterPosition
+                    if(position + 1 in components.indices) {
+                        Collections.swap(components, position, position + 1)
+                        adapter.notifyItemMoved(position, position + 1)
+                    }
+                }
+                else -> Unit
             }
-            recyclerView?.apply {
-                this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                this.adapter = adapter
-                touchHelper.attachToRecyclerView(this)
-                adapter.submitList(components.map { preset.copy(components = listOf(it)) })
-                this.visibility = VISIBLE
-            }
+        }
+        recyclerView?.apply {
+            this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            this.adapter = adapter
+            touchHelper.attachToRecyclerView(this)
+            adapter.submitList(components.map { preset.copy(components = listOf(it)) })
+            this.visibility = VISIBLE
         }
     }
 

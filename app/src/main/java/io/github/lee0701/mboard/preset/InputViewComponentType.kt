@@ -54,6 +54,7 @@ enum class InputViewComponentType(
             }
             Candidates -> {
                 CandidatesComponent(
+                    width = context.resources.displayMetrics.widthPixels,
                     height = preset.size.rowHeight,
                     disableTouch = disableTouch,
                 ).apply {
