@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
 import androidx.preference.PreferenceManager
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.inputengine.InputEngine
@@ -21,7 +20,7 @@ import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 
-class MainKeyboardComponent(
+class KeyboardComponent(
     private val keyboard: Keyboard,
     private val unifyHeight: Boolean,
     private val rowHeight: Int,

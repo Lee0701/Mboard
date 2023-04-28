@@ -10,7 +10,7 @@ import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.component.CandidatesComponent
 import io.github.lee0701.mboard.module.component.Component
-import io.github.lee0701.mboard.module.component.MainKeyboardComponent
+import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
 import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
@@ -48,7 +48,7 @@ data class InputEnginePreset(
         val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
 
         val createMainKeyboard = {
-            MainKeyboardComponent(
+            KeyboardComponent(
                 keyboard = softKeyboard,
                 unifyHeight = size.unifyHeight,
                 rowHeight = size.rowHeight,
@@ -57,20 +57,22 @@ data class InputEnginePreset(
             )
         }
 
-        val components: List<Component> = components.mapNotNull { preset ->
-            when(preset) {
-                ComponentPreset.MainKeyboard -> createMainKeyboard()
-                ComponentPreset.Candidates -> {
-                    CandidatesComponent(
+        fun inflateComponents(): List<Component> {
+            return components.mapNotNull { preset ->
+                when(preset) {
+                    is ComponentPreset.Keyboard -> preset.inflate(context)
+                    is ComponentPreset.Candidates -> {
+                        CandidatesComponent(
 
-                    )
+                        )
+                    }
+                    else -> null
                 }
-                else -> null
-            }
-        }.ifEmpty { listOf(createMainKeyboard()) }
+            }.ifEmpty { listOf(createMainKeyboard()) }
+        }
 
-        val getHangulInputEngine = { listener: InputEngine.Listener ->
-            if(hanja.conversion) {
+        fun getHangulInputEngine(listener: InputEngine.Listener, components: List<Component>): InputEngine {
+            return if(hanja.conversion) {
                 // TODO: Temporary workaround
                 val (converter, predictor) = if(context is MBoardIME) {
                     createHanjaConverter(
@@ -106,8 +108,8 @@ data class InputEnginePreset(
             }
         }
 
-        val getTableInputEngine = { listener: InputEngine.Listener ->
-            CodeConverterInputEngine(
+        fun getTableInputEngine(listener: InputEngine.Listener, components: List<Component>): InputEngine {
+            return CodeConverterInputEngine(
                 convertTable = convertTable,
                 moreKeysTable = moreKeysTable,
                 overrideTable = overrideTable,
@@ -116,11 +118,13 @@ data class InputEnginePreset(
             )
         }
 
-        val getInputEngine = { listener: InputEngine.Listener ->
-            when(type) {
-                Type.Latin -> getTableInputEngine(listener)
-                Type.Hangul -> getHangulInputEngine(listener)
-                Type.Symbol -> getTableInputEngine(listener)
+        fun getInputEngine(listener: InputEngine.Listener): InputEngine {
+            return when(type) {
+                Type.Latin -> getTableInputEngine(listener, inflateComponents())
+                Type.Hangul -> getHangulInputEngine(listener, inflateComponents())
+                Type.Symbol -> getTableInputEngine(listener, inflateComponents())
+            }.apply {
+                components.filterIsInstance<KeyboardComponent>().forEach { it.connectedInputEngine = this }
             }
         }
 
@@ -135,7 +139,7 @@ data class InputEnginePreset(
 //            disableTouch = disableTouch,
 //        )
         return getInputEngine(rootListener).apply {
-            components.filterIsInstance<MainKeyboardComponent>().forEach {
+            components.filterIsInstance<KeyboardComponent>().forEach {
                 it.connectedInputEngine = this
                 it.updateView()
             }
@@ -281,7 +285,7 @@ data class InputEnginePreset(
         private val yamlConfig = YamlConfiguration(encodeDefaults = false)
         val yaml = Yaml(EmptySerializersModule(), yamlConfig)
 
-        private fun createHanjaConverter(ime: MBoardIME, prediction: Boolean, sortByContext: Boolean): Pair<HanjaConverter?, Predictor?> {
+        fun createHanjaConverter(ime: MBoardIME, prediction: Boolean, sortByContext: Boolean): Pair<HanjaConverter?, Predictor?> {
             if(prediction) {
                 val (converter, predictor) = HanjaConverterBuilder.build(ime, true, sortByContext)
                 if(converter != null && predictor != null) return converter to predictor
@@ -295,7 +299,7 @@ data class InputEnginePreset(
             return null to null
         }
 
-        private fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
+        fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
             return row.keys.flatMap { rowItem ->
                 if(rowItem is Include) resolveSoftKeyIncludes(context,
                     yaml.decodeFromStream(context.assets.open(rowItem.name)))
@@ -303,7 +307,7 @@ data class InputEnginePreset(
             }
         }
 
-        private fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
+        fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
             val resolved = names.mapNotNull { filename ->
                 val keyboard = kotlin.runCatching {
                     yaml.decodeFromStream<Keyboard>(context.assets.open(filename)) }.getOrNull()
@@ -315,25 +319,25 @@ data class InputEnginePreset(
             return resolved.fold(Keyboard()) { acc, input -> acc + input }
         }
 
-        private fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
+        fun loadConvertTable(context: Context, names: List<String>): CodeConvertTable {
             val resolved = names.map { filename ->
                 yaml.decodeFromStream<CodeConvertTable>(context.assets.open(filename)) }
             return resolved.fold(SimpleCodeConvertTable() as CodeConvertTable) { acc, input -> acc + input }
         }
 
-        private fun loadOverrideTable(context: Context, names: List<String>): CharOverrideTable {
+        fun loadOverrideTable(context: Context, names: List<String>): CharOverrideTable {
             val resolved = names.map { filename ->
                 yaml.decodeFromStream<CharOverrideTable>(context.assets.open(filename)) }
             return resolved.fold(CharOverrideTable()) { acc, input -> acc + input }
         }
 
-        private fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
+        fun loadCombinationTable(context: Context, names: List<String>): JamoCombinationTable {
             val resolved = names.map { filename ->
                 yaml.decodeFromStream<JamoCombinationTable>(context.assets.open(filename)) }
             return resolved.fold(JamoCombinationTable()) { acc, input -> acc + input }
         }
 
-        private fun loadMoreKeysTable(context: Context, names: List<String>): MoreKeysTable {
+        fun loadMoreKeysTable(context: Context, names: List<String>): MoreKeysTable {
             val resolved = names.map { filename ->
                 val refMap = yaml.decodeFromStream<MoreKeysTable.RefMap>(context.assets.open(filename))
                 refMap.resolve(context.assets, yaml)
