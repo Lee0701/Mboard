@@ -139,7 +139,6 @@ class KeyboardLayoutPreferenceDataStore(
         const val KEY_ENGINE_TYPE = "input_engine_type"
         const val KEY_LAYOUT_PRESET = "input_layout_preset"
 
-        const val KEY_SHOW_CANDIDATES = "input_show_candidates"
         const val KEY_HANJA_CONVERSION = "input_hanja_conversion"
         const val KEY_HANJA_PREDICTION = "input_hanja_prediction"
         const val KEY_HANJA_SORT_BY_CONTEXT = "input_hanja_sort_by_context"

@@ -33,7 +33,6 @@ import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Compa
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_INPUT_HEADER
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_LAYOUT_PRESET
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
-import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_SHOW_CANDIDATES
 import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
 import java.io.File
 import java.util.Collections
@@ -88,11 +87,15 @@ class KeyboardLayoutSettingsFragment(
         val layoutPreset = findPreference<ListPreference>(KEY_LAYOUT_PRESET)
         val inputHeader = findPreference<PreferenceCategory>(KEY_INPUT_HEADER)
 
-        val showCandidates = findPreference<SwitchPreference>(KEY_SHOW_CANDIDATES)
         val hanjaConversion = findPreference<SwitchPreference>(KEY_HANJA_CONVERSION)
         val hanjaPrediction = findPreference<SwitchPreference>(KEY_HANJA_PREDICTION)
         val sortByContext = findPreference<SwitchPreference>(KEY_HANJA_SORT_BY_CONTEXT)
         val additionalDictionaries = findPreference<MultiSelectListPreference>(KEY_HANJA_ADDITIONAL_DICTIONARIES)
+
+        hanjaConversion?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_CONVERSION, false) == true
+        hanjaPrediction?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_PREDICTION, false) == true
+        sortByContext?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_SORT_BY_CONTEXT, false) == true
+        additionalDictionaries?.values = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf())
 
         fun updateByDefaultHeight(newValue: Any?) {
             val enabled = newValue != true
