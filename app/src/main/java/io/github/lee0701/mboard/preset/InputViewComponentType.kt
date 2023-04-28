@@ -53,7 +53,10 @@ enum class InputViewComponentType(
                 )
             }
             Candidates -> {
-                CandidatesComponent().apply {
+                CandidatesComponent(
+                    height = preset.size.rowHeight,
+                    disableTouch = disableTouch,
+                ).apply {
                     if(context is CandidateListener) listener = context
                 }
             }

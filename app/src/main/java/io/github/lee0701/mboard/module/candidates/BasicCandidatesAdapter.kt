@@ -12,6 +12,7 @@ class BasicCandidatesAdapter(
     private val context: Context,
     private val onClick: (Candidate) -> Unit,
 ): ListAdapter<Candidate, BasicCandidatesAdapter.ViewHolder>(DiffCallback()) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             CandidatesItemBinding.inflate(LayoutInflater.from(context)))

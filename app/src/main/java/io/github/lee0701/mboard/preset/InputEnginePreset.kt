@@ -40,7 +40,7 @@ data class InputEnginePreset(
 ) {
 
     fun inflate(context: Context, rootListener: InputEngine.Listener, disableTouch: Boolean = false): InputEngine {
-        val softKeyboard = loadSoftKeyboards(context, names = layout.softKeyboard)
+        // Soft keyboards will be resolved later by components.
         val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
         val overrideTable = loadOverrideTable(context, names = layout.overrideTable)
