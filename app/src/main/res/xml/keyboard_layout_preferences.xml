@@ -43,11 +43,7 @@
             app:title="@string/pref_input_engine_type_title"
             app:useSimpleSummaryProvider="true" />
 
-        <io.github.lee0701.mboard.settings.SwitchPreference
-            app:key="input_show_candidates"
-            app:defaultValue="false"
-            app:title="@string/pref_input_show_candidates_title"
-            app:summary="@string/pref_input_show_candidates_summary" />
+<!--        TODO: Add 'Add Candidates View' shortcut?-->
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="input_hanja_conversion"
