@@ -8,37 +8,25 @@ import android.os.Build
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
-import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
 import io.github.lee0701.mboard.module.candidates.Candidate
+import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
 import io.github.lee0701.mboard.module.inputengine.InputEngine
-import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
-import io.github.lee0701.mboard.module.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.module.candidates.CandidatesViewManager
-import io.github.lee0701.mboard.module.keyboardview.Themes
 import java.io.File
-import kotlin.math.roundToInt
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, CandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
+class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
 
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private var inputViewWrapper: ViewGroup? = null
-    private var defaultCandidatesViewManager: BasicCandidatesViewManager? = null
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
@@ -117,14 +105,11 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidatesViewManag
         val hangulInputEngine = hangulModule.inflate(this, this)
         val hangulSymbolInputEngine = hangulSymbolModule.inflate(this, this)
 
-        if(latinInputEngine is BasicSoftInputEngine) {
-            latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
-            latinInputEngine.alternativeInputEngine = hangulInputEngine
-        }
-        if(hangulInputEngine is BasicSoftInputEngine) {
-            hangulInputEngine.symbolsInputEngine = hangulSymbolInputEngine
-            hangulInputEngine.alternativeInputEngine = latinInputEngine
-        }
+        latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
+        latinInputEngine.alternativeInputEngine = hangulInputEngine
+
+        hangulInputEngine.symbolsInputEngine = hangulSymbolInputEngine
+        hangulInputEngine.alternativeInputEngine = latinInputEngine
 
         val engines = listOf(
             latinInputEngine,
@@ -139,60 +124,44 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidatesViewManag
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
 
-        defaultCandidatesViewManager = BasicCandidatesViewManager(this)
-
         if(force) reloadView()
     }
 
     override fun onCreateInputView(): View {
-        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
-        val inputViewWrapper = LinearLayoutCompat(this, null).apply {
-            orientation = LinearLayoutCompat.VERTICAL
-        }
+//        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView) {
+//            val candidatesView = defaultCandidatesViewManager?.initView(this)
+//            if(candidatesView != null) {
+//                candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
+//                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+//                    resources.getDimension(R.dimen.candidates_view_height).roundToInt()
+//                )
+//                inputViewWrapper.addView(candidatesView)
+//            }
+//        }
 
-        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView) {
-            val candidatesView = defaultCandidatesViewManager?.initView(this)
-            if(candidatesView != null) {
-                candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    resources.getDimension(R.dimen.candidates_view_height).roundToInt()
-                )
-                inputViewWrapper.addView(candidatesView)
-            }
-        }
-
-        val keyboardView = inputEngineSwitcher?.initView(this)
-        if(keyboardView != null) {
-            if(currentInputEngine is SoftInputEngine) {
-                keyboardView.layoutParams = LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    currentInputEngine.getHeight(),
-                )
-            }
-            inputViewWrapper.addView(keyboardView)
-            val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-            val theme = Themes.ofName(name)
-            val context = ContextThemeWrapper(this, theme.keyboardBackground)
-            val typedValue = TypedValue()
-            val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
-            keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
-            val color = ContextCompat.getColor(this, typedValue.resourceId)
-            setNavBarColor(color)
-        }
-        this.inputViewWrapper = inputViewWrapper
-        inputEngineSwitcher?.updateView()
-        return inputViewWrapper
+//        if(keyboardView != null) {
+//            val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
+//            val theme = Themes.ofName(name)
+//            val context = ContextThemeWrapper(this, theme.keyboardBackground)
+//            val typedValue = TypedValue()
+//            val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
+//            keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
+//            val color = ContextCompat.getColor(this, typedValue.resourceId)
+//            setNavBarColor(color)
+//        }
+//        this.inputViewWrapper = inputViewWrapper
+        return inputEngineSwitcher?.initView(this) ?: View(this)
     }
 
     override fun onCandidates(list: List<Candidate>) {
         val sorted = list.sortedByDescending { it.score }
-        defaultCandidatesViewManager?.showCandidates(sorted)
+        inputEngineSwitcher?.showCandidates(sorted)
     }
 
     override fun onItemClicked(candidate: Candidate) {
         if(candidate is DefaultHanjaCandidate) {
             val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-            if(inputEngine is CandidatesViewManager.Listener) {
+            if(inputEngine is CandidateListener) {
                 inputEngine.onItemClicked(candidate)
             }
         } else {
@@ -218,12 +187,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidatesViewManag
                 resetCurrentEngine()
                 inputEngineSwitcher?.nextLanguage()
                 reloadView()
+                updateView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 resetCurrentEngine()
                 inputEngineSwitcher?.nextExtra()
                 reloadView()
+                updateView()
                 true
             }
             KeyEvent.KEYCODE_TAB -> {

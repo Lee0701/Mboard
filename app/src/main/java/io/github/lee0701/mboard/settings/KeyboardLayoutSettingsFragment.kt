@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
@@ -177,7 +176,7 @@ class KeyboardLayoutSettingsFragment(
         val frame = activity?.findViewById<FrameLayout>(R.id.preview_mode_frame) ?: return
         val engine = mod(preset).inflate(context, emptyInputEngineListener)
         frame.removeAllViews()
-        if(engine is SoftInputEngine) frame.addView(engine.initView(context))
+        frame.addView(engine.initView(context))
         engine.onReset()
         frame.visibility = VISIBLE
     }

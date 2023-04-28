@@ -1,17 +1,18 @@
-package io.github.lee0701.mboard.module.inputengine
+package io.github.lee0701.mboard.module.component
 
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.KeyEvent
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
-import io.github.lee0701.mboard.module.candidates.CandidatesViewManager
+import io.github.lee0701.mboard.module.candidates.CandidateListener
+import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.keyboardview.CanvasKeyboardView
 import io.github.lee0701.mboard.module.keyboardview.FlickDirection
 import io.github.lee0701.mboard.module.keyboardview.FlickLongPressAction
+import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
 import io.github.lee0701.mboard.module.keyboardview.KeyboardView
 import io.github.lee0701.mboard.module.keyboardview.StackedViewKeyboardView
 import io.github.lee0701.mboard.module.keyboardview.Themes
@@ -20,20 +21,15 @@ import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 
-class BasicSoftInputEngine(
-    getInputEngine: (InputEngine.Listener) -> InputEngine,
+class MainKeyboardComponent(
     private val keyboard: Keyboard,
-    private val autoUnlockShift: Boolean = true,
-    override val showCandidatesView: Boolean = false,
-    override val listener: InputEngine.Listener,
     private val unifyHeight: Boolean,
     private val rowHeight: Int,
-    private val disableTouch: Boolean,
-): SoftInputEngine {
-    private val inputEngine: InputEngine = getInputEngine(listener)
+    private val autoUnlockShift: Boolean = true,
+    private val disableTouch: Boolean = false,
+): Component, KeyboardListener, CandidateListener {
 
-    var symbolsInputEngine: InputEngine? = null
-    var alternativeInputEngine: InputEngine? = null
+    var connectedInputEngine: InputEngine? = null
 
     private var doubleTapGap: Int = 500
     private var keyboardViewType: String = "canvas"
@@ -43,8 +39,6 @@ class BasicSoftInputEngine(
     private var flickDownAction: FlickLongPressAction = FlickLongPressAction.Symbols
     private var flickLeftAction: FlickLongPressAction = FlickLongPressAction.None
     private var flickRightAction: FlickLongPressAction = FlickLongPressAction.None
-
-    private var popupOffsetY = 0
 
     private var keyboardView: KeyboardView? = null
 
@@ -73,62 +67,32 @@ class BasicSoftInputEngine(
             preferences.getString("behaviour_flick_action_", "none") ?: "none"
         )
 
-        popupOffsetY = if(!showCandidatesView) 0
-        else context.resources.getDimension(R.dimen.candidates_view_height).toInt()
-
         val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
         keyboardView = when(keyboardViewType) {
-            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, popupOffsetY, this, unifyHeight, rowHeight, disableTouch)
-            else -> CanvasKeyboardView(context, null, keyboard, theme, popupOffsetY, this, unifyHeight, rowHeight, disableTouch = disableTouch)
+            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this, unifyHeight, rowHeight, disableTouch)
+            else -> CanvasKeyboardView(context, null, keyboard, theme, this, unifyHeight, rowHeight, disableTouch = disableTouch)
         }
         return keyboardView
     }
 
-    override fun onKey(code: Int, state: KeyboardState) {
-        onPrintingKey(code, null, state)
+    override fun reset() {
         updateView()
-    }
-
-    fun onKeyRepeat(code: Int, state: KeyboardState) {
-
-    }
-
-    override fun onDelete() {
-        inputEngine.onDelete()
-    }
-
-    override fun onTextAroundCursor(before: String, after: String) {
-        inputEngine.onTextAroundCursor(before, after)
-    }
-
-    override fun onReset() {
+        val inputEngine = connectedInputEngine ?: return
         inputEngine.onReset()
-        keyboardState = KeyboardState()
-        updateView()
-    }
-
-    override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
-        return inputEngine.getLabels(state)
-    }
-
-    override fun getIcons(state: KeyboardState): Map<Int, Drawable> {
-        val context = keyboardView?.context
-        val shiftIconID = if(keyboardState.shiftState.locked) R.drawable.keyic_shift_lock else R.drawable.keyic_shift
-        val shiftIcon = context?.let { ContextCompat.getDrawable(it, shiftIconID) }
-        return inputEngine.getIcons(state) + shiftIcon?.let { mapOf(KeyEvent.KEYCODE_SHIFT_LEFT to it, KeyEvent.KEYCODE_SHIFT_RIGHT to it) }.orEmpty()
-    }
-
-    override fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard> {
-        return inputEngine.getMoreKeys(state)
     }
 
     override fun onItemClicked(candidate: Candidate) {
-        if(inputEngine is CandidatesViewManager.Listener) inputEngine.onItemClicked(candidate)
+        val inputEngine = connectedInputEngine ?: return
+        if(inputEngine is CandidateListener) inputEngine.onItemClicked(candidate)
     }
 
     override fun updateView() {
-        updateLabelsAndIcons(getShiftedLabels() + getLabels(keyboardState), getIcons(keyboardState))
+        val inputEngine = connectedInputEngine ?: return
+        updateLabelsAndIcons(
+            getShiftedLabels() + inputEngine.getLabels(keyboardState),
+            inputEngine.getIcons(keyboardState)
+        )
         updateMoreKeys(inputEngine.getMoreKeys(keyboardState))
         keyboardView?.apply {
             invalidate()
@@ -151,7 +115,8 @@ class BasicSoftInputEngine(
 
     private fun updateMoreKeys(moreKeys: Map<Int, Keyboard>) {
         val keyboardView = keyboardView ?: return
-        keyboardView.updateMoreKeyKeyboards(getMoreKeys(keyboardState))
+        val inputEngine = connectedInputEngine ?: return
+        keyboardView.updateMoreKeyKeyboards(inputEngine.getMoreKeys(keyboardState))
     }
 
     override fun onKeyDown(code: Int, output: String?) {
@@ -206,7 +171,7 @@ class BasicSoftInputEngine(
     }
 
     override fun onKeyClick(code: Int, output: String?) {
-        if(listener.onSystemKey(code)) return
+        val inputEngine = connectedInputEngine ?: return
         if(ignoreCode != 0 && ignoreCode == code) {
             ignoreCode = 0
             return
@@ -225,18 +190,20 @@ class BasicSoftInputEngine(
             }
             KeyEvent.KEYCODE_SPACE -> {
                 val state = keyboardState.copy()
-                onReset()
+                reset()
                 keyboardState = state
-                listener.onCommitText(" ")
+                inputEngine.listener.onCommitText(" ")
                 autoUnlockShift()
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                onReset()
-                listener.onEditorAction(code)
+                reset()
+                inputEngine.listener.onEditorAction(code)
                 autoUnlockShift()
             }
             else -> {
-                onPrintingKey(code, output, keyboardState)
+                if(!inputEngine.listener.onSystemKey(code)) {
+                    onPrintingKey(code, output, keyboardState)
+                }
                 autoUnlockShift()
             }
         }
@@ -244,14 +211,16 @@ class BasicSoftInputEngine(
     }
 
     override fun onKeyLongClick(code: Int, output: String?) {
-        longPressAction.onKey(code, keyboardState, this)
+        val inputEngine = connectedInputEngine ?: return
+        longPressAction.onKey(code, keyboardState, inputEngine)
         ignoreCode = code
         inputHappened = true
     }
 
     private fun onPrintingKey(code: Int, output: String?, keyboardState: KeyboardState) {
+        val inputEngine = connectedInputEngine ?: return
         if(code == 0 && output != null) {
-            listener.onCommitText(output)
+            inputEngine.listener.onCommitText(output)
         } else {
             inputEngine.onKey(code, keyboardState)
         }
@@ -259,6 +228,7 @@ class BasicSoftInputEngine(
     }
 
     override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+        val inputEngine = connectedInputEngine ?: return
         val action = when(direction) {
             FlickDirection.Up -> flickUpAction
             FlickDirection.Down -> flickDownAction
@@ -266,7 +236,7 @@ class BasicSoftInputEngine(
             FlickDirection.Right -> flickRightAction
             else -> FlickLongPressAction.None
         }
-        action.onKey(code, keyboardState, this)
+        action.onKey(code, keyboardState, inputEngine)
         ignoreCode = code
         inputHappened = true
     }
@@ -281,7 +251,4 @@ class BasicSoftInputEngine(
         }
     }
 
-    override fun getHeight(): Int {
-        return keyboardView?.keyboardHeight ?: 0
-    }
 }

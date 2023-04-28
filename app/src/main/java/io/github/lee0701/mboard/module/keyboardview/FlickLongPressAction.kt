@@ -1,6 +1,5 @@
 package io.github.lee0701.mboard.module.keyboardview
 
-import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.service.KeyboardState
 
@@ -31,28 +30,22 @@ sealed interface FlickLongPressAction {
 
     object Symbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
-            if(inputEngine is BasicSoftInputEngine) {
-                inputEngine.onReset()
-                inputEngine.symbolsInputEngine?.onKey(code, keyboardState)
-            }
+            inputEngine.onReset()
+            inputEngine.symbolsInputEngine?.onKey(code, keyboardState)
         }
     }
 
     object ShiftedSymbols: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
-            if(inputEngine is BasicSoftInputEngine) {
-                inputEngine.onReset()
-                inputEngine.symbolsInputEngine?.onKey(code, makeShiftOn(keyboardState))
-            }
+            inputEngine.onReset()
+            inputEngine.symbolsInputEngine?.onKey(code, makeShiftOn(keyboardState))
         }
     }
 
     object AlternativeLanguage: FlickLongPressAction {
         override fun onKey(code: Int, keyboardState: KeyboardState, inputEngine: InputEngine) {
-            if(inputEngine is BasicSoftInputEngine) {
-                inputEngine.onReset()
-                inputEngine.alternativeInputEngine?.onKey(code, keyboardState)
-            }
+            inputEngine.onReset()
+            inputEngine.alternativeInputEngine?.onKey(code, keyboardState)
         }
     }
 

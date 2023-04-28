@@ -5,8 +5,9 @@ import io.github.lee0701.converter.library.engine.ComposingText
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.module.candidates.Candidate
-import io.github.lee0701.mboard.module.candidates.CandidatesViewManager
+import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.component.Component
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +21,14 @@ class HanjaConverterInputEngine(
     private val hanjaConverter: HanjaConverter?,
     private val predictor: Predictor?,
     override val listener: InputEngine.Listener,
-): InputEngine, InputEngine.Listener, CandidatesViewManager.Listener {
+): InputEngine, InputEngine.Listener, CandidateListener {
 
     private var job: Job? = null
     private val inputEngine = getInputEngine(this)
+
+    override val components: List<Component> = inputEngine.components
+    override var alternativeInputEngine: InputEngine? = inputEngine.alternativeInputEngine
+    override var symbolsInputEngine: InputEngine? = inputEngine.symbolsInputEngine
 
     private val composingWordStack: MutableList<String> = mutableListOf()
     private var composingChar: String = ""

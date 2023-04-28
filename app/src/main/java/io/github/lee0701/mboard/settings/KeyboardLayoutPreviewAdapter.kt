@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutPreviewRowBinding
-import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
-import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import kotlin.math.roundToInt
 
@@ -60,11 +58,11 @@ class KeyboardLayoutPreviewAdapter(
                 KeyboardLayoutSettingsActivity.emptyInputEngineListener,
                 disableTouch = !previewMode
             )
-            val view = if(engine is SoftInputEngine) engine.initView(context) else null
+            val view = engine.initView(context)
             engine.onReset()
             if(!previewMode) view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
-            binding.rowWrapper.removeAllViews()
-            if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)
+            binding.componentWrapper.removeAllViews()
+            binding.componentWrapper.addView(view)
 
             binding.btnMoveUp.setOnClickListener {
                 onItemMenuPress(ItemMenuType.MoveUp, this)

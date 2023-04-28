@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
+import io.github.lee0701.mboard.module.component.Component
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.preset.table.CharOverrideTable
 import io.github.lee0701.mboard.preset.table.CodeConvertTable
@@ -13,11 +14,14 @@ class CodeConverterInputEngine(
     private val convertTable: CodeConvertTable,
     private val overrideTable: CharOverrideTable,
     private val moreKeysTable: MoreKeysTable,
-    private val autoUnlockShift: Boolean,
+    override val components: List<Component>,
     override val listener: InputEngine.Listener,
 ): InputEngine {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+
+    override var alternativeInputEngine: InputEngine? = null
+    override var symbolsInputEngine: InputEngine? = null
 
     override fun onKey(code: Int, state: KeyboardState) {
         val converted = convertTable.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())

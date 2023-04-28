@@ -2,14 +2,19 @@ package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
+import io.github.lee0701.mboard.module.component.Component
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 
 class DirectInputEngine(
     override val listener: InputEngine.Listener,
+    override val components: List<Component>,
 ): InputEngine {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+
+    override var alternativeInputEngine: InputEngine? = null
+    override var symbolsInputEngine: InputEngine? = null
 
     override fun onKey(code: Int, state: KeyboardState) {
         val char = keyCharacterMap.get(code, state.asMetaState())

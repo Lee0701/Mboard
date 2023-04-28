@@ -26,7 +26,6 @@ abstract class KeyboardView(
     attrs: AttributeSet?,
     protected val keyboard: Keyboard,
     protected val theme: Theme,
-    protected val popupOffsetY: Int,
     protected val listener: KeyboardListener,
     unifyHeight: Boolean,
     rowHeight: Int,
@@ -267,7 +266,7 @@ abstract class KeyboardView(
     }
 
     private fun getPopupX(key: KeyWrapper): Float = key.x + key.width/2f
-    private fun getPopupY(key: KeyWrapper): Float = key.y + popupOffsetY + key.height/2f
+    private fun getPopupY(key: KeyWrapper): Float = key.y + key.height/2f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)

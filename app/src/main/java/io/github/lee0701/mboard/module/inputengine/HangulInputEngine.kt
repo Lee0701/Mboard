@@ -2,6 +2,7 @@ package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
 import android.view.KeyCharacterMap
+import io.github.lee0701.mboard.module.component.Component
 import io.github.lee0701.mboard.module.kokr.Hangul
 import io.github.lee0701.mboard.module.kokr.HangulCombiner
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
@@ -18,12 +19,16 @@ data class HangulInputEngine(
     private val moreKeysTable: MoreKeysTable,
     private val overrideTable: CharOverrideTable,
     private val jamoCombinationTable: JamoCombinationTable,
+    override val components: List<Component>,
     override val listener: InputEngine.Listener,
 ): InputEngine {
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
-    private val hangulCombiner = HangulCombiner(jamoCombinationTable)
 
+    override var alternativeInputEngine: InputEngine? = null
+    override var symbolsInputEngine: InputEngine? = null
+
+    private val hangulCombiner = HangulCombiner(jamoCombinationTable)
     private val stateStack: MutableList<HangulCombiner.State> = mutableListOf()
     private val hangulState: HangulCombiner.State get() = stateStack.lastOrNull() ?: HangulCombiner.State()
     private val layerIdByHangulState: String get() {

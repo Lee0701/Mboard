@@ -8,12 +8,14 @@ import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
+import io.github.lee0701.mboard.module.component.CandidatesComponent
+import io.github.lee0701.mboard.module.component.Component
+import io.github.lee0701.mboard.module.component.MainKeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
-import io.github.lee0701.mboard.module.kokr.HanjaConverterBuilder
 import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.kokr.HanjaConverterBuilder
 import io.github.lee0701.mboard.preset.softkeyboard.Include
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.preset.softkeyboard.Row
@@ -33,6 +35,7 @@ data class InputEnginePreset(
     val size: Size = Size(),
     val layout: Layout = Layout(),
     val hanja: Hanja = Hanja(),
+    val components: List<ComponentPreset> = listOf(),
     val autoUnlockShift: Boolean = true,
     val candidatesView: Boolean = false,
 ) {
@@ -43,6 +46,28 @@ data class InputEnginePreset(
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
         val overrideTable = loadOverrideTable(context, names = layout.overrideTable)
         val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
+
+        val createMainKeyboard = {
+            MainKeyboardComponent(
+                keyboard = softKeyboard,
+                unifyHeight = size.unifyHeight,
+                rowHeight = size.rowHeight,
+                autoUnlockShift = autoUnlockShift,
+                disableTouch = disableTouch,
+            )
+        }
+
+        val components: List<Component> = components.mapNotNull { preset ->
+            when(preset) {
+                ComponentPreset.MainKeyboard -> createMainKeyboard()
+                ComponentPreset.Candidates -> {
+                    CandidatesComponent(
+
+                    )
+                }
+                else -> null
+            }
+        }.ifEmpty { listOf(createMainKeyboard()) }
 
         val getHangulInputEngine = { listener: InputEngine.Listener ->
             if(hanja.conversion) {
@@ -62,6 +87,7 @@ data class InputEnginePreset(
                         overrideTable = overrideTable,
                         moreKeysTable = moreKeysTable,
                         jamoCombinationTable = combinationTable,
+                        components = components,
                         listener = l,
                     ) },
                     converter,
@@ -74,6 +100,7 @@ data class InputEnginePreset(
                     moreKeysTable = moreKeysTable,
                     overrideTable = overrideTable,
                     jamoCombinationTable = combinationTable,
+                    components = components,
                     listener,
                 )
             }
@@ -84,7 +111,7 @@ data class InputEnginePreset(
                 convertTable = convertTable,
                 moreKeysTable = moreKeysTable,
                 overrideTable = overrideTable,
-                autoUnlockShift = autoUnlockShift,
+                components = components,
                 listener = listener,
             )
         }
@@ -97,16 +124,22 @@ data class InputEnginePreset(
             }
         }
 
-        return BasicSoftInputEngine(
-            getInputEngine = getInputEngine,
-            keyboard = softKeyboard,
-            unifyHeight = size.unifyHeight,
-            rowHeight = size.rowHeight,
-            autoUnlockShift = autoUnlockShift,
-            showCandidatesView = candidatesView,
-            listener = rootListener,
-            disableTouch = disableTouch,
-        )
+//        return BasicSoftInputEngine(
+//            getInputEngine = getInputEngine,
+//            keyboard = softKeyboard,
+//            unifyHeight = size.unifyHeight,
+//            rowHeight = size.rowHeight,
+//            autoUnlockShift = autoUnlockShift,
+//            showCandidatesView = candidatesView,
+//            listener = rootListener,
+//            disableTouch = disableTouch,
+//        )
+        return getInputEngine(rootListener).apply {
+            components.filterIsInstance<MainKeyboardComponent>().forEach {
+                it.connectedInputEngine = this
+                it.updateView()
+            }
+        }
     }
 
     fun mutable(): Mutable {
