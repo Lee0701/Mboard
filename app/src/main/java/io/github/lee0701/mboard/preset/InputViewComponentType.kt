@@ -30,6 +30,7 @@ enum class InputViewComponentType(
         R.string.pref_layout_component_language_switcher_title);
 
     fun inflate(context: Context, preset: InputEnginePreset, disableTouch: Boolean): InputViewComponent {
+        val loader = PresetLoader(context)
         return when(this) {
             MainKeyboard -> {
                 KeyboardComponent(
@@ -41,7 +42,8 @@ enum class InputViewComponentType(
                 )
             }
             NumberRow -> {
-                val layouts = listOf(KeyboardLayoutSettingsFragment.NUMBER_ROW_ID)
+                val layouts = loader.modFilenames(
+                    listOf(KeyboardLayoutSettingsFragment.NUMBER_ROW_ID))
                 KeyboardComponent(
                     keyboard = InputEnginePreset.loadSoftKeyboards(context, layouts),
                     unifyHeight = preset.size.unifyHeight,

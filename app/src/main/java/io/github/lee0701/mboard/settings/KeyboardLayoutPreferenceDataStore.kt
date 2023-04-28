@@ -37,7 +37,6 @@ class KeyboardLayoutPreferenceDataStore(
         mutablePreset.components.clear()
         mutablePreset.components += componentTypes
         write()
-        update()
     }
 
     override fun putString(key: String?, value: String?) {
