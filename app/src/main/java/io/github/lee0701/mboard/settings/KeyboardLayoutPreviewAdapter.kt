@@ -66,6 +66,12 @@ class KeyboardLayoutPreviewAdapter(
             binding.rowWrapper.removeAllViews()
             if(engine is BasicSoftInputEngine) binding.rowWrapper.addView(view)
 
+            binding.btnMoveUp.setOnClickListener {
+                onItemMenuPress(ItemMenuType.MoveUp, this)
+            }
+            binding.btnMoveDown.setOnClickListener {
+                onItemMenuPress(ItemMenuType.MoveDown, this)
+            }
             binding.btnRemove.setOnClickListener {
                 onItemMenuPress(ItemMenuType.Remove, this)
             }
@@ -121,6 +127,6 @@ class KeyboardLayoutPreviewAdapter(
     }
 
     enum class ItemMenuType {
-        Remove, Edit;
+        Remove, Edit, MoveUp, MoveDown;
     }
 }

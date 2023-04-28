@@ -74,4 +74,14 @@
         <item name="android:textColor">@color/gray_900</item>
     </style>
 
+    <style name="Theme.MBoard.KeyboardLayoutSettings">
+        <item name="imageButtonStyle">@style/Theme.MBoard.KeyboardLayoutSettings.ImageButton</item>
+    </style>
+
+    <style name="Theme.MBoard.KeyboardLayoutSettings.ImageButton">
+        <item name="tint">@color/black</item>
+        <item name="android:layout_width">@dimen/icon_button_width</item>
+        <item name="android:layout_height">@dimen/icon_button_height</item>
+    </style>
+
 </resources>

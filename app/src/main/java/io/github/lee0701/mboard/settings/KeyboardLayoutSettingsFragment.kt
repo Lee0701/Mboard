@@ -208,6 +208,20 @@ class KeyboardLayoutSettingsFragment(
                         adapter.notifyItemRemoved(position)
                         preferenceDataStore?.putKeyboards(presets.flatMap { it.layout.softKeyboard })
                     }
+                    KeyboardLayoutPreviewAdapter.ItemMenuType.MoveUp -> {
+                        val position = viewHolder.adapterPosition
+                        if(position - 1 in presets.indices) {
+                            Collections.swap(presets, position, position - 1)
+                            adapter.notifyItemMoved(position, position - 1)
+                        }
+                    }
+                    KeyboardLayoutPreviewAdapter.ItemMenuType.MoveDown -> {
+                        val position = viewHolder.adapterPosition
+                        if(position + 1 in presets.indices) {
+                            Collections.swap(presets, position, position + 1)
+                            adapter.notifyItemMoved(position, position + 1)
+                        }
+                    }
                     else -> Unit
                 }
             }
