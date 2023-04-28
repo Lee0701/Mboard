@@ -10,3 +10,5 @@ layout:
   overrideTable:
   - "symbol/override_currency_won.yaml"
 autoUnlockShift: false
+components:
+- "MainKeyboard"

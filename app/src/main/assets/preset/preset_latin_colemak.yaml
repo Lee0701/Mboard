@@ -5,3 +5,5 @@ layout:
   codeConvertTable:
   - "symbol/table_custom_keys.yaml"
   - "latin/table_latin_colemak.yaml"
+components:
+- "MainKeyboard"
