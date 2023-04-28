@@ -106,26 +106,6 @@ class KeyboardLayoutSettingsFragment(
         }
         updateByDefaultHeight(pref.getBoolean(KEY_DEFAULT_HEIGHT, true))
 
-        fun updateByShowCandidates(newValue: Any?) {
-            val enabled = newValue == true
-            showCandidates?.isChecked = enabled
-            hanjaConversion?.isEnabled = enabled
-            hanjaPrediction?.isEnabled = enabled
-            sortByContext?.isEnabled = enabled
-            additionalDictionaries?.isEnabled = enabled
-
-            showCandidates?.isChecked = preferenceDataStore?.getBoolean(KEY_SHOW_CANDIDATES, false) == true
-            hanjaConversion?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_CONVERSION, false) == true
-            hanjaPrediction?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_PREDICTION, false) == true
-            sortByContext?.isChecked = preferenceDataStore?.getBoolean(KEY_HANJA_SORT_BY_CONTEXT, false) == true
-            additionalDictionaries?.values = preferenceDataStore?.getStringSet(KEY_HANJA_ADDITIONAL_DICTIONARIES, mutableSetOf()) ?: mutableSetOf()
-        }
-        showCandidates?.setOnPreferenceChangeListener { _, newValue ->
-            updateByShowCandidates(newValue)
-            true
-        }
-        updateByShowCandidates(pref.getBoolean(KEY_SHOW_CANDIDATES, false))
-
         fun updateByEngineType(newValue: Any?) {
             inputHeader?.isVisible = newValue == InputEnginePreset.Type.Hangul.name
             val (entries, values) = when(newValue) {
