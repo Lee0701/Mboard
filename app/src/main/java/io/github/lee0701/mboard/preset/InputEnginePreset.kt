@@ -51,6 +51,12 @@ data class InputEnginePreset(
         fun inflateComponents(preset: InputEnginePreset): List<InputViewComponent> {
             return components.map { it.inflate(context, preset, disableTouch) }
         }
+        val prefixDict = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
+        val ngramDict = DiskTrieDictionary(context.assets.open("dict/dict-ngram.bin"))
+        val vocab = context.assets.open("dict/vocab.tsv").bufferedReader().readLines()
+            .map { line -> line.split('\t') }
+            .filter { it.size == 2 }
+            .map { (k, v) -> k to v.toInt() }
 
         fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
             return if(hanja.conversion) {
