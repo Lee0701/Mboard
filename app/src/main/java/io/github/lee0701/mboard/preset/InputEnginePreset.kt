@@ -51,6 +51,12 @@ data class InputEnginePreset(
         fun inflateComponents(preset: InputEnginePreset): List<InputViewComponent> {
             return components.map { it.inflate(context, preset, disableTouch) }
         }
+        val prefixDict = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
+        val ngramDict = DiskTrieDictionary(context.assets.open("dict/dict-ngram.bin"))
+        val vocab = context.assets.open("dict/vocab.tsv").bufferedReader().readLines()
+            .map { line -> line.split('\t') }
+            .filter { it.size == 2 }
+            .map { (k, v) -> k to v.toInt() }
 
         fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
             return if(hanja.conversion) {
@@ -77,13 +83,23 @@ data class InputEnginePreset(
                     listener,
                 )
             } else {
-                HangulInputEngine(
-                    convertTable = convertTable,
-                    moreKeysTable = moreKeysTable,
-                    overrideTable = overrideTable,
-                    jamoCombinationTable = combinationTable,
-                    listener = listener,
+                fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
+                    return HangulInputEngine(
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
+                        jamoCombinationTable = combinationTable,
+                        listener,
+                    )
+                }
+                PredictingInputEngine(
+                    getInputEngine = { l -> getHangulInputEngine(l) },
+                    vocab = vocab,
+                    prefixDict = prefixDict,
+                    ngramDict = ngramDict,
+                    listener = listener
                 )
+
             }
         }
 
@@ -98,14 +114,26 @@ data class InputEnginePreset(
 
         fun getInputEngine(listener: InputEngine.Listener): InputEngine {
             return when(type) {
-                Type.Latin -> getTableInputEngine(listener)
-                Type.Hangul -> getHangulInputEngine(listener)
-                Type.Symbol -> getTableInputEngine(listener)
-            }.apply {
-                components = inflateComponents(this@InputEnginePreset)
-                components.filterIsInstance<KeyboardComponent>().forEach {
-                    it.connectedInputEngine = this
-                    it.updateView()
+                Type.Latin -> {
+                    CodeConverterInputEngine(
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
+                        autoUnlockShift = autoUnlockShift,
+                        listener = listener,
+                    )
+                }
+                Type.Hangul -> {
+                    getHangulInputEngine(listener)
+                }
+                Type.Symbol -> {
+                    CodeConverterInputEngine(
+                        convertTable = convertTable,
+                        moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
+                        autoUnlockShift = autoUnlockShift,
+                        listener = listener,
+                    )
                 }
             }
         }
