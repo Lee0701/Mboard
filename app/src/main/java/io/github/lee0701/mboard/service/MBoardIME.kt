@@ -22,18 +22,19 @@ import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.BasicSoftInputEngine
-import io.github.lee0701.mboard.input.Candidate
-import io.github.lee0701.mboard.input.DefaultHanjaCandidate
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
-import io.github.lee0701.mboard.module.InputEnginePreset
-import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.Themes
+import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
+import io.github.lee0701.mboard.module.candidates.Candidate
+import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
+import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.module.candidates.BasicCandidatesViewManager
+import io.github.lee0701.mboard.module.candidates.CandidatesViewManager
+import io.github.lee0701.mboard.module.keyboardview.Themes
 import java.io.File
 import kotlin.math.roundToInt
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
+class MBoardIME: InputMethodService(), InputEngine.Listener, CandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
 
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private var inputViewWrapper: ViewGroup? = null
@@ -191,7 +192,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     override fun onItemClicked(candidate: Candidate) {
         if(candidate is DefaultHanjaCandidate) {
             val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-            if(inputEngine is BasicCandidatesViewManager.Listener) {
+            if(inputEngine is CandidatesViewManager.Listener) {
                 inputEngine.onItemClicked(candidate)
             }
         } else {

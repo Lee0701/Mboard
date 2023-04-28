@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.preference.PreferenceDataStore
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
-import io.github.lee0701.mboard.module.InputEnginePreset
-import io.github.lee0701.mboard.module.softkeyboard.Keyboard
+import io.github.lee0701.mboard.preset.InputEnginePreset
 import java.io.File
 
 class KeyboardLayoutPreferenceDataStore(

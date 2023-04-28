@@ -9,10 +9,10 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
 import com.charleskorn.kaml.encodeToStream
-import io.github.lee0701.mboard.module.serialization.KeyCodeSerializer
-import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import io.github.lee0701.mboard.module.table.CodeConvertTable
-import io.github.lee0701.mboard.module.table.SimpleCodeConvertTable
+import io.github.lee0701.mboard.preset.serialization.KeyCodeSerializer
+import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
+import io.github.lee0701.mboard.preset.table.CodeConvertTable
+import io.github.lee0701.mboard.preset.table.SimpleCodeConvertTable
 import kotlinx.serialization.modules.EmptySerializersModule
 import java.io.File
 import java.io.InputStream

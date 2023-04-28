@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutPreviewRowBinding
-import io.github.lee0701.mboard.input.BasicSoftInputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
-import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.module.inputengine.BasicSoftInputEngine
+import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
+import io.github.lee0701.mboard.preset.InputEnginePreset
 import kotlin.math.roundToInt
 
 class KeyboardLayoutPreviewAdapter(

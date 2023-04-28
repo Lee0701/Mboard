@@ -4,18 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.lee0701.mboard.databinding.BottomsheetChooseNewComponentBinding
 import io.github.lee0701.mboard.databinding.ListitemBottomsheetChooseNewComponentBinding
-import io.github.lee0701.mboard.module.InputEnginePreset
-import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import java.io.File
 
 class ChooseNewComponentBottomSheetFragment(
     private val types: List<KeyboardLayoutSettingsFragment.ComponentType> = listOf(),

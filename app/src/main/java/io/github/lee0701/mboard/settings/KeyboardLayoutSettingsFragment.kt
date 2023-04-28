@@ -23,9 +23,8 @@ import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
-import io.github.lee0701.mboard.module.InputEnginePreset
+import io.github.lee0701.mboard.module.inputengine.SoftInputEngine
+import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_ADDITIONAL_DICTIONARIES
@@ -339,9 +338,9 @@ class KeyboardLayoutSettingsFragment(
         NumberRow(R.drawable.baseline_123_24,
             R.string.pref_layout_component_number_row_title),
         TextSelection(R.drawable.baseline_text_select_move_forward_character,
-            R.string.pref_layout_component_text_selection_title),
+            R.string.pref_layout_component_text_edit_title),
         LanguageTab(R.drawable.baseline_language_24,
-            R.string.pref_layout_component_number_language_tab_title);
+            R.string.pref_layout_component_language_switcher_title);
     }
 
     companion object {
