@@ -7,7 +7,7 @@ import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
-import io.github.lee0701.mboard.module.component.Component
+import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +26,7 @@ class HanjaConverterInputEngine(
     private var job: Job? = null
     private val inputEngine = getInputEngine(this)
 
-    override val components: List<Component> = inputEngine.components
+    override var components: List<InputViewComponent> = inputEngine.components
     override var alternativeInputEngine: InputEngine? = inputEngine.alternativeInputEngine
     override var symbolsInputEngine: InputEngine? = inputEngine.symbolsInputEngine
 

@@ -11,8 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.preset.InputViewComponentType
+import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_ADDITIONAL_DICTIONARIES
@@ -47,8 +47,8 @@ class KeyboardLayoutSettingsFragment(
     private val handler: Handler = Handler(Looper.getMainLooper())
 
     private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
+    private var loader: PresetLoader? = null
 
-    private var screenMode: String = "mobile"
     private var keyboardViewType: String = "canvas"
     private var themeName: String = "theme_dynamic"
 
@@ -66,9 +66,9 @@ class KeyboardLayoutSettingsFragment(
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
         val context = context ?: return
+        val loader = PresetLoader(context)
         val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val screenMode = rootPreferences.getString("layout_screen_mode", "mobile") ?: "mobile"
-        this.screenMode = screenMode
+        this.loader = loader
 
         val file = File(context.filesDir, fileName)
         if(!file.exists()) {
@@ -164,7 +164,7 @@ class KeyboardLayoutSettingsFragment(
     }
 
     private fun updateKeyboardView() {
-        val preset = preferenceDataStore?.preset?.commit() ?: return
+        val preset = preferenceDataStore?.preset ?: return
         activity?.findViewById<FrameLayout>(R.id.preview_mode_frame)?.visibility = INVISIBLE
         activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)?.visibility = INVISIBLE
         if(previewMode) updatePreviewMode(preset)
@@ -174,25 +174,24 @@ class KeyboardLayoutSettingsFragment(
     private fun updatePreviewMode(preset: InputEnginePreset) {
         val context = context ?: return
         val frame = activity?.findViewById<FrameLayout>(R.id.preview_mode_frame) ?: return
-        val engine = mod(preset).inflate(context, emptyInputEngineListener)
+        val engine = loader?.mod(preset)?.inflate(context, emptyInputEngineListener) ?: return
         frame.removeAllViews()
         frame.addView(engine.initView(context))
         engine.onReset()
+        engine.onResetComponents()
         frame.visibility = VISIBLE
     }
 
     private fun updateReorderMode(preset: InputEnginePreset) {
         val context = context ?: return
-        val presets = preset.layout.softKeyboard.map { keyboard ->
-            preset.copy(layout = preset.layout.copy(softKeyboard = listOf(keyboard))) }
-            .toMutableList()
+        val components: MutableList<InputViewComponentType> = preset.components.toMutableList()
         val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)
         handler.post {
             val adapter = KeyboardLayoutPreviewAdapter(context)
             val touchHelper = ItemTouchHelper(TouchCallback { from, to ->
-                Collections.swap(presets, from.adapterPosition, to.adapterPosition)
+                Collections.swap(components, from.adapterPosition, to.adapterPosition)
                 adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
-                preferenceDataStore?.putKeyboards(presets.flatMap { it.layout.softKeyboard })
+                preferenceDataStore?.putComponents(components.toList())
                 true
             })
             adapter.onItemLongPress = { viewHolder ->
@@ -202,9 +201,9 @@ class KeyboardLayoutSettingsFragment(
                 when(type) {
                     KeyboardLayoutPreviewAdapter.ItemMenuType.Remove -> {
                         val position = viewHolder.adapterPosition
-                        presets.removeAt(position)
+                        components.removeAt(position)
                         adapter.notifyItemRemoved(position)
-                        preferenceDataStore?.putKeyboards(presets.flatMap { it.layout.softKeyboard })
+                        preferenceDataStore?.putComponents(components.toList())
                     }
                     KeyboardLayoutPreviewAdapter.ItemMenuType.MoveUp -> {
                         val position = viewHolder.adapterPosition
@@ -227,7 +226,7 @@ class KeyboardLayoutSettingsFragment(
                 this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapter
                 touchHelper.attachToRecyclerView(this)
-                adapter.submitList(presets)
+                adapter.submitList(components.map { preset.copy(components = listOf(it)) })
                 this.visibility = VISIBLE
             }
         }
@@ -268,19 +267,8 @@ class KeyboardLayoutSettingsFragment(
             }
             R.id.add_component -> {
                 val dataStore = preferenceDataStore ?: return true
-                val bottomSheet = ChooseNewComponentBottomSheetFragment(
-                    types = listOf(ComponentType.NumberRow)
-                ) { componentType ->
-                    when(componentType) {
-                        ComponentType.NumberRow -> {
-                            dataStore.putKeyboards(modFilenames(listOf(NUMBER_ROW_ID)) +
-                                    dataStore.preset.layout.softKeyboard)
-                        }
-                        ComponentType.TextSelection -> {
-                        }
-                        ComponentType.LanguageTab -> {
-                        }
-                    }
+                val bottomSheet = ChooseNewComponentBottomSheetFragment { componentType ->
+                    dataStore.putComponents(dataStore.preset.components + componentType)
                     updateKeyboardView()
                 }
                 bottomSheet.show(childFragmentManager, ChooseNewComponentBottomSheetFragment.TAG)
@@ -288,30 +276,6 @@ class KeyboardLayoutSettingsFragment(
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun mod(preset: InputEnginePreset): InputEnginePreset {
-        return preset.copy(
-            layout = modLayout(preset.layout),
-            size = InputEnginePreset.Size(rowHeight = modHeight(preset.size.rowHeight)),
-        )
-    }
-
-    private fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
-        return layout.copy(
-            softKeyboard = modFilenames(layout.softKeyboard),
-            moreKeysTable = modFilenames(layout.moreKeysTable),
-            codeConvertTable = modFilenames(layout.codeConvertTable),
-            combinationTable = modFilenames(layout.combinationTable),
-        )
-    }
-
-    private fun modFilenames(fileNames: List<String>): List<String> {
-        return fileNames.map { it.format(screenMode) }
-    }
-
-    private fun modHeight(height: Int): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height.toFloat(), resources.displayMetrics).roundToInt()
     }
 
     class TouchCallback(
@@ -328,18 +292,6 @@ class KeyboardLayoutSettingsFragment(
         override fun onSwiped(viewHolder: ViewHolder, direction: Int) = Unit
 
         override fun isLongPressDragEnabled(): Boolean = false
-    }
-
-    enum class ComponentType(
-        @DrawableRes val iconRes: Int,
-        @StringRes val titleRes: Int,
-    ) {
-        NumberRow(R.drawable.baseline_123_24,
-            R.string.pref_layout_component_number_row_title),
-        TextSelection(R.drawable.baseline_text_select_move_forward_character,
-            R.string.pref_layout_component_text_edit_title),
-        LanguageTab(R.drawable.baseline_language_24,
-            R.string.pref_layout_component_language_switcher_title);
     }
 
     companion object {

@@ -134,7 +134,7 @@ class CanvasKeyboardView(
         val bitmapCache = mutableMapOf<BitmapCacheKey, Bitmap>()
 
         // Draw keyboard background
-        canvas.drawBitmap(keyboardBackground.toBitmap(rect.width(), rect.height()), 0f, 0f, bitmapPaint)
+        if(!rect.isEmpty) canvas.drawBitmap(keyboardBackground.toBitmap(rect.width(), rect.height()), 0f, 0f, bitmapPaint)
 
         // Draw key backgrounds
         cachedKeys.forEach { key ->

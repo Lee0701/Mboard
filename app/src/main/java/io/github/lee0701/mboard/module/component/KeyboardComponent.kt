@@ -26,7 +26,7 @@ class KeyboardComponent(
     private val rowHeight: Int,
     private val autoUnlockShift: Boolean = true,
     private val disableTouch: Boolean = false,
-): Component, KeyboardListener, CandidateListener {
+): InputViewComponent, KeyboardListener, CandidateListener {
 
     var connectedInputEngine: InputEngine? = null
 

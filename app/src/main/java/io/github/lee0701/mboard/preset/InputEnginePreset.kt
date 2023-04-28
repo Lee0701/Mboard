@@ -8,8 +8,7 @@ import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.module.component.CandidatesComponent
-import io.github.lee0701.mboard.module.component.Component
+import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
@@ -35,7 +34,7 @@ data class InputEnginePreset(
     val size: Size = Size(),
     val layout: Layout = Layout(),
     val hanja: Hanja = Hanja(),
-    val components: List<ComponentPreset> = listOf(),
+    val components: List<InputViewComponentType> = listOf(),
     val autoUnlockShift: Boolean = true,
     val candidatesView: Boolean = false,
 ) {
@@ -47,31 +46,11 @@ data class InputEnginePreset(
         val overrideTable = loadOverrideTable(context, names = layout.overrideTable)
         val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
 
-        val createMainKeyboard = {
-            KeyboardComponent(
-                keyboard = softKeyboard,
-                unifyHeight = size.unifyHeight,
-                rowHeight = size.rowHeight,
-                autoUnlockShift = autoUnlockShift,
-                disableTouch = disableTouch,
-            )
+        fun inflateComponents(preset: InputEnginePreset): List<InputViewComponent> {
+            return components.map { it.inflate(context, preset, disableTouch) }
         }
 
-        fun inflateComponents(): List<Component> {
-            return components.mapNotNull { preset ->
-                when(preset) {
-                    is ComponentPreset.Keyboard -> preset.inflate(context)
-                    is ComponentPreset.Candidates -> {
-                        CandidatesComponent(
-
-                        )
-                    }
-                    else -> null
-                }
-            }.ifEmpty { listOf(createMainKeyboard()) }
-        }
-
-        fun getHangulInputEngine(listener: InputEngine.Listener, components: List<Component>): InputEngine {
+        fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
             return if(hanja.conversion) {
                 // TODO: Temporary workaround
                 val (converter, predictor) = if(context is MBoardIME) {
@@ -89,7 +68,6 @@ data class InputEnginePreset(
                         overrideTable = overrideTable,
                         moreKeysTable = moreKeysTable,
                         jamoCombinationTable = combinationTable,
-                        components = components,
                         listener = l,
                     ) },
                     converter,
@@ -102,58 +80,45 @@ data class InputEnginePreset(
                     moreKeysTable = moreKeysTable,
                     overrideTable = overrideTable,
                     jamoCombinationTable = combinationTable,
-                    components = components,
-                    listener,
+                    listener = listener,
                 )
             }
         }
 
-        fun getTableInputEngine(listener: InputEngine.Listener, components: List<Component>): InputEngine {
+        fun getTableInputEngine(listener: InputEngine.Listener): InputEngine {
             return CodeConverterInputEngine(
                 convertTable = convertTable,
                 moreKeysTable = moreKeysTable,
                 overrideTable = overrideTable,
-                components = components,
                 listener = listener,
             )
         }
 
         fun getInputEngine(listener: InputEngine.Listener): InputEngine {
             return when(type) {
-                Type.Latin -> getTableInputEngine(listener, inflateComponents())
-                Type.Hangul -> getHangulInputEngine(listener, inflateComponents())
-                Type.Symbol -> getTableInputEngine(listener, inflateComponents())
+                Type.Latin -> getTableInputEngine(listener)
+                Type.Hangul -> getHangulInputEngine(listener)
+                Type.Symbol -> getTableInputEngine(listener)
             }.apply {
-                components.filterIsInstance<KeyboardComponent>().forEach { it.connectedInputEngine = this }
+                components = inflateComponents(this@InputEnginePreset)
+                components.filterIsInstance<KeyboardComponent>().forEach {
+                    it.connectedInputEngine = this
+                    it.updateView()
+                }
             }
         }
 
-//        return BasicSoftInputEngine(
-//            getInputEngine = getInputEngine,
-//            keyboard = softKeyboard,
-//            unifyHeight = size.unifyHeight,
-//            rowHeight = size.rowHeight,
-//            autoUnlockShift = autoUnlockShift,
-//            showCandidatesView = candidatesView,
-//            listener = rootListener,
-//            disableTouch = disableTouch,
-//        )
-        return getInputEngine(rootListener).apply {
-            components.filterIsInstance<KeyboardComponent>().forEach {
-                it.connectedInputEngine = this
-                it.updateView()
-            }
-        }
+        return getInputEngine(rootListener)
     }
 
     fun mutable(): Mutable {
         return Mutable(
             type = this.type,
             size = size.mutable(),
-            autoUnlockShift = this.autoUnlockShift,
-            showCandidatesView = this.candidatesView,
             layout = this.layout.mutable(),
             hanja = this.hanja.mutable(),
+            components = this.components.toMutableList(),
+            autoUnlockShift = this.autoUnlockShift,
         )
     }
 
@@ -161,18 +126,18 @@ data class InputEnginePreset(
         var type: Type = Type.Latin,
         var size: Size.Mutable = Size.Mutable(),
         var layout: Layout.Mutable = Layout.Mutable(),
-        var autoUnlockShift: Boolean = true,
-        var showCandidatesView: Boolean = false,
-        var hanja: Hanja.Mutable = Hanja.Mutable()
+        var hanja: Hanja.Mutable = Hanja.Mutable(),
+        var components: MutableList<InputViewComponentType> = mutableListOf(),
+        var autoUnlockShift: Boolean = true
     ) {
         fun commit(): InputEnginePreset {
             return InputEnginePreset(
                 type = type,
                 size = size.commit(),
                 layout = layout.commit(),
-                candidatesView = showCandidatesView,
-                autoUnlockShift = autoUnlockShift,
                 hanja = hanja.commit(),
+                components = components.toList(),
+                autoUnlockShift = autoUnlockShift,
             )
         }
     }
@@ -309,9 +274,10 @@ data class InputEnginePreset(
 
         fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
             val resolved = names.mapNotNull { filename ->
-                val keyboard = kotlin.runCatching {
-                    yaml.decodeFromStream<Keyboard>(context.assets.open(filename)) }.getOrNull()
-                if(keyboard == null) return@mapNotNull null
+                val keyboard = kotlin
+                    .runCatching { yaml.decodeFromStream<Keyboard>(context.assets.open(filename)) }
+                    .getOrNull()
+                    ?: return@mapNotNull null
                 keyboard.copy(
                     rows = keyboard.rows.map { it.copy(resolveSoftKeyIncludes(context, it)) }
                 )

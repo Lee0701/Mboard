@@ -8,7 +8,7 @@ import io.github.lee0701.mboard.module.candidates.BasicCandidatesAdapter
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 
-class CandidatesComponent: Component {
+class CandidatesComponent: InputViewComponent {
 
     var listener: CandidateListener? = null
     private var binding: ComponentCandidatesBinding? = null

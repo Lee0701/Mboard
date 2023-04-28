@@ -22,6 +22,7 @@ import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.preset.PresetLoader
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
@@ -36,69 +37,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     }
 
     private fun reload(pref: SharedPreferences, force: Boolean = false) {
-        val screenMode = pref.getString("layout_screen_mode", "mobile")
-
-        val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
-        val rowHeight: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-            pref.getFloat("appearance_keyboard_height", 55f), resources.displayMetrics).toInt()
-
-        fun modSize(size: InputEnginePreset.Size): InputEnginePreset.Size {
-            val rowHeight: Int = if(size.defaultHeight) rowHeight
-            else TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                size.rowHeight.toFloat(),
-                resources.displayMetrics
-            ).toInt()
-            return size.copy(
-                unifyHeight = unifyHeight,
-                rowHeight = rowHeight
-            )
-        }
-
-        fun modFilenames(fileNames: List<String>): List<String> {
-            return fileNames.map { it.format(screenMode) }
-        }
-
-        fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
-            return InputEnginePreset.Layout(
-                softKeyboard = modFilenames(layout.softKeyboard),
-                moreKeysTable = modFilenames(layout.moreKeysTable),
-                codeConvertTable = modFilenames(layout.codeConvertTable),
-                combinationTable = modFilenames(layout.combinationTable),
-            )
-        }
-
-        fun modPreset(preset: InputEnginePreset): InputEnginePreset {
-            return preset.copy(
-                layout = modLayout(preset.layout),
-                size = modSize(preset.size),
-            )
-        }
-
-        fun modLatin(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
-        fun modHangul(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
-        fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
-            return when(language) {
-                "ko" -> preset.copy(
-                    layout = preset.layout.copy(
-                        softKeyboard = modFilenames(preset.layout.softKeyboard),
-                        moreKeysTable = modFilenames(preset.layout.moreKeysTable) + "symbol/morekeys_symbols_hangul.yaml",
-                        codeConvertTable = modFilenames(preset.layout.codeConvertTable),
-                        overrideTable = modFilenames(preset.layout.overrideTable) + "symbol/override_currency_won.yaml",
-                        combinationTable = modFilenames(preset.layout.combinationTable),
-                    ),
-                    size = modSize(preset.size),
-                )
-                else -> modPreset(preset)
-            }
-        }
+        val loader = PresetLoader(this)
 
         val (latinPreset, hangulPreset, symbolPreset) = loadPresets(this)
 
-        val latinModule = modLatin(latinPreset)
-        val latinSymbolModule = modSymbol(symbolPreset, "en")
-        val hangulModule = modHangul(hangulPreset)
-        val hangulSymbolModule = modSymbol(symbolPreset, "ko")
+        val latinModule = loader.modLatin(latinPreset)
+        val latinSymbolModule = loader.modSymbol(symbolPreset, "en")
+        val hangulModule = loader.modHangul(hangulPreset)
+        val hangulSymbolModule = loader.modSymbol(symbolPreset, "ko")
 
         val latinInputEngine = latinModule.inflate(this, this)
         val latinSymbolInputEngine = latinSymbolModule.inflate(this, this)
@@ -128,28 +74,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     }
 
     override fun onCreateInputView(): View {
-//        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView) {
-//            val candidatesView = defaultCandidatesViewManager?.initView(this)
-//            if(candidatesView != null) {
-//                candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
-//                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-//                    resources.getDimension(R.dimen.candidates_view_height).roundToInt()
-//                )
-//                inputViewWrapper.addView(candidatesView)
-//            }
-//        }
-
-//        if(keyboardView != null) {
-//            val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-//            val theme = Themes.ofName(name)
-//            val context = ContextThemeWrapper(this, theme.keyboardBackground)
-//            val typedValue = TypedValue()
-//            val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
-//            keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
-//            val color = ContextCompat.getColor(this, typedValue.resourceId)
-//            setNavBarColor(color)
-//        }
-//        this.inputViewWrapper = inputViewWrapper
         return inputEngineSwitcher?.initView(this) ?: View(this)
     }
 

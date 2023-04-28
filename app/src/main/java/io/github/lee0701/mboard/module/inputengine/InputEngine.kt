@@ -5,14 +5,14 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.LinearLayoutCompat
 import io.github.lee0701.mboard.module.candidates.Candidate
-import io.github.lee0701.mboard.module.component.Component
+import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 
 interface InputEngine {
 
     val listener: Listener
-    val components: List<Component>
+    var components: List<InputViewComponent>
     var symbolsInputEngine: InputEngine?
     var alternativeInputEngine: InputEngine?
 

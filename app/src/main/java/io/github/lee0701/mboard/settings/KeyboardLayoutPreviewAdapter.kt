@@ -15,21 +15,19 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.lee0701.mboard.databinding.ListitemKeyboardLayoutPreviewRowBinding
 import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.preset.PresetLoader
 import kotlin.math.roundToInt
 
 class KeyboardLayoutPreviewAdapter(
     val context: Context,
     val previewMode: Boolean = false,
 ): ListAdapter<InputEnginePreset, KeyboardLayoutPreviewAdapter.ViewHolder>(DiffCallback()) {
+    val loader: PresetLoader = PresetLoader(context)
 
     var onItemLongPress: (ViewHolder) -> Unit = {}
     var onItemMenuPress: (ItemMenuType, ViewHolder) -> Unit = { _, _ -> }
-    private var screenMode: String = "mobile"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val screenMode = rootPreferences.getString("layout_screen_mode", "mobile") ?: "mobile"
-        this.screenMode = screenMode
         return ViewHolder(ListitemKeyboardLayoutPreviewRowBinding
             .inflate(LayoutInflater.from(context), null, false))
     }
@@ -53,13 +51,14 @@ class KeyboardLayoutPreviewAdapter(
         @SuppressLint("ClickableViewAccessibility")
         fun onBind(preset: InputEnginePreset) {
             val context = binding.root.context
-            val engine = mod(preset).inflate(
+            val engine = loader.mod(preset).inflate(
                 context,
                 KeyboardLayoutSettingsActivity.emptyInputEngineListener,
                 disableTouch = !previewMode
             )
             val view = engine.initView(context)
             engine.onReset()
+            engine.onResetComponents()
             if(!previewMode) view?.setOnTouchListener { _, e -> gestureDetector.onTouchEvent(e) }
             binding.componentWrapper.removeAllViews()
             binding.componentWrapper.addView(view)
@@ -93,35 +92,6 @@ class KeyboardLayoutPreviewAdapter(
         ): Boolean {
             return oldItem == newItem
         }
-    }
-
-    private fun mod(preset: InputEnginePreset): InputEnginePreset {
-        return preset.copy(
-            layout = modLayout(preset.layout),
-            size = InputEnginePreset.Size(rowHeight = modHeight(preset.size.rowHeight)),
-        )
-    }
-
-    private fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
-        return layout.copy(
-            softKeyboard = modFilenames(layout.softKeyboard),
-            moreKeysTable = modFilenames(layout.moreKeysTable),
-            codeConvertTable = modFilenames(layout.codeConvertTable),
-            overrideTable = modFilenames(layout.overrideTable),
-            combinationTable = modFilenames(layout.combinationTable),
-        )
-    }
-
-    private fun modFilenames(fileNames: List<String>): List<String> {
-        return fileNames.map { it.format(screenMode) }
-    }
-
-    private fun modHeight(height: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            height.toFloat(),
-            context.resources.displayMetrics
-        ).roundToInt()
     }
 
     enum class ItemMenuType {
