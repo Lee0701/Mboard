@@ -1,8 +1,6 @@
 package io.github.lee0701.mboard.settings
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.INVISIBLE
 import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.InputViewComponentType
@@ -269,6 +265,7 @@ class KeyboardLayoutSettingsFragment(
     }
 
     companion object {
-        const val NUMBER_ROW_ID = "common/soft_%s_number.yaml"
+        const val NUMBER_SOFT_ID = "common/soft_%s_number.yaml"
+        const val TEXT_EDIT_SOFT_ID = "common/soft_%s_text_edit.yaml"
     }
 }

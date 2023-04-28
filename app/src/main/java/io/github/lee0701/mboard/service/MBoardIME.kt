@@ -1,5 +1,7 @@
 package io.github.lee0701.mboard.service
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
@@ -12,7 +14,9 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
@@ -25,12 +29,12 @@ import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
+import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
-    val handler: Handler = Handler(Looper.getMainLooper())
-
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
+    private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
@@ -109,6 +113,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     }
 
     override fun onSystemKey(code: Int): Boolean {
+        val inputConnection = currentInputConnection ?: return false
+        val extractedText = inputConnection.getExtractedText(ExtractedTextRequest(), 0)
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 resetCurrentEngine()
@@ -128,6 +134,48 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
                 sendDownUpKeyEvents(code)
                 true
             }
+            KeyEvent.KEYCODE_DPAD_LEFT,
+            KeyEvent.KEYCODE_DPAD_RIGHT,
+            KeyEvent.KEYCODE_DPAD_UP,
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                resetCurrentEngine()
+                sendDownUpKeyEvents(code)
+                true
+            }
+            CustomKeycode.KEYCODE_COPY.code -> {
+                val selectedText = inputConnection.getSelectedText(0)?.toString().orEmpty()
+                val clip = ClipData.newPlainText(selectedText, selectedText)
+                clipboard.setPrimaryClip(clip)
+                true
+            }
+            CustomKeycode.KEYCODE_CUT.code -> {
+                val selectedText = inputConnection.getSelectedText(0)?.toString().orEmpty()
+                val clip = ClipData.newPlainText(selectedText, selectedText)
+                clipboard.setPrimaryClip(clip)
+                inputConnection.commitText("", 1)
+                true
+            }
+            CustomKeycode.KEYCODE_PASTE.code -> {
+                val text = clipboard.primaryClip?.getItemAt(0)?.text?.toString().orEmpty()
+                inputConnection.commitText(text, 1)
+                true
+            }
+            CustomKeycode.KEYCODE_SELECT_ALL.code -> {
+                extractedText.selectionStart = 0
+                extractedText.selectionEnd = extractedText.text.length
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
+                true
+            }
+            CustomKeycode.KEYCODE_EXPAND_SELECTION_LEFT.code -> {
+                extractedText.selectionStart -= 1
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
+                true
+            }
+            CustomKeycode.KEYCODE_EXPAND_SELECTION_RIGHT.code -> {
+                extractedText.selectionEnd += 1
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
+                true
+            }
             else -> false
         }
     }
@@ -138,6 +186,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
 
     override fun onComposingText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
+        if(text.isEmpty() && inputConnection.getSelectedText(0)?.isNotEmpty() == true) return
         inputConnection.setComposingText(text, 1)
     }
 

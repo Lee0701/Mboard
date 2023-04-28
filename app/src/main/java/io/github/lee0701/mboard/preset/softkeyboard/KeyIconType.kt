@@ -11,4 +11,13 @@ enum class KeyIconType {
     Backspace,
     Language,
     Return,
+
+    Left,
+    Right,
+    ExpandLeft,
+    ExpandRight,
+    SelectAll,
+    Cut,
+    Copy,
+    Paste,
 }

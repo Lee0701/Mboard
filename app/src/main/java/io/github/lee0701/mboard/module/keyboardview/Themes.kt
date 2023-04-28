@@ -6,6 +6,17 @@ import io.github.lee0701.mboard.preset.softkeyboard.KeyType.*
 import io.github.lee0701.mboard.preset.softkeyboard.KeyIconType.*
 
 object Themes {
+    private val textEditIcons = mapOf(
+        Left to R.drawable.baseline_arrow_left_24,
+        Right to R.drawable.baseline_arrow_right_24,
+        ExpandLeft to R.drawable.baseline_border_left_24,
+        ExpandRight to R.drawable.baseline_border_right_24,
+        SelectAll to R.drawable.baseline_format_letter_spacing,
+        Cut to R.drawable.baseline_content_cut_24,
+        Copy to R.drawable.baseline_content_copy_24,
+        Paste to R.drawable.baseline_content_paste_24,
+    )
+
     val Static = Theme(
         R.style.Theme_MBoard_Keyboard,
         mapOf(
@@ -24,7 +35,7 @@ object Themes {
             Backspace to R.drawable.keyic_backspace,
             Language to R.drawable.keyic_language,
             Return to R.drawable.keyic_return,
-        ),
+        ) + textEditIcons,
         R.style.Theme_MBoard_Keyboard_KeyPopup,
     )
 
@@ -46,7 +57,7 @@ object Themes {
             Backspace to R.drawable.keyic_backspace,
             Language to R.drawable.keyic_language,
             Return to R.drawable.keyic_return,
-        ),
+        ) + textEditIcons,
         R.style.Theme_MBoard_Keyboard_KeyPopup_Overlay,
     )
 

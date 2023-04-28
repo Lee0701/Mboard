@@ -24,10 +24,10 @@ enum class InputViewComponentType(
     Candidates(
         R.drawable.baseline_abc_24,
         R.string.pref_layout_component_candidates_title),
-    TextSelection(R.drawable.baseline_text_select_move_forward_character,
-        R.string.pref_layout_component_text_edit_title),
-    LanguageTab(R.drawable.baseline_language_24,
-        R.string.pref_layout_component_language_switcher_title);
+    TextEdit(R.drawable.baseline_text_select_move_forward_character,
+        R.string.pref_layout_component_text_edit_title);
+//    LanguageTab(R.drawable.baseline_language_24,
+//        R.string.pref_layout_component_language_switcher_title);
 
     fun inflate(context: Context, preset: InputEnginePreset, disableTouch: Boolean): InputViewComponent {
         val loader = PresetLoader(context)
@@ -43,7 +43,7 @@ enum class InputViewComponentType(
             }
             NumberRow -> {
                 val layouts = loader.modFilenames(
-                    listOf(KeyboardLayoutSettingsFragment.NUMBER_ROW_ID))
+                    listOf(KeyboardLayoutSettingsFragment.NUMBER_SOFT_ID))
                 KeyboardComponent(
                     keyboard = InputEnginePreset.loadSoftKeyboards(context, layouts),
                     unifyHeight = preset.size.unifyHeight,
@@ -60,6 +60,17 @@ enum class InputViewComponentType(
                 ).apply {
                     if(context is CandidateListener) listener = context
                 }
+            }
+            TextEdit -> {
+                val layouts = loader.modFilenames(
+                    listOf(KeyboardLayoutSettingsFragment.TEXT_EDIT_SOFT_ID))
+                KeyboardComponent(
+                    keyboard = InputEnginePreset.loadSoftKeyboards(context, layouts),
+                    unifyHeight = preset.size.unifyHeight,
+                    rowHeight = preset.size.rowHeight,
+                    autoUnlockShift = preset.autoUnlockShift,
+                    disableTouch = disableTouch,
+                )
             }
             else -> {
                 EmptyComponent
