@@ -73,6 +73,7 @@ class HanjaConverterInputEngine(
             composingWordStack.removeLast()
         } else {
             onReset()
+            onResetComponents()
             listener.onDeleteText(beforeLength, afterLength)
         }
         updateView()
@@ -102,11 +103,13 @@ class HanjaConverterInputEngine(
 
     override fun onSystemKey(code: Int): Boolean {
         onReset()
+        onResetComponents()
         return listener.onSystemKey(code)
     }
 
     override fun onEditorAction(code: Int) {
         onReset()
+        onResetComponents()
         listener.onEditorAction(code)
     }
 

@@ -21,8 +21,7 @@ class InputEngineSwitcher(
     }
 
     fun updateView() {
-        val currentEngine = getCurrentEngine()
-        currentEngine.components.forEach { it.updateView() }
+        getCurrentEngine().components.forEach { it.updateView() }
     }
 
     fun getCurrentEngine(): InputEngine {
@@ -30,12 +29,13 @@ class InputEngineSwitcher(
     }
 
     fun showCandidates(list: List<Candidate>) {
-        val currentEngine = getCurrentEngine()
-        currentEngine.components.filterIsInstance<CandidatesComponent>()
+        getCurrentEngine().components.filterIsInstance<CandidatesComponent>()
             .forEach { it.showCandidates(list) }
     }
 
     fun nextLanguage() {
+        getCurrentEngine().components.filterIsInstance<CandidatesComponent>()
+            .forEach { it.showCandidates(listOf()) }
         languageIndex += 1
         if(languageIndex >= table.size) languageIndex = 0
         extraIndex = 0

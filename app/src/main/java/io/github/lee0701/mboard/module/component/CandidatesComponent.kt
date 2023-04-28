@@ -41,6 +41,7 @@ class CandidatesComponent(
     }
 
     override fun reset() {
+        adapter?.submitList(listOf())
     }
 
     fun showCandidates(candidates: List<Candidate>) {

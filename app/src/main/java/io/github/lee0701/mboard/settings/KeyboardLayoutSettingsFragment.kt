@@ -133,13 +133,6 @@ class KeyboardLayoutSettingsFragment(
         }
         updateByEngineType(pref.getString(KEY_ENGINE_TYPE, "Latin"))
         engineType?.isVisible = false
-
-        layoutPreset?.setOnPreferenceChangeListener { _, newValue ->
-            if(newValue !is String) return@setOnPreferenceChangeListener true
-            val newLayout = InputEnginePreset.yaml
-                .decodeFromStream<InputEnginePreset>(requireContext().assets.open(newValue)).layout
-            true
-        }
         updateKeyboardView()
     }
 

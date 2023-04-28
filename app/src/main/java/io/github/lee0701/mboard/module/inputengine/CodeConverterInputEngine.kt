@@ -38,6 +38,7 @@ class CodeConverterInputEngine(
 
     override fun onReset() {
         listener.onFinishComposing()
+        listener.onCandidates(listOf())
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

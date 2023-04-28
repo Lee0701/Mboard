@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
@@ -26,6 +28,7 @@ import io.github.lee0701.mboard.preset.PresetLoader
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
+    val handler: Handler = Handler(Looper.getMainLooper())
 
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
@@ -204,6 +207,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     private fun resetCurrentEngine() {
         val engine = inputEngineSwitcher?.getCurrentEngine() ?: return
         engine.onReset()
+        engine.onResetComponents()
         updateTextAroundCursor()
     }
 
