@@ -279,8 +279,10 @@ data class InputEnginePreset(
         }
 
         private fun loadSoftKeyboards(context: Context, names: List<String>): Keyboard {
-            val resolved = names.map { filename ->
-                val keyboard = yaml.decodeFromStream<Keyboard>(context.assets.open(filename))
+            val resolved = names.mapNotNull { filename ->
+                val keyboard = kotlin.runCatching {
+                    yaml.decodeFromStream<Keyboard>(context.assets.open(filename)) }.getOrNull()
+                if(keyboard == null) return@mapNotNull null
                 keyboard.copy(
                     rows = keyboard.rows.map { it.copy(resolveSoftKeyIncludes(context, it)) }
                 )

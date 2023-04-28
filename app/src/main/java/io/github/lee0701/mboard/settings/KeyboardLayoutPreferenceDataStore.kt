@@ -24,8 +24,9 @@ class KeyboardLayoutPreferenceDataStore(
         }
     })
 
-    val preset: InputEnginePreset.Mutable =
-        InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable()
+    val preset: InputEnginePreset.Mutable = kotlin.runCatching {
+        InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(file.inputStream()).mutable() }.getOrNull()
+            ?: InputEnginePreset.Mutable()
 
     init {
         update()

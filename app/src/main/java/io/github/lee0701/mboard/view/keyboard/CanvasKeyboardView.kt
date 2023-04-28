@@ -17,6 +17,7 @@ import io.github.lee0701.mboard.module.softkeyboard.Key
 import io.github.lee0701.mboard.module.softkeyboard.KeyType
 import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.module.softkeyboard.Spacer
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 class CanvasKeyboardView(
@@ -98,7 +99,7 @@ class CanvasKeyboardView(
     }
 
     fun cacheKeys() {
-        val rowHeight = keyboardHeight / keyboard.rows.size
+        val rowHeight = keyboardHeight / max(keyboard.rows.size, 1)
         keyboard.rows.forEachIndexed { j, row ->
             val keyWidths = row.keys.map { it.width }.sum()
             val keyWidthUnit = keyboardWidth / keyWidths
