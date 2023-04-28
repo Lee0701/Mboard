@@ -101,13 +101,13 @@ abstract class KeyboardView(
             if(key.key.repeatable || longPressAction == FlickLongPressAction.Repeat) {
                 repeater()
             } else if(showMoreKeys) {
-                showMoreKeysPopup(key, pointerId)
+                val moreKeysResult = showMoreKeysPopup(key, pointerId)
                 // Call this once to initially point a key on popup
                 handler?.post { onTouchMove(key, pointerId, x, y) }
-            } else {
-                if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                listener.onKeyLongClick(key.key.code, key.key.output)
+                if(moreKeysResult) return@postDelayed
             }
+            if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            listener.onKeyLongClick(key.key.code, key.key.output)
         }, longPressDuration)
 
         listener.onKeyDown(key.key.code, key.key.output)
@@ -248,8 +248,8 @@ abstract class KeyboardView(
         }
     }
 
-    private fun showMoreKeysPopup(key: KeyWrapper, pointerId: Int) {
-        val moreKeysKeyboard = moreKeysKeyboards[key.key.code] ?: return
+    private fun showMoreKeysPopup(key: KeyWrapper, pointerId: Int): Boolean {
+        val moreKeysKeyboard = moreKeysKeyboards[key.key.code] ?: return false
         val keyPopup = MoreKeysPopup(context, key, moreKeysKeyboard, listener)
         popups[pointerId]?.cancel()
         popups[pointerId] = keyPopup
@@ -259,6 +259,7 @@ abstract class KeyboardView(
         val offsetX = if(popupX < 0) -popupX else 0f
         val offsetY = 0f
         showPopup(key, keyPopup, offsetX.roundToInt(), offsetY.roundToInt())
+        return true
     }
 
     private fun showPopup(key: KeyWrapper, popup: KeyboardPopup, offsetX: Int, offsetY: Int) {
