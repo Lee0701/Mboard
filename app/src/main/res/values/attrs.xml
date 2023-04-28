@@ -38,4 +38,8 @@
         <attr name="fileName" format="string" />
         <attr name="template" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="TouchInterceptingFrameLayout">
+        <attr name="intercept" format="boolean" />
+    </declare-styleable>
 </resources>
