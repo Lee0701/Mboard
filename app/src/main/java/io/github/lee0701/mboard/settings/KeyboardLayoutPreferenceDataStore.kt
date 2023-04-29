@@ -7,6 +7,7 @@ import com.charleskorn.kaml.encodeToStream
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.InputViewComponentType
 import java.io.File
+import java.util.Collections
 
 class KeyboardLayoutPreferenceDataStore(
     private val context: Context,
@@ -23,10 +24,16 @@ class KeyboardLayoutPreferenceDataStore(
         update()
     }
 
-    fun putComponents(componentTypes: List<InputViewComponentType>) {
-        mutablePreset.components.clear()
-        mutablePreset.components += componentTypes
-        write()
+    fun insertComponent(position: Int, componentType: InputViewComponentType) {
+        this.mutablePreset.components.add(position, componentType)
+    }
+
+    fun removeComponent(position: Int): InputViewComponentType {
+        return mutablePreset.components.removeAt(position)
+    }
+
+    fun swapComponents(a: Int, b: Int) {
+        Collections.swap(mutablePreset.components, a, b)
     }
 
     override fun putString(key: String?, value: String?) {
@@ -45,7 +52,9 @@ class KeyboardLayoutPreferenceDataStore(
 
     override fun putStringSet(key: String?, values: MutableSet<String>?) {
         when(key) {
-            KEY_HANJA_ADDITIONAL_DICTIONARIES -> mutablePreset.hanja.additionalDictionaries = values ?: mutableSetOf()
+            KEY_HANJA_ADDITIONAL_DICTIONARIES -> {
+                mutablePreset.hanja.additionalDictionaries = values ?: mutableSetOf()
+            }
         }
         write()
         update()

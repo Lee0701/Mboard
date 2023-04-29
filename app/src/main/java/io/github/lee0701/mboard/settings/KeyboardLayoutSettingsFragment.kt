@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.preset.InputEnginePreset
-import io.github.lee0701.mboard.preset.InputViewComponentType
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
@@ -39,6 +38,7 @@ class KeyboardLayoutSettingsFragment(
 ): PreferenceFragmentCompat(),
     KeyboardLayoutPreferenceDataStore.OnChangeListener {
     private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
+    private var adapter: KeyboardComponentsAdapter? = null
     private var loader: PresetLoader? = null
 
     private var keyboardViewType: String = "canvas"
@@ -133,16 +133,16 @@ class KeyboardLayoutSettingsFragment(
     }
 
     private fun updateKeyboardView() {
-        val preset = preferenceDataStore?.preset ?: return
         activity?.findViewById<FrameLayout>(R.id.preview_mode_frame)?.visibility = INVISIBLE
         activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)?.visibility = INVISIBLE
-        if(previewMode) updatePreviewMode(preset)
-        else updateReorderMode(preset)
+        if(previewMode) updatePreviewMode()
+        else updateReorderMode()
     }
 
-    private fun updatePreviewMode(preset: InputEnginePreset) {
+    private fun updatePreviewMode() {
         val context = context ?: return
         val frame = activity?.findViewById<FrameLayout>(R.id.preview_mode_frame) ?: return
+        val preset = preferenceDataStore?.preset ?: return
         val engine = loader?.mod(preset)?.inflate(context, emptyInputEngineListener) ?: return
         frame.removeAllViews()
         frame.addView(engine.initView(context))
@@ -151,23 +151,23 @@ class KeyboardLayoutSettingsFragment(
         frame.visibility = VISIBLE
     }
 
-    private fun updateReorderMode(preset: InputEnginePreset) {
+    private fun updateReorderMode() {
         val context = context ?: return
         val preferenceDataStore = preferenceDataStore ?: return
-        val components: MutableList<InputViewComponentType> = preset.components.toMutableList()
         val recyclerView = activity?.findViewById<RecyclerView>(R.id.reorder_mode_recycler_view)
 
         val adapter = KeyboardComponentsAdapter(context)
+        this.adapter = adapter
         val onMove = { from: ViewHolder, to: ViewHolder ->
-            Collections.swap(components, from.adapterPosition, to.adapterPosition)
+            preferenceDataStore.swapComponents(from.adapterPosition, to.adapterPosition)
             adapter.notifyItemMoved(from.adapterPosition, to.adapterPosition)
-            preferenceDataStore.putComponents(components.toList())
+            preferenceDataStore.write()
             true
         }
         val onSwipe = { viewHolder: ViewHolder, direction: Int ->
-            components.removeAt(viewHolder.adapterPosition)
+            preferenceDataStore.removeComponent(viewHolder.adapterPosition)
             adapter.notifyItemRemoved(viewHolder.adapterPosition)
-            preferenceDataStore.putComponents(components.toList())
+            preferenceDataStore.write()
             preferenceDataStore.update()
         }
         val touchHelper = ItemTouchHelper(TouchCallback(onMove, onSwipe))
@@ -175,12 +175,13 @@ class KeyboardLayoutSettingsFragment(
             touchHelper.startDrag(viewHolder)
         }
         adapter.onItemMenuPress = { type, viewHolder ->
+            val components = preferenceDataStore.preset.components
             when(type) {
                 KeyboardComponentsAdapter.ItemMenuType.Remove -> {
                     val position = viewHolder.adapterPosition
-                    components.removeAt(position)
+                    preferenceDataStore.removeComponent(position)
                     adapter.notifyItemRemoved(position)
-                    preferenceDataStore.putComponents(components.toList())
+                    preferenceDataStore.write()
                     preferenceDataStore.update()
                 }
                 KeyboardComponentsAdapter.ItemMenuType.MoveUp -> {
@@ -188,6 +189,7 @@ class KeyboardLayoutSettingsFragment(
                     if(position - 1 in components.indices) {
                         Collections.swap(components, position, position - 1)
                         adapter.notifyItemMoved(position, position - 1)
+                        preferenceDataStore.write()
                     }
                 }
                 KeyboardComponentsAdapter.ItemMenuType.MoveDown -> {
@@ -195,6 +197,7 @@ class KeyboardLayoutSettingsFragment(
                     if(position + 1 in components.indices) {
                         Collections.swap(components, position, position + 1)
                         adapter.notifyItemMoved(position, position + 1)
+                        preferenceDataStore.write()
                     }
                 }
                 else -> Unit
@@ -204,7 +207,9 @@ class KeyboardLayoutSettingsFragment(
             this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
             touchHelper.attachToRecyclerView(this)
-            adapter.submitList(components.map { preset.copy(components = listOf(it)) })
+            adapter.submitList(preferenceDataStore.preset.components
+                .map { preferenceDataStore.preset.copy(components = listOf(it)) })
+            preferenceDataStore.write()
             this.visibility = VISIBLE
         }
     }
@@ -243,10 +248,14 @@ class KeyboardLayoutSettingsFragment(
                 true
             }
             R.id.add_component -> {
-                val dataStore = preferenceDataStore ?: return true
+                val preferenceDataStore = preferenceDataStore ?: return true
+                val adapter = adapter ?: return true
                 val bottomSheet = ChooseNewComponentBottomSheetFragment { componentType ->
-                    dataStore.putComponents(dataStore.preset.components + componentType)
-                    updateKeyboardView()
+                    val index = preferenceDataStore.preset.components.size
+                    preferenceDataStore.insertComponent(index, componentType)
+                    adapter.notifyItemInserted(index)
+                    preferenceDataStore.write()
+                    preferenceDataStore.update()
                 }
                 bottomSheet.show(childFragmentManager, ChooseNewComponentBottomSheetFragment.TAG)
                 true
