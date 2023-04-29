@@ -17,10 +17,12 @@ import io.github.lee0701.mboard.preset.softkeyboard.Key
 import io.github.lee0701.mboard.preset.softkeyboard.KeyType
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.preset.softkeyboard.Spacer
+import java.lang.Math.pow
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 abstract class KeyboardView(
     context: Context,
@@ -190,8 +192,12 @@ abstract class KeyboardView(
             popup.dismiss()
         } else {
             popup?.dismiss()
-            listener.onKeyClick(key.key.code, key.key.output)
-            listener.onKeyUp(key.key.code, key.key.output)
+            if(listener is CorrectingKeyboardListener) {
+                listener.onKeyClick(findKeys(x, y).mapKeys { (key, _) -> key.key })
+            } else {
+                listener.onKeyClick(key.key.code, key.key.output)
+                listener.onKeyUp(key.key.code, key.key.output)
+            }
         }
         performClick()
         if(key.key.code == KeyEvent.KEYCODE_ENTER)
@@ -218,6 +224,15 @@ abstract class KeyboardView(
             }
         }
         return null
+    }
+
+    fun findKeys(x: Int, y: Int): Map<KeyWrapper, Double> {
+        return wrappedKeys.filterIsInstance<KeyWrapper>().map { key ->
+            val dx = x - key.x
+            val dy = y - key.y
+            val dist = sqrt(pow(dx.toDouble(), 2.0) + pow(dy.toDouble(), 2.0))
+            key to dist
+        }.sortedByDescending { (_, dist) -> dist }.take(8).toMap()
     }
 
     private fun performSoundFeedback(keyCode: Int) {

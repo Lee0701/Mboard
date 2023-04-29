@@ -8,12 +8,10 @@ import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.dictionary.DiskTrieDictionary
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
-import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
+import io.github.lee0701.mboard.module.inputengine.CodeTableInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
-import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.kokr.HanjaConverterBuilder
 import io.github.lee0701.mboard.preset.softkeyboard.Include
@@ -50,71 +48,40 @@ data class InputEnginePreset(
         fun inflateComponents(preset: InputEnginePreset): List<InputViewComponent> {
             return components.map { it.inflate(context, preset, disableTouch) }
         }
-        val prefixDict = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
-        val ngramDict = DiskTrieDictionary(context.assets.open("dict/dict-ngram.bin"))
-        val vocab = context.assets.open("dict/vocab.tsv").bufferedReader().readLines()
-            .map { line -> line.split('\t') }
-            .filter { it.size == 2 }
-            .map { (k, v) -> k to v.toInt() }
 
-        fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
-            return if(hanja.conversion) {
-                // TODO: Temporary workaround
-                val (converter, predictor) = if(context is MBoardIME) {
-                    createHanjaConverter(
-                        context,
-                        prediction = hanja.prediction,
-                        sortByContext = hanja.sortByContext,
-                    )
-                } else {
-                    (null to null)
-                }
-                HanjaConverterInputEngine(
-                    { l -> HangulInputEngine(
-                        convertTable = convertTable,
-                        overrideTable = overrideTable,
-                        moreKeysTable = moreKeysTable,
-                        jamoCombinationTable = combinationTable,
-                        listener = l,
-                    ) },
-                    vocab, prefixDict, ngramDict, listener
-                )
-            } else {
-                HangulInputEngine(
-                    convertTable = convertTable,
-                    moreKeysTable = moreKeysTable,
-                    overrideTable = overrideTable,
-                    jamoCombinationTable = combinationTable,
-                    listener = listener,
-                )
-
-            }
-        }
-
-        fun getTableInputEngine(listener: InputEngine.Listener): InputEngine {
-            return CodeConverterInputEngine(
+        var inputEngine: InputEngine
+        inputEngine = when(type) {
+            Type.Latin -> CodeTableInputEngine(
                 convertTable = convertTable,
                 moreKeysTable = moreKeysTable,
                 overrideTable = overrideTable,
-                listener = listener,
             )
-        }
-
-        fun getInputEngine(listener: InputEngine.Listener): InputEngine {
-            return when(type) {
-                Type.Latin -> getTableInputEngine(listener)
-                Type.Hangul -> getHangulInputEngine(listener)
-                Type.Symbol -> getTableInputEngine(listener)
-            }.apply {
-                components = inflateComponents(this@InputEnginePreset)
-                components.filterIsInstance<KeyboardComponent>().forEach {
-                    it.connectedInputEngine = this
-                    it.updateView()
-                }
+            Type.Hangul -> HangulInputEngine(
+                convertTable = convertTable,
+                moreKeysTable = moreKeysTable,
+                overrideTable = overrideTable,
+                jamoCombinationTable = combinationTable,
+            )
+            Type.Symbol -> CodeTableInputEngine(
+                convertTable = convertTable,
+                moreKeysTable = moreKeysTable,
+                overrideTable = overrideTable,
+            )
+        }.apply {
+            listener = rootListener
+            components = inflateComponents(this@InputEnginePreset)
+            components.filterIsInstance<KeyboardComponent>().forEach {
+                it.connectedInputEngine = this
+                it.updateView()
             }
         }
 
-        return getInputEngine(rootListener)
+//        inputEngine = WordComposingInputEngineWrapper(inputEngine)
+//
+//        val dictionary = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
+//        inputEngine = CorrectingInputEngine(inputEngine, dictionary)
+
+        return inputEngine
     }
 
     fun mutable(): Mutable {

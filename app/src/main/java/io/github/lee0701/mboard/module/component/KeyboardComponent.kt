@@ -46,6 +46,8 @@ class KeyboardComponent(
     private var ignoreCode: Int = 0
     private var inputHappened: Boolean = false
 
+    val currentKeyboardState: KeyboardState get() = keyboardState
+
     override fun initView(context: Context): View? {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         doubleTapGap = preferences.getFloat("behaviour_double_tap_gap", 500f).toInt()
@@ -81,9 +83,9 @@ class KeyboardComponent(
         inputEngine.onReset()
     }
 
-    override fun onItemClicked(candidate: Candidate) {
+    override fun onCandidateItemClicked(candidate: Candidate) {
         val inputEngine = connectedInputEngine ?: return
-        if(inputEngine is CandidateListener) inputEngine.onItemClicked(candidate)
+        if(inputEngine is CandidateListener) inputEngine.onCandidateItemClicked(candidate)
     }
 
     override fun updateView() {
@@ -191,16 +193,16 @@ class KeyboardComponent(
                 val state = keyboardState.copy()
                 reset()
                 keyboardState = state
-                inputEngine.listener.onCommitText(" ")
+                inputEngine.listener?.onCommitText(" ")
                 autoUnlockShift()
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 reset()
-                inputEngine.listener.onEditorAction(code)
+                inputEngine.listener?.onEditorAction(code)
                 autoUnlockShift()
             }
             else -> {
-                if(!inputEngine.listener.onSystemKey(code)) {
+                if(inputEngine.listener?.onSystemKey(code) != true) {
                     onPrintingKey(code, output, keyboardState)
                 }
                 autoUnlockShift()
@@ -219,7 +221,7 @@ class KeyboardComponent(
     private fun onPrintingKey(code: Int, output: String?, keyboardState: KeyboardState) {
         val inputEngine = connectedInputEngine ?: return
         if(code == 0 && output != null) {
-            inputEngine.listener.onCommitText(output)
+            inputEngine.listener?.onCommitText(output)
         } else {
             inputEngine.onKey(code, keyboardState)
         }

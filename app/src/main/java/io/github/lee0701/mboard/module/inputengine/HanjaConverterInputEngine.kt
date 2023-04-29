@@ -18,16 +18,15 @@ import java.util.PriorityQueue
 import kotlin.math.sqrt
 
 class HanjaConverterInputEngine(
-    getInputEngine: (InputEngine.Listener) -> InputEngine,
+    private val inputEngine: InputEngine,
     private val vocab: List<Pair<String, Int>>,
     private val prefixDict: AbstractTrieDictionary,
     private val ngramDict: AbstractTrieDictionary,
-    override val listener: InputEngine.Listener,
-): InputEngine, InputEngine.Listener, CandidateListener {
+): InputEngine, WordComposingInputEngine, InputEngine.Listener, CandidateListener {
 
     private var job: Job? = null
-    private val inputEngine = getInputEngine(this)
 
+    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = inputEngine.components
     override var alternativeInputEngine: InputEngine? = inputEngine.alternativeInputEngine
     override var symbolsInputEngine: InputEngine? = inputEngine.symbolsInputEngine
@@ -36,7 +35,7 @@ class HanjaConverterInputEngine(
     private var composingChar: String = ""
     private var beforeText = ""
 
-    private val currentComposing: String get() = composingWordStack.lastOrNull().orEmpty() + composingChar
+    override val currentComposing: String get() = composingWordStack.lastOrNull().orEmpty() + composingChar
 
     override fun onKey(code: Int, state: KeyboardState) {
         inputEngine.onKey(code, state)
@@ -58,7 +57,7 @@ class HanjaConverterInputEngine(
 
     override fun onFinishComposing() {
         val reconvert = currentComposing.isNotEmpty()
-        listener.onFinishComposing()
+        listener?.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
         if(reconvert) predict()
@@ -77,17 +76,17 @@ class HanjaConverterInputEngine(
         } else {
             onReset()
             onResetComponents()
-            listener.onDeleteText(beforeLength, afterLength)
+            listener?.onDeleteText(beforeLength, afterLength)
         }
         updateView()
     }
 
     override fun onCandidates(list: List<Candidate>) {
-        listener.onCandidates(list)
+        listener?.onCandidates(list)
     }
 
-    override fun onItemClicked(candidate: Candidate) {
-        listener.onCommitText(candidate.text)
+    override fun onCandidateItemClicked(candidate: Candidate) {
+        listener?.onCommitText(candidate.text)
         composingWordStack += currentComposing
         composingChar = ""
         if(inputEngine is HangulInputEngine) inputEngine.clearStack()
@@ -97,7 +96,7 @@ class HanjaConverterInputEngine(
         newComposingText.indices.forEach { i ->
             composingWordStack += newComposingText.take(i + 1)
         }
-        listener.onComposingText(newComposingText)
+        listener?.onComposingText(newComposingText)
         updateView()
         predict()
     }
@@ -105,13 +104,13 @@ class HanjaConverterInputEngine(
     override fun onSystemKey(code: Int): Boolean {
         onReset()
         onResetComponents()
-        return listener.onSystemKey(code)
+        return listener?.onSystemKey(code) == true
     }
 
     override fun onEditorAction(code: Int) {
         onReset()
         onResetComponents()
-        listener.onEditorAction(code)
+        listener?.onEditorAction(code)
     }
 
     private fun predict() {
@@ -223,12 +222,12 @@ class HanjaConverterInputEngine(
     }
 
     private fun updateView() {
-        listener.onComposingText(currentComposing)
+        listener?.onComposingText(currentComposing)
     }
 
     override fun onReset() {
         inputEngine.onReset()
-        listener.onCandidates(listOf())
+        listener?.onCandidates(listOf())
         updateView()
     }
 

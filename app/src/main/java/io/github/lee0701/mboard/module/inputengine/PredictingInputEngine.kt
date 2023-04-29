@@ -23,15 +23,14 @@ import java.util.PriorityQueue
 import kotlin.math.sqrt
 
 class PredictingInputEngine(
-    getInputEngine: (InputEngine.Listener) -> InputEngine,
+    val inputEngine: InputEngine,
     private val vocab: List<Pair<String, Int>>,
     private val prefixDict: AbstractTrieDictionary,
     private val ngramDict: AbstractTrieDictionary,
-    override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, CandidateListener {
     private var job: Job? = null
 
-    private val inputEngine: InputEngine = getInputEngine(this)
+    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = inputEngine.components
     override var symbolsInputEngine: InputEngine? = null
     override var alternativeInputEngine: InputEngine? = null
@@ -62,7 +61,7 @@ class PredictingInputEngine(
 
     override fun onFinishComposing() {
         val reconvert = currentComposing.isNotEmpty()
-        listener.onFinishComposing()
+        listener?.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
         if(reconvert) predict()
@@ -80,17 +79,17 @@ class PredictingInputEngine(
             composingWordStack.removeLast()
         } else {
             onReset()
-            listener.onDeleteText(beforeLength, afterLength)
+            listener?.onDeleteText(beforeLength, afterLength)
         }
         updateView()
     }
 
     override fun onCandidates(list: List<Candidate>) {
-        listener.onCandidates(list)
+        listener?.onCandidates(list)
     }
 
-    override fun onItemClicked(candidate: Candidate) {
-        listener.onCommitText(candidate.text)
+    override fun onCandidateItemClicked(candidate: Candidate) {
+        listener?.onCommitText(candidate.text)
         composingWordStack += currentComposing
         composingChar = ""
         if(inputEngine is HangulInputEngine) inputEngine.clearStack()
@@ -100,19 +99,19 @@ class PredictingInputEngine(
         newComposingText.indices.forEach { i ->
             composingWordStack += newComposingText.take(i + 1)
         }
-        listener.onComposingText(newComposingText)
+        listener?.onComposingText(newComposingText)
         updateView()
         predict()
     }
 
     override fun onSystemKey(code: Int): Boolean {
         onReset()
-        return listener.onSystemKey(code)
+        return listener?.onSystemKey(code) == true
     }
 
     override fun onEditorAction(code: Int) {
         onReset()
-        return listener.onEditorAction(code)
+        listener?.onEditorAction(code)
     }
 
     private fun predict() {
@@ -230,12 +229,12 @@ class PredictingInputEngine(
     }
 
     private fun updateView() {
-        listener.onComposingText(currentComposing)
+        listener?.onComposingText(currentComposing)
     }
 
     override fun onReset() {
         inputEngine.onReset()
-        listener.onCandidates(listOf())
+        listener?.onCandidates(listOf())
         updateView()
     }
 

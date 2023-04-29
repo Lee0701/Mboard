@@ -6,31 +6,29 @@ import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 
-class DirectInputEngine(
-    override val listener: InputEngine.Listener,
-): InputEngine {
+class DirectInputEngine: InputEngine {
 
+    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = listOf()
-
-    private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
-
     override var alternativeInputEngine: InputEngine? = null
     override var symbolsInputEngine: InputEngine? = null
 
+    private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
+
     override fun onKey(code: Int, state: KeyboardState) {
         val char = keyCharacterMap.get(code, state.asMetaState())
-        if(char > 0) listener.onCommitText(char.toChar().toString())
+        if(char > 0) listener?.onCommitText(char.toChar().toString())
     }
 
     override fun onDelete() {
-        listener.onDeleteText(1, 0)
+        listener?.onDeleteText(1, 0)
     }
 
     override fun onTextAroundCursor(before: String, after: String) {
     }
 
     override fun onReset() {
-        listener.onFinishComposing()
+        listener?.onFinishComposing()
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

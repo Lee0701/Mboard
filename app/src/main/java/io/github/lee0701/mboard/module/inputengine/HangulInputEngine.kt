@@ -19,9 +19,9 @@ data class HangulInputEngine(
     private val moreKeysTable: MoreKeysTable,
     private val overrideTable: CharOverrideTable,
     private val jamoCombinationTable: JamoCombinationTable,
-    override val listener: InputEngine.Listener,
 ): InputEngine {
 
+    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = listOf()
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
@@ -50,30 +50,30 @@ data class HangulInputEngine(
         if(converted == null) {
             val char = keyCharacterMap.get(code, state.asMetaState())
             onReset()
-            if(char > 0) listener.onCommitText(char.toChar().toString())
+            if(char > 0) listener?.onCommitText(char.toChar().toString())
         } else {
             val override = overrideTable.get(converted)
             val (text, hangulStates) = hangulCombiner.combine(hangulState, override ?: converted)
             if(text.isNotEmpty()) clearStack()
             this.stateStack += hangulStates
-            if(text.isNotEmpty()) listener.onCommitText(text)
-            listener.onComposingText(hangulStates.lastOrNull()?.composed ?: "")
+            if(text.isNotEmpty()) listener?.onCommitText(text)
+            listener?.onComposingText(hangulStates.lastOrNull()?.composed ?: "")
         }
     }
 
     override fun onDelete() {
         if(stateStack.size >= 1) {
             stateStack.removeLast()
-            listener.onComposingText(stateStack.lastOrNull()?.composed ?: "")
+            listener?.onComposingText(stateStack.lastOrNull()?.composed ?: "")
         }
-        else listener.onDeleteText(1, 0)
+        else listener?.onDeleteText(1, 0)
     }
 
     override fun onTextAroundCursor(before: String, after: String) {
     }
 
     override fun onReset() {
-        listener.onFinishComposing()
+        listener?.onFinishComposing()
         clearStack()
     }
 

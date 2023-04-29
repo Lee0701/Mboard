@@ -26,7 +26,7 @@ class CandidatesComponent(
             ComponentCandidatesBinding.inflate(inflater)
 
         binding.root.layoutParams = LayoutParams(width, height)
-        val adapter = BasicCandidatesAdapter(context) { listener?.onItemClicked(it) }
+        val adapter = BasicCandidatesAdapter(context) { listener?.onCandidateItemClicked(it) }
         binding.recyclerView.adapter = adapter
 
         val wrapper = TouchInterceptingFrameLayout(context, null, disableTouch)

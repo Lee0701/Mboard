@@ -12,7 +12,7 @@ import io.github.lee0701.mboard.service.KeyboardState
 
 interface InputEngine {
 
-    val listener: Listener
+    var listener: Listener?
     var components: List<InputViewComponent>
     var symbolsInputEngine: InputEngine?
     var alternativeInputEngine: InputEngine?

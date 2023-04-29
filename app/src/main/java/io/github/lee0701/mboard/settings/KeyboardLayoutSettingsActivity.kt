@@ -49,7 +49,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
         }
 
         val emptyCandidateListener = object: CandidateListener {
-            override fun onItemClicked(candidate: Candidate) = Unit
+            override fun onCandidateItemClicked(candidate: Candidate) = Unit
         }
     }
 

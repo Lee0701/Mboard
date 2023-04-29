@@ -10,12 +10,12 @@ import io.github.lee0701.mboard.preset.table.MoreKeysTable
 import io.github.lee0701.mboard.preset.table.SimpleCodeConvertTable
 import io.github.lee0701.mboard.service.KeyboardState
 
-class CodeConverterInputEngine(
+class CodeTableInputEngine(
     private val convertTable: CodeConvertTable,
     private val overrideTable: CharOverrideTable,
     private val moreKeysTable: MoreKeysTable,
-    override val listener: InputEngine.Listener,
 ): InputEngine {
+    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = listOf()
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
@@ -26,19 +26,19 @@ class CodeConverterInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         val converted = convertTable.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())
         val override = overrideTable.get(converted) ?: converted
-        listener.onCommitText(override.toChar().toString())
+        listener?.onCommitText(override.toChar().toString())
     }
 
     override fun onDelete() {
-        listener.onDeleteText(1, 0)
+        listener?.onDeleteText(1, 0)
     }
 
     override fun onTextAroundCursor(before: String, after: String) {
     }
 
     override fun onReset() {
-        listener.onFinishComposing()
-        listener.onCandidates(listOf())
+        listener?.onFinishComposing()
+        listener?.onCandidates(listOf())
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {
