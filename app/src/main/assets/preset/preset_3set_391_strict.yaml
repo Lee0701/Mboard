@@ -9,3 +9,5 @@ layout:
   combinationTable:
   - "hangul_3set/comb_3set_cho.yaml"
   - "hangul_3set/comb_391_jung_strict.yaml"
+components:
+- "MainKeyboard"

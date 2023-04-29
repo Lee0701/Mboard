@@ -109,9 +109,11 @@
     <string name="pref_layout_preview_mode_title">Preview Mode</string>
     <string name="pref_layout_reorder_mode_title">Change Orders</string>
     <string name="pref_layout_add_component_title">Add a Component</string>
+    <string name="pref_layout_component_main_keyboard_title">Main Keyboard</string>
     <string name="pref_layout_component_number_row_title">Number Row</string>
-    <string name="pref_layout_component_text_selection_title">Text Selection Tool</string>
-    <string name="pref_layout_component_number_language_tab_title">Language Switcher</string>
+    <string name="pref_layout_component_candidates_title">Candidates</string>
+    <string name="pref_layout_component_text_edit_title">Text Edit Tool</string>
+    <string name="pref_layout_component_language_switcher_title">Language Switcher</string>
 
     <string name="pref_soft_keyboard_header_title">On-screen Keyboard</string>
 

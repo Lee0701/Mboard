@@ -4,22 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.charleskorn.kaml.decodeFromStream
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.github.lee0701.mboard.databinding.BottomsheetChooseNewComponentBinding
 import io.github.lee0701.mboard.databinding.ListitemBottomsheetChooseNewComponentBinding
-import io.github.lee0701.mboard.module.InputEnginePreset
-import io.github.lee0701.mboard.module.softkeyboard.Keyboard
-import java.io.File
+import io.github.lee0701.mboard.preset.InputViewComponentType
 
 class ChooseNewComponentBottomSheetFragment(
-    private val types: List<KeyboardLayoutSettingsFragment.ComponentType> = listOf(),
-    private val onItemClicked: (KeyboardLayoutSettingsFragment.ComponentType) -> Unit,
+    private val onItemClicked: (InputViewComponentType) -> Unit,
 ): BottomSheetDialogFragment() {
 
     private var binding: BottomsheetChooseNewComponentBinding? = null
@@ -29,13 +24,14 @@ class ChooseNewComponentBottomSheetFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = BottomsheetChooseNewComponentBinding.inflate(inflater, container, false)
+        val binding: BottomsheetChooseNewComponentBinding =
+            BottomsheetChooseNewComponentBinding.inflate(inflater)
         val adapter = Adapter()
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
         }
-        adapter.submitList(types)
+        adapter.submitList(InputViewComponentType.values().toList())
         this.binding = binding
         return binding.root
     }
@@ -44,23 +40,23 @@ class ChooseNewComponentBottomSheetFragment(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    inner class Adapter: ListAdapter<KeyboardLayoutSettingsFragment.ComponentType, ViewHolder>(DiffCallback()) {
+    inner class Adapter: ListAdapter<InputViewComponentType, ViewHolder>(DiffCallback()) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = ListitemBottomsheetChooseNewComponentBinding.inflate(inflater, parent, false)
+            val binding: ListitemBottomsheetChooseNewComponentBinding =
+                ListitemBottomsheetChooseNewComponentBinding.inflate(inflater, parent, false)
             return ViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.onBind(getItem(position))
         }
-
     }
 
     inner class ViewHolder(
         private val binding: ListitemBottomsheetChooseNewComponentBinding,
     ): RecyclerView.ViewHolder(binding.root) {
-        fun onBind(componentType: KeyboardLayoutSettingsFragment.ComponentType) {
+        fun onBind(componentType: InputViewComponentType) {
             binding.icon.setImageResource(componentType.iconRes)
             binding.title.setText(componentType.titleRes)
             binding.root.setOnClickListener {
@@ -70,15 +66,15 @@ class ChooseNewComponentBottomSheetFragment(
         }
     }
 
-    class DiffCallback: DiffUtil.ItemCallback<KeyboardLayoutSettingsFragment.ComponentType>() {
+    class DiffCallback: DiffUtil.ItemCallback<InputViewComponentType>() {
         override fun areItemsTheSame(
-            oldItem: KeyboardLayoutSettingsFragment.ComponentType,
-            newItem: KeyboardLayoutSettingsFragment.ComponentType
+            oldItem: InputViewComponentType,
+            newItem: InputViewComponentType
         ): Boolean = oldItem === newItem
 
         override fun areContentsTheSame(
-            oldItem: KeyboardLayoutSettingsFragment.ComponentType,
-            newItem: KeyboardLayoutSettingsFragment.ComponentType
+            oldItem: InputViewComponentType,
+            newItem: InputViewComponentType
         ): Boolean = oldItem == newItem
     }
 

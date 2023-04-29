@@ -2,8 +2,9 @@ package io.github.lee0701.mboard.service
 
 import android.content.Context
 import android.view.View
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
+import io.github.lee0701.mboard.module.candidates.Candidate
+import io.github.lee0701.mboard.module.component.CandidatesComponent
+import io.github.lee0701.mboard.module.inputengine.InputEngine
 
 class InputEngineSwitcher(
     private val engines: List<InputEngine>,
@@ -14,20 +15,27 @@ class InputEngineSwitcher(
 
     fun initView(context: Context): View? {
         val currentEngine = getCurrentEngine()
-        return if(currentEngine is SoftInputEngine) currentEngine.initView(context)
-        else null
+        val view = currentEngine.initView(context)
+        currentEngine.components.forEach { it.reset() }
+        return view
     }
 
     fun updateView() {
-        val currentEngine = getCurrentEngine()
-        if(currentEngine is SoftInputEngine) currentEngine.updateView()
+        getCurrentEngine().components.forEach { it.updateView() }
     }
 
     fun getCurrentEngine(): InputEngine {
         return engines[table[languageIndex][extraIndex]]
     }
 
+    fun showCandidates(list: List<Candidate>) {
+        getCurrentEngine().components.filterIsInstance<CandidatesComponent>()
+            .forEach { it.showCandidates(list) }
+    }
+
     fun nextLanguage() {
+        getCurrentEngine().components.filterIsInstance<CandidatesComponent>()
+            .forEach { it.showCandidates(listOf()) }
         languageIndex += 1
         if(languageIndex >= table.size) languageIndex = 0
         extraIndex = 0

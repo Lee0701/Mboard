@@ -1,14 +1,13 @@
 package io.github.lee0701.mboard.settings
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.Candidate
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.view.keyboard.FlickDirection
-import io.github.lee0701.mboard.view.keyboard.KeyboardListener
+import io.github.lee0701.mboard.module.candidates.Candidate
+import io.github.lee0701.mboard.module.candidates.CandidateListener
+import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.keyboardview.FlickDirection
+import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
 
 class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
@@ -47,6 +46,10 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
             override fun onCandidates(list: List<Candidate>) = Unit
             override fun onSystemKey(code: Int): Boolean = false
             override fun onEditorAction(code: Int) = Unit
+        }
+
+        val emptyCandidateListener = object: CandidateListener {
+            override fun onItemClicked(candidate: Candidate) = Unit
         }
     }
 
