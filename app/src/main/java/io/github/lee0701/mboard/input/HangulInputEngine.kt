@@ -49,7 +49,7 @@ data class HangulInputEngine(
             val (text, hangulStates) = hangulCombiner.combine(hangulState, override ?: converted)
             if(text.isNotEmpty()) clearStack()
             this.stateStack += hangulStates
-            listener.onCommitText(text)
+            if(text.isNotEmpty()) listener.onCommitText(text)
             listener.onComposingText(hangulStates.lastOrNull()?.composed ?: "")
         }
     }

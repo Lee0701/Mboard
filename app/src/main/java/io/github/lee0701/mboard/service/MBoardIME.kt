@@ -9,7 +9,6 @@ import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
@@ -279,18 +278,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         currentInputConnection?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_MONITOR)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun onUpdateCursorAnchorInfo(cursorAnchorInfo: CursorAnchorInfo?) {
-        if(cursorAnchorInfo == null) return
-        val composingText = cursorAnchorInfo.composingText ?: return
-        val selectionEnd = cursorAnchorInfo.selectionStart
-        val composingEnd = cursorAnchorInfo.composingTextStart + composingText.length
-        if(selectionEnd != composingEnd) resetCurrentEngine()
-    }
-
     // Still needed for pre-lollipop devices
     @Deprecated("Deprecated in Java")
     override fun onViewClicked(focusChanged: Boolean) {
+        if(Build.VERSION.SDK_INT >= 34) return
         if(focusChanged) resetCurrentEngine()
     }
 
