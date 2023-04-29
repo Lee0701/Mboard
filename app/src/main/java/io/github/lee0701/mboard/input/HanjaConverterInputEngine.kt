@@ -112,7 +112,10 @@ class HanjaConverterInputEngine(
             val to = text.length
             val composingText = ComposingText(text = text, from = from, to = to)
             val candidates = if(currentComposing.isNotBlank()) {
-                hanjaConverter?.convertPrefix(composingText)
+                val extraCandidates =
+                    listOf(composingText.composing.substring(0, 1), composingText.composing)
+                        .map { DefaultHanjaCandidate(it.toString(), it.toString(), "") }
+                extraCandidates + hanjaConverter?.convertPrefix(composingText)
                     ?.flatten().orEmpty()
                     .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
             } else {
