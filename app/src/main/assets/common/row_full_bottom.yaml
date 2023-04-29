@@ -1,8 +1,18 @@
 keys:
 - !<key>
-  code: "KEYCODE_SYM"
-  label: "?12"
-  width: 1.5
+  code: "KEYCODE_CTRL_LEFT"
+  label: "Ctrl"
+  width: 1.25
+  type: "Modifier"
+- !<key>
+  code: "KEYCODE_META_LEFT"
+  label: "Meta"
+  width: 1
+  type: "Modifier"
+- !<key>
+  code: "KEYCODE_ALT_LEFT"
+  label: "Alt"
+  width: 1.25
   type: "Modifier"
 - !<key>
   code: "KEYCODE_LANGUAGE_SWITCH"
@@ -11,10 +21,31 @@ keys:
 - !<key>
   code: "KEYCODE_SPACE"
   label: ""
-  width: 8.0
+  width: 4.5
   type: "Space"
 - !<key>
-  code: "KEYCODE_SYM"
-  label: "?12"
-  width: 1.5
+  code: "KEYCODE_ALT_LEFT"
+  label: "Alt"
+  width: 1.25
   type: "Modifier"
+- !<key>
+  code: "KEYCODE_CTRL_LEFT"
+  label: "Ctrl"
+  width: 1.25
+  type: "Modifier"
+- !<key>
+  code: "KEYCODE_DPAD_LEFT"
+  label: "←"
+- !<column>
+  rows:
+  - keys:
+    - !<key>
+      code: "KEYCODE_DPAD_UP"
+      label: "↑"
+  - keys:
+    - !<key>
+      code: "KEYCODE_DPAD_DOWN"
+      label: "↓"
+- !<key>
+  code: "KEYCODE_DPAD_RIGHT"
+  label: "→"
