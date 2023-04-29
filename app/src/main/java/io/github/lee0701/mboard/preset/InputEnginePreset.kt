@@ -8,11 +8,16 @@ import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.dictionary.DiskTrieDictionary
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeTableInputEngine
+import io.github.lee0701.mboard.module.inputengine.CorrectingInputEngine
+import io.github.lee0701.mboard.module.inputengine.EmptyInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.inputengine.InputEngineListener
+import io.github.lee0701.mboard.module.inputengine.WordComposingInputEngine
 import io.github.lee0701.mboard.module.kokr.HanjaConverterBuilder
 import io.github.lee0701.mboard.preset.softkeyboard.Include
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
@@ -38,7 +43,7 @@ data class InputEnginePreset(
     val candidatesView: Boolean = false,
 ) {
 
-    fun inflate(context: Context, rootListener: InputEngine.Listener, disableTouch: Boolean = false): InputEngine {
+    fun inflate(context: Context, rootListener: InputEngineListener, disableTouch: Boolean = false): InputEngine {
         // Soft keyboards will be resolved later by components.
         val moreKeysTable = loadMoreKeysTable(context, names = layout.moreKeysTable)
         val convertTable = loadConvertTable(context, names = layout.codeConvertTable)
@@ -49,7 +54,7 @@ data class InputEnginePreset(
             return components.map { it.inflate(context, preset, disableTouch) }
         }
 
-        var inputEngine: InputEngine
+        var inputEngine: InputEngine = EmptyInputEngine
         inputEngine = when(type) {
             Type.Latin -> CodeTableInputEngine(
                 convertTable = convertTable,
@@ -57,6 +62,7 @@ data class InputEnginePreset(
                 overrideTable = overrideTable,
             )
             Type.Hangul -> HangulInputEngine(
+                inputEngine = inputEngine,
                 convertTable = convertTable,
                 moreKeysTable = moreKeysTable,
                 overrideTable = overrideTable,
@@ -76,10 +82,10 @@ data class InputEnginePreset(
             }
         }
 
-//        inputEngine = WordComposingInputEngineWrapper(inputEngine)
-//
-//        val dictionary = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
-//        inputEngine = CorrectingInputEngine(inputEngine, dictionary)
+        inputEngine = WordComposingInputEngine(inputEngine)
+
+        val dictionary = DiskTrieDictionary(context.assets.open("dict/dict-prefix.bin"))
+        inputEngine = CorrectingInputEngine(inputEngine, dictionary)
 
         return inputEngine
     }

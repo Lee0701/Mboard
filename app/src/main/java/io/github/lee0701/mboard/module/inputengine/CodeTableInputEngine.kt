@@ -15,7 +15,8 @@ class CodeTableInputEngine(
     private val overrideTable: CharOverrideTable,
     private val moreKeysTable: MoreKeysTable,
 ): InputEngine {
-    override var listener: InputEngine.Listener? = null
+
+    override var listener: InputEngineListener? = null
     override var components: List<InputViewComponent> = listOf()
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)
@@ -26,19 +27,19 @@ class CodeTableInputEngine(
     override fun onKey(code: Int, state: KeyboardState) {
         val converted = convertTable.get(code, state) ?: keyCharacterMap.get(code, state.asMetaState())
         val override = overrideTable.get(converted) ?: converted
-        listener?.onCommitText(override.toChar().toString())
+        this.listener?.onCommitText(override.toChar().toString())
     }
 
     override fun onDelete() {
-        listener?.onDeleteText(1, 0)
+        this.listener?.onDeleteText(1, 0)
     }
 
     override fun onTextAroundCursor(before: String, after: String) {
     }
 
     override fun onReset() {
-        listener?.onFinishComposing()
-        listener?.onCandidates(listOf())
+        this.listener?.onFinishComposing()
+        this.listener?.onCandidates(listOf())
     }
 
     override fun getLabels(state: KeyboardState): Map<Int, CharSequence> {

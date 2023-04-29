@@ -5,10 +5,10 @@ import io.github.lee0701.mboard.dictionary.AbstractTrieDictionary
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultCandidate
-import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
-import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.inputengine.InputEngineListener
+import io.github.lee0701.mboard.module.inputengine.InputEngineWrapper
 import io.github.lee0701.mboard.module.kokr.Hangul
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
@@ -23,17 +23,12 @@ import java.util.PriorityQueue
 import kotlin.math.sqrt
 
 class PredictingInputEngine(
-    val inputEngine: InputEngine,
+    inputEngine: InputEngine,
     private val vocab: List<Pair<String, Int>>,
     private val prefixDict: AbstractTrieDictionary,
     private val ngramDict: AbstractTrieDictionary,
-): InputEngine, InputEngine.Listener, CandidateListener {
+): InputEngineWrapper(inputEngine), InputEngineListener, CandidateListener {
     private var job: Job? = null
-
-    override var listener: InputEngine.Listener? = null
-    override var components: List<InputViewComponent> = inputEngine.components
-    override var symbolsInputEngine: InputEngine? = null
-    override var alternativeInputEngine: InputEngine? = null
 
     private val composingWordStack: MutableList<String> = mutableListOf()
     private var composingChar: String = ""

@@ -21,13 +21,13 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
-import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.inputengine.InputEngineListener
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
+class MBoardIME: InputMethodService(), InputEngineListener, CandidateListener, OnSharedPreferenceChangeListener {
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
@@ -315,14 +315,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
                 InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(File(context.filesDir, fileName).inputStream())
             }
             if(fromFilesDir.isSuccess) return fromFilesDir.getOrNull()
+            else Toast.makeText(context, R.string.msg_preset_load_failed, Toast.LENGTH_LONG).show()
             val fromAssets = kotlin.runCatching {
                 InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(context.assets.open(fileName))
             }
             if(fromAssets.isSuccess) return fromAssets.getOrNull()
+            else Toast.makeText(context, R.string.msg_preset_load_failed, Toast.LENGTH_LONG).show()
             val defaultFromAssets = kotlin.runCatching {
                 InputEnginePreset.yaml.decodeFromStream<InputEnginePreset>(context.assets.open(defaultFilename))
             }
             if(defaultFromAssets.isSuccess) return defaultFromAssets.getOrNull()
+            else Toast.makeText(context, R.string.msg_preset_load_failed, Toast.LENGTH_LONG).show()
             return null
         }
 

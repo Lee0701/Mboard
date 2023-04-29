@@ -6,6 +6,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.module.inputengine.InputEngineListener
 import io.github.lee0701.mboard.module.keyboardview.FlickDirection
 import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
 import io.github.lee0701.mboard.preset.softkeyboard.Key
@@ -39,7 +40,7 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
             override fun onKeyFlick(direction: FlickDirection, key: Key) = Unit
         }
 
-        val emptyInputEngineListener = object: InputEngine.Listener {
+        val emptyInputEngineListener = object: InputEngineListener {
             override fun onComposingText(text: CharSequence) = Unit
             override fun onFinishComposing() = Unit
             override fun onCommitText(text: CharSequence) = Unit

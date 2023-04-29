@@ -2,20 +2,14 @@ package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
 import io.github.lee0701.mboard.dictionary.AbstractTrieDictionary
-import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import java.text.Normalizer
 
 class CorrectingInputEngine(
-    val inputEngine: WordComposingInputEngine,
+    override val inputEngine: WordComposingInputEngine,
     val dictionary: AbstractTrieDictionary,
-): InputEngine {
-
-    override var components: List<InputViewComponent> = inputEngine.components
-    override var listener: InputEngine.Listener? = null
-    override var symbolsInputEngine: InputEngine? = null
-    override var alternativeInputEngine: InputEngine? = null
+): InputEngineWrapper(inputEngine) {
 
     private val currentComposing: String get() = inputEngine.currentComposing
     private val currentKey: List<Int> get() =
@@ -28,11 +22,11 @@ class CorrectingInputEngine(
         }
     }
 
-    override fun onReset() {
-        inputEngine.onReset()
+    override fun onKey(code: Int, state: KeyboardState) {
     }
 
-    override fun onKey(code: Int, state: KeyboardState) {
+    override fun onReset() {
+        inputEngine.onReset()
     }
 
     override fun onDelete() {

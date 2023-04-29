@@ -8,7 +8,7 @@ import io.github.lee0701.mboard.service.KeyboardState
 
 class DirectInputEngine: InputEngine {
 
-    override var listener: InputEngine.Listener? = null
+    override var listener: InputEngineListener? = null
     override var components: List<InputViewComponent> = listOf()
     override var alternativeInputEngine: InputEngine? = null
     override var symbolsInputEngine: InputEngine? = null

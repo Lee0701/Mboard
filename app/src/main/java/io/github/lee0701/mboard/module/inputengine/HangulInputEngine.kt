@@ -14,14 +14,14 @@ import io.github.lee0701.mboard.preset.table.LayeredCodeConvertTable.Companion.B
 import io.github.lee0701.mboard.preset.table.MoreKeysTable
 import io.github.lee0701.mboard.service.KeyboardState
 
-data class HangulInputEngine(
+class HangulInputEngine(
+    inputEngine: InputEngine,
     private val convertTable: CodeConvertTable,
     private val moreKeysTable: MoreKeysTable,
     private val overrideTable: CharOverrideTable,
     private val jamoCombinationTable: JamoCombinationTable,
-): InputEngine {
+): InputEngineWrapper(inputEngine) {
 
-    override var listener: InputEngine.Listener? = null
     override var components: List<InputViewComponent> = listOf()
 
     private val keyCharacterMap: KeyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD)

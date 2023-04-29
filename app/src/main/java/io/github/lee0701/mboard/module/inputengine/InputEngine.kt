@@ -5,14 +5,13 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.widget.LinearLayoutCompat
-import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 
 interface InputEngine {
 
-    var listener: Listener?
+    var listener: InputEngineListener?
     var components: List<InputViewComponent>
     var symbolsInputEngine: InputEngine?
     var alternativeInputEngine: InputEngine?
@@ -39,13 +38,4 @@ interface InputEngine {
     fun getIcons(state: KeyboardState): Map<Int, Drawable>
     fun getMoreKeys(state: KeyboardState): Map<Int, Keyboard>
 
-    interface Listener {
-        fun onComposingText(text: CharSequence)
-        fun onFinishComposing()
-        fun onCommitText(text: CharSequence)
-        fun onDeleteText(beforeLength: Int, afterLength: Int)
-        fun onCandidates(list: List<Candidate>)
-        fun onSystemKey(code: Int): Boolean
-        fun onEditorAction(code: Int)
-    }
 }
