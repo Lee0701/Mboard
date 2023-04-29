@@ -9,10 +9,17 @@ sealed interface RowItem {
     val width: Float
 }
 
+@SerialName("column")
+@Serializable
+data class Column(
+    val rows: List<Row> = listOf(),
+    override val width: Float = 1f,
+): RowItem
+
 @SerialName("spacer")
 @Serializable
 data class Spacer(
-    @Serializable override val width: Float = 1f,
+    override val width: Float = 1f,
 ): RowItem
 
 @SerialName("key")
