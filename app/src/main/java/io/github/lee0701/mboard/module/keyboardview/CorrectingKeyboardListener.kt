@@ -1,10 +1,9 @@
 package io.github.lee0701.mboard.module.keyboardview
 
-import io.github.lee0701.mboard.preset.softkeyboard.Key
-
+import io.github.lee0701.mboard.service.KeyboardState
 
 interface CorrectingKeyboardListener: KeyboardListener {
-    fun onKeyClick(distances: Map<Key, Double>)
-    fun onKeyDown(distances: Map<Key, Double>)
-    fun onKeyUp(distances: Map<Key, Double>)
+    fun onKeyClick(primaryCode: Int, distances: Map<Int, Double>, state: KeyboardState)
+    fun onKeyDown(primaryCode: Int, distances: Map<Int, Double>, state: KeyboardState)
+    fun onKeyUp(primaryCode: Int, distances: Map<Int, Double>, state: KeyboardState)
 }

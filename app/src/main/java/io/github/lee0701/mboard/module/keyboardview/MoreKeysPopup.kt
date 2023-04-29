@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.preset.softkeyboard.Key
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import kotlin.math.roundToInt
 
@@ -96,20 +97,24 @@ class MoreKeysPopup(
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }
 
-    override fun onKeyClick(code: Int, output: String?) {
-        listener.onKeyClick(code, output)
+    override fun onKeyClick(key: Key) {
+        listener.onKeyClick(key)
     }
 
-    override fun onKeyLongClick(code: Int, output: String?) {
+    override fun onKeyLongClick(key: Key) {
+        listener.onKeyLongClick(key)
     }
 
-    override fun onKeyDown(code: Int, output: String?) {
+    override fun onKeyDown(key: Key) {
+        listener.onKeyDown(key)
     }
 
-    override fun onKeyUp(code: Int, output: String?) {
+    override fun onKeyUp(key: Key) {
+        listener.onKeyDown(key)
     }
 
-    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+    override fun onKeyFlick(direction: FlickDirection, key: Key) {
+        listener.onKeyFlick(direction, key)
     }
 
     override fun touchMove(x: Int, y: Int) {
@@ -124,7 +129,7 @@ class MoreKeysPopup(
 
     override fun touchUp() {
         val pointedKey = pointedKey ?: return
-        this.onKeyClick(pointedKey.key.code, pointedKey.key.output)
+        this.onKeyClick(pointedKey.key)
         this.pointedKey = null
     }
 

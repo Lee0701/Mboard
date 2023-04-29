@@ -28,6 +28,7 @@ class KeyboardComponent(
     private val disableTouch: Boolean = false,
 ): InputViewComponent, KeyboardListener, CandidateListener {
 
+    private var keyboardView: KeyboardView? = null
     var connectedInputEngine: InputEngine? = null
 
     private var doubleTapGap: Int = 500
@@ -39,14 +40,10 @@ class KeyboardComponent(
     private var flickLeftAction: FlickLongPressAction = FlickLongPressAction.None
     private var flickRightAction: FlickLongPressAction = FlickLongPressAction.None
 
-    private var keyboardView: KeyboardView? = null
-
     private var keyboardState: KeyboardState = KeyboardState()
     private var shiftClickedTime: Long = 0
     private var ignoreCode: Int = 0
     private var inputHappened: Boolean = false
-
-    val currentKeyboardState: KeyboardState get() = keyboardState
 
     override fun initView(context: Context): View? {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -120,14 +117,14 @@ class KeyboardComponent(
         keyboardView.updateMoreKeyKeyboards(inputEngine.getMoreKeys(keyboardState))
     }
 
-    override fun onKeyDown(code: Int, output: String?) {
-        when(code) {
+    override fun onKeyDown(key: Key) {
+        when(key.code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyDown()
         }
     }
 
-    override fun onKeyUp(code: Int, output: String?) {
-        when(code) {
+    override fun onKeyUp(key: Key) {
+        when(key.code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> onShiftKeyUp()
         }
     }
@@ -171,13 +168,13 @@ class KeyboardComponent(
         updateView()
     }
 
-    override fun onKeyClick(code: Int, output: String?) {
+    override fun onKeyClick(key: Key) {
         val inputEngine = connectedInputEngine ?: return
-        if(ignoreCode != 0 && ignoreCode == code) {
+        if(ignoreCode != 0 && ignoreCode == key.code) {
             ignoreCode = 0
             return
         }
-        when(code) {
+        when(key.code) {
             KeyEvent.KEYCODE_SHIFT_LEFT, KeyEvent.KEYCODE_SHIFT_RIGHT -> {
             }
             KeyEvent.KEYCODE_CAPS_LOCK -> {
@@ -198,12 +195,12 @@ class KeyboardComponent(
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 reset()
-                inputEngine.listener?.onEditorAction(code)
+                inputEngine.listener?.onEditorAction(key.code)
                 autoUnlockShift()
             }
             else -> {
-                if(inputEngine.listener?.onSystemKey(code) != true) {
-                    onPrintingKey(code, output, keyboardState)
+                if(inputEngine.listener?.onSystemKey(key.code) != true) {
+                    onPrintingKey(key.code, key.output, keyboardState)
                 }
                 autoUnlockShift()
             }
@@ -211,10 +208,10 @@ class KeyboardComponent(
         updateView()
     }
 
-    override fun onKeyLongClick(code: Int, output: String?) {
+    override fun onKeyLongClick(key: Key) {
         val inputEngine = connectedInputEngine ?: return
-        longPressAction.onKey(code, keyboardState, inputEngine)
-        ignoreCode = code
+        longPressAction.onKey(key.code, keyboardState, inputEngine)
+        ignoreCode = key.code
         inputHappened = true
     }
 
@@ -228,7 +225,7 @@ class KeyboardComponent(
         inputHappened = true
     }
 
-    override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) {
+    override fun onKeyFlick(direction: FlickDirection, key: Key) {
         val inputEngine = connectedInputEngine ?: return
         val action = when(direction) {
             FlickDirection.Up -> flickUpAction
@@ -237,8 +234,8 @@ class KeyboardComponent(
             FlickDirection.Right -> flickRightAction
             else -> FlickLongPressAction.None
         }
-        action.onKey(code, keyboardState, inputEngine)
-        ignoreCode = code
+        action.onKey(key.code, keyboardState, inputEngine)
+        ignoreCode = key.code
         inputHappened = true
     }
 

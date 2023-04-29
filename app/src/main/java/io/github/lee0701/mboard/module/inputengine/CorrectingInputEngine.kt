@@ -11,11 +11,11 @@ class CorrectingInputEngine(
     val inputEngine: WordComposingInputEngine,
     val dictionary: AbstractTrieDictionary,
 ): InputEngine {
-    override var listener: InputEngine.Listener? = null
-    override var components: List<InputViewComponent> = listOf()
 
-    override var alternativeInputEngine: InputEngine? = null
+    override var components: List<InputViewComponent> = inputEngine.components
+    override var listener: InputEngine.Listener? = null
     override var symbolsInputEngine: InputEngine? = null
+    override var alternativeInputEngine: InputEngine? = null
 
     private val currentComposing: String get() = inputEngine.currentComposing
     private val currentKey: List<Int> get() =

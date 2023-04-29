@@ -8,6 +8,7 @@ import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.keyboardview.FlickDirection
 import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
+import io.github.lee0701.mboard.preset.softkeyboard.Key
 
 class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
@@ -31,11 +32,11 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
     companion object {
         val emptyKeyboardListener = object: KeyboardListener {
-            override fun onKeyClick(code: Int, output: String?) = Unit
-            override fun onKeyLongClick(code: Int, output: String?) = Unit
-            override fun onKeyDown(code: Int, output: String?) = Unit
-            override fun onKeyUp(code: Int, output: String?) = Unit
-            override fun onKeyFlick(direction: FlickDirection, code: Int, output: String?) = Unit
+            override fun onKeyClick(key: Key) = Unit
+            override fun onKeyLongClick(key: Key) = Unit
+            override fun onKeyDown(key: Key) = Unit
+            override fun onKeyUp(key: Key) = Unit
+            override fun onKeyFlick(direction: FlickDirection, key: Key) = Unit
         }
 
         val emptyInputEngineListener = object: InputEngine.Listener {
