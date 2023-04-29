@@ -9,7 +9,6 @@ import io.github.lee0701.converter.library.engine.HanjaConverter
 import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.dictionary.DiskTrieDictionary
-import io.github.lee0701.mboard.input.PredictingInputEngine
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
@@ -78,9 +77,7 @@ data class InputEnginePreset(
                         jamoCombinationTable = combinationTable,
                         listener = l,
                     ) },
-                    converter,
-                    predictor,
-                    listener,
+                    vocab, prefixDict, ngramDict, listener
                 )
             } else {
                 HangulInputEngine(

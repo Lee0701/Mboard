@@ -1,17 +1,13 @@
 package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
-import io.github.lee0701.converter.library.engine.ComposingText
-import io.github.lee0701.converter.library.engine.HanjaConverter
-import io.github.lee0701.converter.library.engine.Predictor
+import io.github.lee0701.mboard.dictionary.AbstractTrieDictionary
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
-import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.candidates.DefaultCandidate
 import io.github.lee0701.mboard.module.component.InputViewComponent
+import io.github.lee0701.mboard.module.kokr.Hangul
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
-import io.github.lee0701.mboard.charset.Hangul
-import io.github.lee0701.mboard.dictionary.AbstractTrieDictionary
-import io.github.lee0701.mboard.module.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
