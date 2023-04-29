@@ -7,40 +7,125 @@ import java.text.Normalizer
 import kotlin.math.log10
 import kotlin.math.roundToInt
 
+const val PART_UNIT = 250000
+
 fun main() {
-//    val testSearch = false
-    val genPrefixDict = false
-    val genNgramDict = false
+    val parts = 2390166 % PART_UNIT
+//    genPrefixDict()
+//    splitCorpus()
+//    genNgramDicts(parts, 5, 8)
+//    mergeNgramDicts(1, 3, File("dict_src/dict-ngram.1-3.bin"), 50)
 
-    val testSearch = true
-//    val genPrefixDict = true
-//    val genNgramDict = true
+    testPrefixSearch()
+//    testNgramSearch()
+}
 
-    if(genPrefixDict) {
-        val inFile = File("dict_src/corpus.txt")
-        val outDictFile = File("dict_src/dict-prefix.bin")
-        val outVocabFile = File("dict_src/vocab.tsv")
-        val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 10)
-    }
-    if(genNgramDict) {
-        val inFile = File("dict_src/corpus-30k.txt")
-        val inVocabFile = File("dict_src/vocab.tsv")
-        val outFile = File("dict_src/dict-ngram.bin")
-        val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, 5, 10)
-    }
-    if(testSearch) {
-        val prefixDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-prefix.bin").readBytes()))
-        val ngramDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-ngram.bin").readBytes()))
-        val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
-            .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
-        val revVocab = vocab.map { (k, v) -> v to k }.toMap()
-        System.`in`.bufferedReader().forEachLine { line ->
-            val key = line.split(' ').map { vocab[it] ?: -1 }
-            val results = (5 downTo 1).map { n -> ngramDict.search(key.takeLast(n)).mapValues { (_, v) -> v * n } }
-            val found = results.firstOrNull { it.isNotEmpty() } ?: return@forEachLine
-            val sorted = found.map { (k, v) -> revVocab[k] to v }.sortedByDescending { (k, v) -> v }
-            println(sorted.joinToString(", ") { (k, v) -> "$k=$v" })
+fun splitCorpus() {
+    val inFile = File("dict_src/corpus.shuf.tok.txt")
+    val br = inFile.bufferedReader()
+    val lines = mutableListOf<String>()
+    var i = 0
+    while(true) {
+        val line = br.readLine() ?: break
+        if(line.isBlank()) continue
+
+        lines += line
+
+        i += 1
+        if(i % 10000 == 0) println("$i lines")
+        if(i % PART_UNIT == 0) {
+            val part = i / PART_UNIT
+            val file = File("dict_src/corpus.shuf.tok.part$part.txt")
+            val output = lines.joinToString("\n") + "\n"
+            file.writeBytes(output.toByteArray())
+            lines.clear()
         }
+    }
+}
+
+fun genPrefixDict() {
+    val inFile = File("dict_src/corpus.shuf.txt")
+    val outDictFile = File("dict_src/dict-prefix.bin")
+    val outVocabFile = File("dict_src/vocab.tsv")
+    val (dictionary, vocab) = buildPrefixDict(inFile, outDictFile, outVocabFile, 10)
+}
+
+fun mergeNgramDicts(start: Int, end: Int, outFile: File, minFreq: Int) {
+    var i: Int
+
+    val result = mutableMapOf<List<Int>, MutableMap<Int, Int>>()
+    i = 0
+    println("# Step: 1")
+    for(part in start .. end) {
+        i = 0
+        println("## Part: $part")
+        val dictFile = File("dict_src/dict-ngram.part${part}.bin")
+        val dict = DiskTrieDictionary(ByteBuffer.wrap(dictFile.readBytes()))
+        dict.entries().forEach { (key, map) ->
+            val item = result.getOrPut(key) { mutableMapOf() }
+            map.entries.forEach { (k, v) ->
+                item[k] = (item[k] ?: 0) + v
+
+                i += 1
+                if(i % PART_UNIT == 0) println("line $i")
+            }
+        }
+    }
+
+    println("# Step: 2")
+    val filtered = result.mapValues { (key, map) ->
+        map.filterValues { it < minFreq }
+    }.filter { it.value.isNotEmpty() }
+
+    i = 0
+    println("# Step: 3")
+    val trieDictionary = MutableTrieDictionary()
+    filtered.forEach { (key, map) ->
+        trieDictionary.put(key, map)
+        i += 1
+        if(i % 10000 == 0) println("line $i")
+    }
+
+    println("# Step: 4")
+    val diskDictionary = DiskTrieDictionary.build(trieDictionary)
+    diskDictionary.write(outFile.outputStream())
+}
+
+fun genNgramDicts(parts: Int, grams: Int, minFreq: Int) {
+    for(part in 1 until parts-1) {
+        genNgramDict(part, grams, minFreq)
+    }
+}
+
+fun genNgramDict(part: Int, grams: Int, minFreq: Int) {
+    val inFile = File("dict_src/corpus.shuf.tok.part${part}.txt")
+    val inVocabFile = File("dict_src/vocab.tsv")
+    val outFile = File("dict_src/dict-ngram.part${part}.bin")
+    val (dictionary, vocab) = buildNgramDict(inFile, inVocabFile, outFile, grams, minFreq)
+}
+
+fun testNgramSearch() {
+    val ngramDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-ngram.part3.bin").readBytes()))
+    val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
+        .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to i }.toMap()
+    val revVocab = vocab.map { (k, v) -> v to k }.toMap()
+    System.`in`.bufferedReader().forEachLine { line ->
+        val key = line.split(' ').map { vocab[it] ?: -1 }
+        val results = (5 downTo 1).map { n -> ngramDict.search(key.takeLast(n)).mapValues { (_, v) -> v * n } }
+        val found = results.firstOrNull { it.isNotEmpty() } ?: return@forEachLine
+        val sorted = found.map { (k, v) -> revVocab[k] to v }.sortedByDescending { (k, v) -> v }
+        println(sorted.joinToString(", ") { (k, v) -> "$k=$v" })
+    }
+}
+
+fun testPrefixSearch() {
+    val prefixDict = DiskTrieDictionary(ByteBuffer.wrap(File("dict_src/dict-prefix.bin").readBytes()))
+    val vocab = File("dict_src/vocab.tsv").bufferedReader().readLines()
+        .map { it.split('\t') }.filter { it.size == 2 }.mapIndexed { i, (k, v) -> k to v.toInt() }
+    System.`in`.bufferedReader().forEachLine { line ->
+        val key = getKey(line)
+        val result = prefixDict.searchPrefix(key)
+        println(result.map { (k, v) -> vocab[k] }.sortedByDescending { (k, v) -> v }.take(10))
     }
 }
 
@@ -57,6 +142,7 @@ fun buildPrefixDict(
     while(true) {
         val line = br.readLine() ?: break
         val tokens = line.split(' ')
+            .map { token -> token.filter { c -> c in '가' .. '힣' } }
         tokens.forEach { token ->
             val word = vocabulary.getOrPut(token) { 0 }
             vocabulary += token to word + 1
@@ -83,6 +169,7 @@ fun buildPrefixDict(
     sorted.forEach { (key, value) ->
         bw.appendLine("$key\t$value")
     }
+    bw.flush()
 
     val diskDictionary = DiskTrieDictionary.build(dictionary)
     diskDictionary.write(outDictFile.outputStream())
@@ -118,7 +205,7 @@ fun buildNgramDict(
             }
         }
         i++
-        if(i % 1000 == 0) println("$i lines")
+        if(i % 10000 == 0) println("$i lines")
         if(i % 10000 == 0) {
             dicts += mutableMapOf()
         }
@@ -183,6 +270,7 @@ fun buildHanjaDict(inFile: File, freqHanjaFile: File, freqHanjaeoFile: File, out
     outputDir.mkdirs()
     val dos = DataOutputStream(File(outputDir, "dict.bin").outputStream())
     dos.write((comment.joinToString("\n") + 0.toChar()).toByteArray())
+    dos.flush()
 }
 
 fun getKey(string: String): List<Int> {
