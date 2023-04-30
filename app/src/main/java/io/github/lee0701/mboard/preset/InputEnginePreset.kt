@@ -119,7 +119,6 @@ data class InputEnginePreset(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
                         overrideTable = overrideTable,
-                        autoUnlockShift = autoUnlockShift,
                         listener = listener,
                     )
                 }
@@ -131,7 +130,6 @@ data class InputEnginePreset(
                         convertTable = convertTable,
                         moreKeysTable = moreKeysTable,
                         overrideTable = overrideTable,
-                        autoUnlockShift = autoUnlockShift,
                         listener = listener,
                     )
                 }
