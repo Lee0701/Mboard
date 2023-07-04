@@ -56,12 +56,12 @@ class ImportExportActivity: AppCompatActivity() {
             text = "Import Layouts"
             setOnClickListener {
                 // 신세벌식 계열 변환 후에는 이중모음용 가상 낱자 코드를 필히 확인할것.
-                val layouts = mapOf(
+                val layouts: Map<String, Array<IntArray>> = mapOf(
 //                    "3set_shin_original_chojong" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJONG,
 //                    "3set_shin_original_chojung" to JAMO_SEBUL_SHIN_ORIGINAL_CHOJUNG,
 //                    "3set_shin_edit_chojong" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJONG,
 //                    "3set_shin_edit_chojung" to OpenWnnKoreanLayouts.JAMO_SEBUL_SHIN_EDIT_CHOJUNG,
-                    "3set_393_old_hangul" to OpenWnnKoreanLayouts.JAMO_SEBUL_393Y,
+//                    "3set_393_old_hangul" to OpenWnnKoreanLayouts.JAMO_SEBUL_393Y,
                 )
                 layouts.forEach { (name, layout) ->
                     val table = importLayout(layout)
