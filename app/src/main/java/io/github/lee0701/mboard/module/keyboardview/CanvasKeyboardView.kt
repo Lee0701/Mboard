@@ -128,8 +128,7 @@ class CanvasKeyboardView(
     }
 
     @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
-        if(canvas == null) return
+    override fun onDraw(canvas: Canvas) {
         getLocalVisibleRect(rect)
         val bitmapCache = mutableMapOf<BitmapCacheKey, Bitmap>()
 

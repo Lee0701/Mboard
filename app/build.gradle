@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation (project(':Converter:library')) {
+    implementation ('io.github.lee0701.converter:library:0.0.1') {
         exclude group: 'com.github.skydoves', module: 'colorpickerpreference'
         exclude group: 'com.google.android.odml', module: 'image'
     }
