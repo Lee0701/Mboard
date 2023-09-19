@@ -12,8 +12,8 @@ android {
         applicationId "io.github.lee0701.mboard"
         minSdk 14
         targetSdk 33
-        versionCode 24
-        versionName "24-20230919-9e5cbea"
+        versionCode 25
+        versionName "25-20230919-3cd683e"
 
         multiDexEnabled true
 
