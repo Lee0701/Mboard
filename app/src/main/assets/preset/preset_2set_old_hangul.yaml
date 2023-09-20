@@ -7,3 +7,5 @@ layout:
   - "hangul_2set/table_old_hangul_2set.yaml"
   combinationTable:
   - "hangul/comb_full.yaml"
+components:
+- "MainKeyboard"

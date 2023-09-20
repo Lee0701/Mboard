@@ -1,43 +1,35 @@
 package io.github.lee0701.mboard.service
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
 import android.os.Build
-import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.CursorAnchorInfo
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
-import androidx.appcompat.view.ContextThemeWrapper
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
-import com.google.android.material.color.DynamicColors
 import io.github.lee0701.mboard.R
-import io.github.lee0701.mboard.input.BasicSoftInputEngine
-import io.github.lee0701.mboard.input.Candidate
-import io.github.lee0701.mboard.input.DefaultHanjaCandidate
-import io.github.lee0701.mboard.input.InputEngine
-import io.github.lee0701.mboard.input.SoftInputEngine
-import io.github.lee0701.mboard.module.InputEnginePreset
-import io.github.lee0701.mboard.view.candidates.BasicCandidatesViewManager
-import io.github.lee0701.mboard.view.keyboard.Themes
+import io.github.lee0701.mboard.module.candidates.Candidate
+import io.github.lee0701.mboard.module.candidates.CandidateListener
+import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.inputengine.InputEngine
+import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.preset.PresetLoader
+import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
-import kotlin.math.roundToInt
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesViewManager.Listener, OnSharedPreferenceChangeListener {
-
+class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
-    private var inputViewWrapper: ViewGroup? = null
-    private var defaultCandidatesViewManager: BasicCandidatesViewManager? = null
+    private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
@@ -47,83 +39,25 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     private fun reload(pref: SharedPreferences, force: Boolean = false) {
-        val screenMode = pref.getString("layout_screen_mode", "mobile")
-
-        val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
-        val rowHeight: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-            pref.getFloat("appearance_keyboard_height", 55f), resources.displayMetrics).toInt()
-
-        fun modSize(size: InputEnginePreset.Size): InputEnginePreset.Size {
-            val rowHeight: Int = if(size.defaultHeight) rowHeight
-            else TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                size.rowHeight.toFloat(),
-                resources.displayMetrics
-            ).toInt()
-            return size.copy(
-                unifyHeight = unifyHeight,
-                rowHeight = rowHeight
-            )
-        }
-
-        fun modFilenames(fileNames: List<String>): List<String> {
-            return fileNames.map { it.format(screenMode) }
-        }
-
-        fun modLayout(layout: InputEnginePreset.Layout): InputEnginePreset.Layout {
-            return InputEnginePreset.Layout(
-                softKeyboard = modFilenames(layout.softKeyboard),
-                moreKeysTable = modFilenames(layout.moreKeysTable),
-                codeConvertTable = modFilenames(layout.codeConvertTable),
-                combinationTable = modFilenames(layout.combinationTable),
-            )
-        }
-
-        fun modPreset(preset: InputEnginePreset): InputEnginePreset {
-            return preset.copy(
-                layout = modLayout(preset.layout),
-                size = modSize(preset.size),
-            )
-        }
-
-        fun modLatin(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
-        fun modHangul(preset: InputEnginePreset): InputEnginePreset = modPreset(preset)
-        fun modSymbol(preset: InputEnginePreset, language: String): InputEnginePreset {
-            return when(language) {
-                "ko" -> preset.copy(
-                    layout = preset.layout.copy(
-                        softKeyboard = modFilenames(preset.layout.softKeyboard),
-                        moreKeysTable = modFilenames(preset.layout.moreKeysTable) + "symbol/morekeys_symbols_hangul.yaml",
-                        codeConvertTable = modFilenames(preset.layout.codeConvertTable),
-                        overrideTable = modFilenames(preset.layout.overrideTable) + "symbol/override_currency_won.yaml",
-                        combinationTable = modFilenames(preset.layout.combinationTable),
-                    ),
-                    size = modSize(preset.size),
-                )
-                else -> modPreset(preset)
-            }
-        }
+        val loader = PresetLoader(this)
 
         val (latinPreset, hangulPreset, symbolPreset) = loadPresets(this)
 
-        val latinModule = modLatin(latinPreset)
-        val latinSymbolModule = modSymbol(symbolPreset, "en")
-        val hangulModule = modHangul(hangulPreset)
-        val hangulSymbolModule = modSymbol(symbolPreset, "ko")
+        val latinModule = loader.modLatin(latinPreset)
+        val latinSymbolModule = loader.modSymbol(symbolPreset, "en")
+        val hangulModule = loader.modHangul(hangulPreset)
+        val hangulSymbolModule = loader.modSymbol(symbolPreset, "ko")
 
         val latinInputEngine = latinModule.inflate(this, this)
         val latinSymbolInputEngine = latinSymbolModule.inflate(this, this)
         val hangulInputEngine = hangulModule.inflate(this, this)
         val hangulSymbolInputEngine = hangulSymbolModule.inflate(this, this)
 
-        if(latinInputEngine is BasicSoftInputEngine) {
-            latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
-            latinInputEngine.alternativeInputEngine = hangulInputEngine
-        }
-        if(hangulInputEngine is BasicSoftInputEngine) {
-            hangulInputEngine.symbolsInputEngine = hangulSymbolInputEngine
-            hangulInputEngine.alternativeInputEngine = latinInputEngine
-        }
+        latinInputEngine.symbolsInputEngine = latinSymbolInputEngine
+        latinInputEngine.alternativeInputEngine = hangulInputEngine
+
+        hangulInputEngine.symbolsInputEngine = hangulSymbolInputEngine
+        hangulInputEngine.alternativeInputEngine = latinInputEngine
 
         val engines = listOf(
             latinInputEngine,
@@ -138,60 +72,22 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
 
-        defaultCandidatesViewManager = BasicCandidatesViewManager(this)
-
         if(force) reloadView()
     }
 
     override fun onCreateInputView(): View {
-        val currentInputEngine = inputEngineSwitcher?.getCurrentEngine()
-        val inputViewWrapper = LinearLayoutCompat(this, null).apply {
-            orientation = LinearLayoutCompat.VERTICAL
-        }
-
-        if(currentInputEngine is SoftInputEngine && currentInputEngine.showCandidatesView) {
-            val candidatesView = defaultCandidatesViewManager?.initView(this)
-            if(candidatesView != null) {
-                candidatesView.layoutParams = LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    resources.getDimension(R.dimen.candidates_view_height).roundToInt()
-                )
-                inputViewWrapper.addView(candidatesView)
-            }
-        }
-
-        val keyboardView = inputEngineSwitcher?.initView(this)
-        if(keyboardView != null) {
-            if(currentInputEngine is SoftInputEngine) {
-                keyboardView.layoutParams = LinearLayoutCompat.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                    currentInputEngine.getHeight(),
-                )
-            }
-            inputViewWrapper.addView(keyboardView)
-            val name = sharedPreferences.getString("appearance_theme", "theme_dynamic")
-            val theme = Themes.ofName(name)
-            val context = ContextThemeWrapper(this, theme.keyboardBackground)
-            val typedValue = TypedValue()
-            val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground)
-            keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
-            val color = ContextCompat.getColor(this, typedValue.resourceId)
-            setNavBarColor(color)
-        }
-        this.inputViewWrapper = inputViewWrapper
-        inputEngineSwitcher?.updateView()
-        return inputViewWrapper
+        return inputEngineSwitcher?.initView(this) ?: View(this)
     }
 
     override fun onCandidates(list: List<Candidate>) {
         val sorted = list.sortedByDescending { it.score }
-        defaultCandidatesViewManager?.showCandidates(sorted)
+        inputEngineSwitcher?.showCandidates(sorted)
     }
 
     override fun onItemClicked(candidate: Candidate) {
         if(candidate is DefaultHanjaCandidate) {
             val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-            if(inputEngine is BasicCandidatesViewManager.Listener) {
+            if(inputEngine is CandidateListener) {
                 inputEngine.onItemClicked(candidate)
             }
         } else {
@@ -212,21 +108,67 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     }
 
     override fun onSystemKey(code: Int): Boolean {
+        val inputConnection = currentInputConnection ?: return false
+        val extractedText = inputConnection.getExtractedText(ExtractedTextRequest(), 0)
         return when(code) {
             KeyEvent.KEYCODE_LANGUAGE_SWITCH -> {
                 resetCurrentEngine()
                 inputEngineSwitcher?.nextLanguage()
                 reloadView()
+                updateView()
                 true
             }
             KeyEvent.KEYCODE_SYM -> {
                 resetCurrentEngine()
                 inputEngineSwitcher?.nextExtra()
                 reloadView()
+                updateView()
                 true
             }
             KeyEvent.KEYCODE_TAB -> {
                 sendDownUpKeyEvents(code)
+                true
+            }
+            KeyEvent.KEYCODE_DPAD_LEFT,
+            KeyEvent.KEYCODE_DPAD_RIGHT,
+            KeyEvent.KEYCODE_DPAD_UP,
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                resetCurrentEngine()
+                sendDownUpKeyEvents(code)
+                true
+            }
+            CustomKeycode.KEYCODE_COPY.code -> {
+                val selectedText = inputConnection.getSelectedText(0)?.toString().orEmpty()
+                val clip = ClipData.newPlainText(selectedText, selectedText)
+                clipboard.setPrimaryClip(clip)
+                true
+            }
+            CustomKeycode.KEYCODE_CUT.code -> {
+                val selectedText = inputConnection.getSelectedText(0)?.toString().orEmpty()
+                val clip = ClipData.newPlainText(selectedText, selectedText)
+                clipboard.setPrimaryClip(clip)
+                inputConnection.commitText("", 1)
+                true
+            }
+            CustomKeycode.KEYCODE_PASTE.code -> {
+                val text = clipboard.primaryClip?.getItemAt(0)?.text?.toString().orEmpty()
+                inputConnection.commitText(text, 1)
+                true
+            }
+            CustomKeycode.KEYCODE_SELECT_ALL.code -> {
+                extractedText.selectionStart = 0
+                extractedText.selectionEnd = extractedText.text.length
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
+                true
+            }
+            CustomKeycode.KEYCODE_EXPAND_SELECTION_LEFT.code -> {
+                extractedText.selectionStart -= 1
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
+                true
+            }
+            CustomKeycode.KEYCODE_EXPAND_SELECTION_RIGHT.code -> {
+                extractedText.selectionEnd += 1
+                inputConnection.setSelection(extractedText.selectionStart, extractedText.selectionEnd)
                 true
             }
             else -> false
@@ -239,6 +181,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
 
     override fun onComposingText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
+        if(text.isEmpty() && inputConnection.getSelectedText(0)?.isNotEmpty() == true) return
         inputConnection.setComposingText(text, 1)
     }
 
@@ -279,18 +222,10 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
         currentInputConnection?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_MONITOR)
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    override fun onUpdateCursorAnchorInfo(cursorAnchorInfo: CursorAnchorInfo?) {
-        if(cursorAnchorInfo == null) return
-        val composingText = cursorAnchorInfo.composingText ?: return
-        val selectionEnd = cursorAnchorInfo.selectionStart
-        val composingEnd = cursorAnchorInfo.composingTextStart + composingText.length
-        if(selectionEnd != composingEnd) resetCurrentEngine()
-    }
-
     // Still needed for pre-lollipop devices
     @Deprecated("Deprecated in Java")
     override fun onViewClicked(focusChanged: Boolean) {
+        if(Build.VERSION.SDK_INT >= 34) return
         if(focusChanged) resetCurrentEngine()
     }
 
@@ -308,6 +243,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, BasicCandidatesView
     private fun resetCurrentEngine() {
         val engine = inputEngineSwitcher?.getCurrentEngine() ?: return
         engine.onReset()
+        engine.onResetComponents()
         updateTextAroundCursor()
     }
 

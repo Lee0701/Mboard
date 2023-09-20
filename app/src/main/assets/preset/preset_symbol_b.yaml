@@ -8,3 +8,5 @@ layout:
   - "symbol/table_custom_keys.yaml"
   - "symbol/table_symbol_b.yaml"
 autoUnlockShift: false
+components:
+- "MainKeyboard"
