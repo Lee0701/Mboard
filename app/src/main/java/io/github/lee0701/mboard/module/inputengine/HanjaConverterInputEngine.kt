@@ -13,7 +13,6 @@ import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HanjaConverterInputEngine(
@@ -133,7 +132,6 @@ class HanjaConverterInputEngine(
                     ?.top(10).orEmpty()
                     .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
             }
-            delay(50)
             launch(Dispatchers.Main) {
                 onCandidates(candidates)
             }
