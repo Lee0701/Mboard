@@ -91,7 +91,7 @@ class MoreKeysPopup(
         }
 
         val x = parentX - popupWindow.width/2f + offsetX
-        val y = parentY - popupWindow.height/2f*3f + offsetY
+        val y = parentY - popupWindow.height - keyHeight + offsetY
 
         popupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x.roundToInt(), y.roundToInt())
     }
