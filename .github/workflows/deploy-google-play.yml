@@ -87,6 +87,9 @@ jobs:
           tag_exists_error: false
           message: ""
 
+      - name: Push tags
+        run: git push --tags
+
       - name: Get package name from build.gradle
         run: echo "PACKAGE_NAME=$(${{ github.workspace }}/gradlew -q printPackageName)" >> $GITHUB_ENV
 
