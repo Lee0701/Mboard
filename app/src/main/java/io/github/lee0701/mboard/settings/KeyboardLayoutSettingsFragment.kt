@@ -228,7 +228,7 @@ class KeyboardLayoutSettingsFragment(
                 KeyboardComponentsAdapter.ItemMenuType.MoveUp -> {
                     val position = viewHolder.adapterPosition
                     if(position - 1 in components.indices) {
-                        Collections.swap(components, position, position - 1)
+                        preferenceDataStore.swapComponents(position, position - 1)
                         adapter.notifyItemMoved(position, position - 1)
                         preferenceDataStore.write()
                     }
@@ -236,7 +236,7 @@ class KeyboardLayoutSettingsFragment(
                 KeyboardComponentsAdapter.ItemMenuType.MoveDown -> {
                     val position = viewHolder.adapterPosition
                     if(position + 1 in components.indices) {
-                        Collections.swap(components, position, position + 1)
+                        preferenceDataStore.swapComponents(position, position + 1)
                         adapter.notifyItemMoved(position, position + 1)
                         preferenceDataStore.write()
                     }
