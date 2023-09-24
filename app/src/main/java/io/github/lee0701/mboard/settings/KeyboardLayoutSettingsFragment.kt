@@ -1,6 +1,9 @@
 package io.github.lee0701.mboard.settings
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
+import io.github.lee0701.mboard.service.MBoardIME
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_ADDITIONAL_DICTIONARIES
@@ -35,8 +39,8 @@ import java.util.Collections
 class KeyboardLayoutSettingsFragment(
     private val fileName: String,
     private val template: String,
-): PreferenceFragmentCompat(),
-    KeyboardLayoutPreferenceDataStore.OnChangeListener {
+): PreferenceFragmentCompat(), KeyboardLayoutPreferenceDataStore.OnChangeListener {
+
     private var preferenceDataStore: KeyboardLayoutPreferenceDataStore? = null
     private var adapter: KeyboardComponentsAdapter? = null
     private var loader: PresetLoader? = null
@@ -130,6 +134,11 @@ class KeyboardLayoutSettingsFragment(
         updateByEngineType(pref.getString(KEY_ENGINE_TYPE, "Latin"))
         engineType?.isVisible = false
         updateKeyboardView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MBoardIME.sendReloadIntent(activity ?: return)
     }
 
     private fun updateKeyboardView() {

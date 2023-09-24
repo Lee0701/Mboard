@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.service.MBoardIME
 
 class SettingsActivity: AppCompatActivity() {
 
@@ -18,6 +19,11 @@ class SettingsActivity: AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MBoardIME.sendReloadIntent(this)
     }
 
     class SettingsFragment: PreferenceFragmentCompat() {
