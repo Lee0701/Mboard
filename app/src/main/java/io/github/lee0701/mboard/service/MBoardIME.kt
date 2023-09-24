@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.view.KeyEvent
@@ -29,16 +30,15 @@ import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
-    private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
         super.onCreate()
-        reload(sharedPreferences)
+        reload()
     }
 
-    private fun reload(pref: SharedPreferences, force: Boolean = false) {
+    private fun reload() {
         val loader = PresetLoader(this)
 
         val (latinPreset, hangulPreset, symbolPreset) = loadPresets(this)
@@ -72,11 +72,16 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
         val switcher = InputEngineSwitcher(engines, table)
         this.inputEngineSwitcher = switcher
 
-        if(force) reloadView()
+        reloadView()
     }
 
     override fun onCreateInputView(): View {
         return inputEngineSwitcher?.initView(this) ?: View(this)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        reload()
     }
 
     override fun onCandidates(list: List<Candidate>) {
@@ -269,7 +274,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val reload = intent?.getBooleanExtra(ACTION_RELOAD, false) == true
-        if(reload) reload(sharedPreferences, true)
+        if(reload) reload()
         return START_STICKY
     }
 
@@ -306,7 +311,6 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
             val hangulPreset = loadPreset(context, hangulFileName, "preset/preset_3set_390.yaml")
                 ?: InputEnginePreset().apply { showToast(hangulFileName) }
             val symbolPreset = loadPreset(context, symbolFileName, "preset/preset_symbol_g.yaml")
-
                 ?: InputEnginePreset().apply { showToast(symbolFileName) }
             return Triple(latinPreset, hangulPreset, symbolPreset)
         }

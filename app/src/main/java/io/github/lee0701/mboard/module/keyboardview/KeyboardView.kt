@@ -32,7 +32,7 @@ abstract class KeyboardView(
     rowHeight: Int,
     private val disableTouch: Boolean = false,
 ): FrameLayout(context, attrs) {
-    protected val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val rect = Rect()
 
     open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels

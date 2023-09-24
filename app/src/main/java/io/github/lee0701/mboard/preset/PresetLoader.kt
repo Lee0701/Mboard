@@ -1,6 +1,7 @@
 package io.github.lee0701.mboard.preset
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.TypedValue
 import androidx.preference.PreferenceManager
 import kotlin.math.roundToInt
@@ -8,12 +9,11 @@ import kotlin.math.roundToInt
 class PresetLoader(
     val context: Context,
 ) {
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
-    val screenMode = pref.getString("layout_screen_mode", "mobile") ?: "mobile"
+    private val pref: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+    private val screenMode: String = pref.getString("layout_screen_mode", "mobile") ?: "mobile"
 
-    val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
-    val rowHeight: Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-        pref.getFloat("appearance_keyboard_height", 55f), context.resources.displayMetrics).toInt()
+    private val unifyHeight: Boolean = pref.getBoolean("appearance_unify_height", false)
+    private val rowHeight: Int = pref.getFloat("appearance_keyboard_height", 55f).roundToInt()
 
     fun mod(preset: InputEnginePreset): InputEnginePreset {
         return preset.copy(
@@ -22,7 +22,7 @@ class PresetLoader(
         )
     }
 
-    fun modHeight(height: Int): Int {
+    private fun modHeight(height: Int): Int {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             height.toFloat(),
@@ -30,13 +30,8 @@ class PresetLoader(
         ).roundToInt()
     }
 
-    fun modSize(size: InputEnginePreset.Size): InputEnginePreset.Size {
-        val rowHeight: Int = if(size.defaultHeight) rowHeight
-        else TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            size.rowHeight.toFloat(),
-            context.resources.displayMetrics
-        ).toInt()
+    private fun modSize(size: InputEnginePreset.Size): InputEnginePreset.Size {
+        val rowHeight: Int = modHeight(if(size.defaultHeight) rowHeight else size.rowHeight)
         return size.copy(
             unifyHeight = unifyHeight,
             rowHeight = rowHeight

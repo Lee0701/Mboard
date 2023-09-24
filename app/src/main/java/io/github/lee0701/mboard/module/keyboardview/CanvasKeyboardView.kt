@@ -60,8 +60,7 @@ class CanvasKeyboardView(
             if(it == context) ContextThemeWrapper(context, theme.keyboardBackground) else it
         }
         keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
-        val background = ContextCompat.getDrawable(keyboardContext, typedValue.resourceId) ?: ColorDrawable(
-            Color.WHITE)
+        val background = ContextCompat.getDrawable(keyboardContext, typedValue.resourceId) ?: ColorDrawable(Color.WHITE)
         keyboardContext.theme.resolveAttribute(R.attr.backgroundTint, typedValue, true)
         val backgroundTint = ContextCompat.getColor(keyboardContext, typedValue.resourceId)
         DrawableCompat.setTint(background, backgroundTint)
