@@ -147,13 +147,22 @@ class KeyboardLayoutSettingsFragment(
 
     private fun checkPreferences() {
         val preset = preferenceDataStore?.preset ?: return
+        val hasMainKeyboardComponent = preset.components.any { it == InputViewComponentType.MainKeyboard }
         val hasCandidatesComponent = preset.components.any { it == InputViewComponentType.Candidates }
         val hanjaConversionIsOn = preset.hanja.conversion
-        if(hanjaConversionIsOn && !hasCandidatesComponent) {
-            Snackbar.make(requireView(), R.string.msg_hanja_candidates_component_not_found, Snackbar.LENGTH_LONG)
-                .setAction(R.string.action_hanja_add_candidates_component) {
+        if(!hasMainKeyboardComponent) {
+            Snackbar.make(requireView(), R.string.msg_main_keyboard_component_missing, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_add_component) {
                     val pref = preferenceDataStore ?: return@setAction
-                    pref.insertComponent(0, InputViewComponentType.Candidates) ?: return@setAction
+                    pref.addComponent(InputViewComponentType.MainKeyboard)
+                    updateComponents()
+                }
+                .show()
+        } else if(hanjaConversionIsOn && !hasCandidatesComponent) {
+            Snackbar.make(requireView(), R.string.msg_hanja_candidates_component_missing, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_add_component) {
+                    val pref = preferenceDataStore ?: return@setAction
+                    pref.insertComponent(0, InputViewComponentType.Candidates)
                     updateComponents()
                 }
                 .show()

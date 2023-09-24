@@ -24,6 +24,10 @@ class KeyboardLayoutPreferenceDataStore(
         update()
     }
 
+    fun addComponent(componentType: InputViewComponentType) {
+        this.mutablePreset.components.add(componentType)
+    }
+
     fun insertComponent(position: Int, componentType: InputViewComponentType) {
         this.mutablePreset.components.add(position, componentType)
     }
