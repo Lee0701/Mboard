@@ -48,13 +48,16 @@ jobs:
           versionName: ${{ env.VERSION_NAME }}
 
       - name: Commit new version
-        run: git commit -m "Bump version to ${{ env.VERSION_CODE }}"
-
-      - name: Create tag
-        run: git tag ${{ env.VERSION_NAME }}
+        run: |
+          git config --local user.name "Automated Publisher"
+          git config --local user.email "actions@users.noreply.github.com"
+          git commit -m "Bump version to ${{ env.VERSION_CODE }}"
+          git tag ${{ env.VERSION_NAME }}
 
       - name: Push new version information
-        run: git push && git push --tags
+        run: |
+          git push
+          git push --tags
 
       - name: Build with Gradle
         run: ./gradlew buildRelease
