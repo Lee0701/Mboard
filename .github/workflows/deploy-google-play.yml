@@ -47,6 +47,28 @@ jobs:
           versionCode: ${{ env.VERSION_CODE }}
           versionName: ${{ env.VERSION_NAME }}
 
+      - name: Push new version information
+        uses: ko-Kore/publish@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TASK_NAME: 'Bump version'
+          TIMEZONE: 'Asia/Seoul'
+          BRANCH_NAME: 'main'
+
+      - name: Checkout new version
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+
+      - name: Create tag
+        id: createTag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ env.VERSION_NAME }}
+          tag_exists_error: false
+          message: ""
+
       - name: Build with Gradle
         run: ./gradlew buildRelease
 
@@ -70,28 +92,6 @@ jobs:
         with:
           name: app
           path: app/build/outputs/bundle/release/app-release.aab
-
-      - name: Push new version information
-        uses: ko-Kore/publish@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TASK_NAME: 'Bump version'
-          TIMEZONE: 'Asia/Seoul'
-          BRANCH_NAME: 'main'
-
-      - name: Checkout new version
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          submodules: true
-
-      - name: Create tag
-        id: createTag
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: ${{ env.VERSION_NAME }}
-          tag_exists_error: false
-          message: ""
 
       - name: Get package name from build.gradle
         run: echo "PACKAGE_NAME=$(${{ github.workspace }}/gradlew -q printPackageName)" >> $GITHUB_ENV
