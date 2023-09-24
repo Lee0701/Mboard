@@ -106,7 +106,9 @@ abstract class KeyboardView(
                 handler?.post { onTouchMove(key, pointerId, x, y) }
                 if(moreKeysResult) return@postDelayed
             }
-            if(this.hapticFeedback) this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if(this.hapticFeedback && longPressAction != FlickLongPressAction.None) {
+                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
             listener.onKeyLongClick(key.key.code, key.key.output)
         }, longPressDuration)
 
