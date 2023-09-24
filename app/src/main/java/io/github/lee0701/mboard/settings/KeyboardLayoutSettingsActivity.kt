@@ -8,6 +8,7 @@ import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.keyboardview.FlickDirection
 import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
+import io.github.lee0701.mboard.service.MBoardIME
 
 class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 
@@ -23,6 +24,11 @@ class KeyboardLayoutSettingsActivity: AppCompatActivity() {
             .replace(R.id.settings, KeyboardLayoutSettingsFragment(fileName, template))
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MBoardIME.sendReloadIntent(this)
     }
 
     override fun onDestroy() {

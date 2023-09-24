@@ -1,10 +1,11 @@
 package io.github.lee0701.mboard.service
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.view.KeyEvent
@@ -27,14 +28,13 @@ import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
 
-class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, OnSharedPreferenceChangeListener {
+class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(this) }
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
 
     override fun onCreate() {
         super.onCreate()
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         reload(sharedPreferences)
     }
 
@@ -264,19 +264,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     }
 
     override fun onDestroy() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         super.onDestroy()
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if(sharedPreferences != null) {
-            if(key == "requested_restart") {
-                if(sharedPreferences.getBoolean(key, false)) reload(sharedPreferences, true)
-            } else {
-                reload(sharedPreferences, true)
-            }
-        }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val reload = intent?.getBooleanExtra(ACTION_RELOAD, false) == true
+        if(reload) reload(sharedPreferences, true)
+        return START_STICKY
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
@@ -289,6 +283,14 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
     }
 
     companion object {
+        const val ACTION_RELOAD = "io.github.lee0701.mboard.MBoardIME.ACTION_RELOAD"
+
+        fun sendReloadIntent(activity: Activity) {
+            val intent = Intent(activity, MBoardIME::class.java)
+            intent.putExtra(MBoardIME.ACTION_RELOAD, true)
+            activity.startService(intent)
+        }
+
         fun loadPresets(context: Context): Triple<InputEnginePreset, InputEnginePreset, InputEnginePreset> {
             fun showToast(fileName: String) {
                 val msg = context.getString(R.string.msg_preset_load_failed, fileName)
@@ -324,6 +326,5 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener, 
             if(defaultFromAssets.isSuccess) return defaultFromAssets.getOrNull()
             return null
         }
-
     }
 }
