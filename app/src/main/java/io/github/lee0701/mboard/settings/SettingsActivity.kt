@@ -1,12 +1,9 @@
 package io.github.lee0701.mboard.settings
 
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.elevation.SurfaceColors
 import io.github.lee0701.mboard.R
 
 class SettingsActivity: AppCompatActivity() {
@@ -20,14 +17,6 @@ class SettingsActivity: AppCompatActivity() {
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        val color = SurfaceColors.SURFACE_2.getColor(this)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.navigationBarColor = color
-            window.statusBarColor = color
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            insetsController.isAppearanceLightStatusBars = true
-            insetsController.isAppearanceLightNavigationBars = true
-        }
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
     }
 
