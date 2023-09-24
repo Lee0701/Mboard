@@ -1,9 +1,6 @@
 package io.github.lee0701.mboard.settings
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -19,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.INVISIBLE
 import androidx.recyclerview.widget.RecyclerView.VISIBLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.snackbar.Snackbar
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.preset.InputEnginePreset
+import io.github.lee0701.mboard.preset.InputViewComponentType
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.service.MBoardIME
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
@@ -136,9 +135,29 @@ class KeyboardLayoutSettingsFragment(
         updateKeyboardView()
     }
 
+    override fun onStart() {
+        super.onStart()
+        checkPreferences()
+    }
+
     override fun onStop() {
         super.onStop()
         MBoardIME.sendReloadIntent(activity ?: return)
+    }
+
+    private fun checkPreferences() {
+        val preset = preferenceDataStore?.preset ?: return
+        val hasCandidatesComponent = preset.components.any { it == InputViewComponentType.Candidates }
+        val hanjaConversionIsOn = preset.hanja.conversion
+        if(hanjaConversionIsOn && !hasCandidatesComponent) {
+            Snackbar.make(requireView(), R.string.msg_hanja_candidates_component_not_found, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_hanja_add_candidates_component) {
+                    val pref = preferenceDataStore ?: return@setAction
+                    pref.insertComponent(0, InputViewComponentType.Candidates) ?: return@setAction
+                    updateComponents()
+                }
+                .show()
+        }
     }
 
     private fun updateKeyboardView() {
@@ -216,11 +235,16 @@ class KeyboardLayoutSettingsFragment(
             this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
             touchHelper.attachToRecyclerView(this)
-            adapter.submitList(preferenceDataStore.preset.components
-                .map { preferenceDataStore.preset.copy(components = listOf(it)) })
-            preferenceDataStore.write()
+            updateComponents()
             this.visibility = VISIBLE
         }
+    }
+
+    private fun updateComponents() {
+        val pref = preferenceDataStore ?: return
+        adapter?.submitList(pref.preset.components
+            .map { pref.preset.copy(components = listOf(it)) })
+        pref.write()
     }
 
     override fun onChange(preset: InputEnginePreset) {
