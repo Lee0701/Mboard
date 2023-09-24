@@ -1,5 +1,6 @@
 package io.github.lee0701.mboard.settings
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -142,6 +143,7 @@ class KeyboardLayoutSettingsFragment(
 
     override fun onStop() {
         super.onStop()
+        checkPreferences()
         MBoardIME.sendReloadIntent(activity ?: return)
     }
 
@@ -156,6 +158,7 @@ class KeyboardLayoutSettingsFragment(
                     val pref = preferenceDataStore ?: return@setAction
                     pref.addComponent(InputViewComponentType.MainKeyboard)
                     updateComponents()
+                    checkPreferences()
                 }
                 .show()
         } else if(hanjaConversionIsOn && !hasCandidatesComponent) {
@@ -164,6 +167,7 @@ class KeyboardLayoutSettingsFragment(
                     val pref = preferenceDataStore ?: return@setAction
                     pref.insertComponent(0, InputViewComponentType.Candidates)
                     updateComponents()
+                    checkPreferences()
                 }
                 .show()
         }
