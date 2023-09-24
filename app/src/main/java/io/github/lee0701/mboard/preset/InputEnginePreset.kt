@@ -47,7 +47,13 @@ data class InputEnginePreset(
         val combinationTable = loadCombinationTable(context, names = layout.combinationTable)
 
         fun inflateComponents(preset: InputEnginePreset): List<InputViewComponent> {
-            return components.map { it.inflate(context, preset, disableTouch) }
+            val rows = this.components
+                .map { it.inflate(context, preset, disableTouch) }
+                .filterIsInstance<KeyboardComponent>()
+                .sumOf { it.keyboard.rows.size }
+            val rowHeight = if(rows == 0) size.rowHeight else size.rowHeight * 4 / rows
+            return this.components
+                .map { it.inflate(context, preset.copy(size = preset.size.copy(rowHeight = rowHeight)), disableTouch) }
         }
 
         fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {

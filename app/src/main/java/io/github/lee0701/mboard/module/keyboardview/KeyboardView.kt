@@ -28,7 +28,6 @@ abstract class KeyboardView(
     protected val keyboard: Keyboard,
     protected val theme: Theme,
     protected val listener: KeyboardListener,
-    unifyHeight: Boolean,
     rowHeight: Int,
     private val disableTouch: Boolean = false,
 ): FrameLayout(context, attrs) {
@@ -36,7 +35,7 @@ abstract class KeyboardView(
     private val rect = Rect()
 
     open val keyboardWidth: Int = context.resources.displayMetrics.widthPixels
-    open val keyboardHeight: Int = if(unifyHeight) rowHeight * 4 else rowHeight * keyboard.rows.size
+    open val keyboardHeight: Int = rowHeight * keyboard.rows.size
 
     protected val typedValue = TypedValue()
 

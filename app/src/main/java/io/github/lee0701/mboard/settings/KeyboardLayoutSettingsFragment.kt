@@ -1,6 +1,5 @@
 package io.github.lee0701.mboard.settings
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -34,7 +33,6 @@ import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Compa
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
 import java.io.File
-import java.util.Collections
 
 class KeyboardLayoutSettingsFragment(
     private val fileName: String,

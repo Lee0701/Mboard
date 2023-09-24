@@ -21,9 +21,8 @@ import io.github.lee0701.mboard.service.KeyboardState
 import io.github.lee0701.mboard.service.ModifierState
 
 class KeyboardComponent(
-    private val keyboard: Keyboard,
-    private val unifyHeight: Boolean,
-    private val rowHeight: Int,
+    val keyboard: Keyboard,
+    val rowHeight: Int,
     private val autoUnlockShift: Boolean = true,
     private val disableTouch: Boolean = false,
 ): InputViewComponent, KeyboardListener, CandidateListener {
@@ -69,8 +68,8 @@ class KeyboardComponent(
         val name = preferences.getString("appearance_theme", "theme_dynamic")
         val theme = Themes.ofName(name)
         keyboardView = when(keyboardViewType) {
-            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this, unifyHeight, rowHeight, disableTouch)
-            else -> CanvasKeyboardView(context, null, keyboard, theme, this, unifyHeight, rowHeight, disableTouch = disableTouch)
+            "stacked_view" -> StackedViewKeyboardView(context, null, keyboard, theme, this, rowHeight, disableTouch)
+            else -> CanvasKeyboardView(context, null, keyboard, theme, this, rowHeight, disableTouch = disableTouch)
         }
         return keyboardView
     }

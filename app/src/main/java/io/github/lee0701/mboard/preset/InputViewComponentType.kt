@@ -31,12 +31,12 @@ enum class InputViewComponentType(
 
     fun inflate(context: Context, preset: InputEnginePreset, disableTouch: Boolean): InputViewComponent {
         val loader = PresetLoader(context)
+        val rowHeight = preset.size.rowHeight
         return when(this) {
             MainKeyboard -> {
                 KeyboardComponent(
                     keyboard = InputEnginePreset.loadSoftKeyboards(context, preset.layout.softKeyboard),
-                    unifyHeight = preset.size.unifyHeight,
-                    rowHeight = preset.size.rowHeight,
+                    rowHeight = rowHeight,
                     autoUnlockShift = preset.autoUnlockShift,
                     disableTouch = disableTouch,
                 )
@@ -46,8 +46,7 @@ enum class InputViewComponentType(
                     listOf(KeyboardLayoutSettingsFragment.NUMBER_SOFT_ID))
                 KeyboardComponent(
                     keyboard = InputEnginePreset.loadSoftKeyboards(context, layouts),
-                    unifyHeight = preset.size.unifyHeight,
-                    rowHeight = preset.size.rowHeight,
+                    rowHeight = rowHeight,
                     autoUnlockShift = preset.autoUnlockShift,
                     disableTouch = disableTouch,
                 )
@@ -55,7 +54,7 @@ enum class InputViewComponentType(
             Candidates -> {
                 CandidatesComponent(
                     width = context.resources.displayMetrics.widthPixels,
-                    height = preset.size.rowHeight,
+                    height = rowHeight,
                     disableTouch = disableTouch,
                 ).apply {
                     if(context is CandidateListener) listener = context
@@ -66,8 +65,7 @@ enum class InputViewComponentType(
                     listOf(KeyboardLayoutSettingsFragment.TEXT_EDIT_SOFT_ID))
                 KeyboardComponent(
                     keyboard = InputEnginePreset.loadSoftKeyboards(context, layouts),
-                    unifyHeight = preset.size.unifyHeight,
-                    rowHeight = preset.size.rowHeight,
+                    rowHeight = rowHeight,
                     autoUnlockShift = preset.autoUnlockShift,
                     disableTouch = disableTouch,
                 )
