@@ -1,7 +1,7 @@
 type: "Hangul"
 layout:
   softKeyboard:
-  - "common/soft_%s_qwerty_with_slash.yaml"
+  - "common/soft_%s_qwerty_with_period_comma.yaml"
   codeConvertTable:
   - "symbol/table_custom_keys.yaml"
   - "hangul_3set/table_shin_edit.yaml"

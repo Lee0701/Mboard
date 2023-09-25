@@ -1,7 +1,7 @@
 rows:
 - keys:
   - !<include>
-      name: "common/row_qwerty_alpha_1.yaml"
+    name: "common/row_qwerty_alpha_1.yaml"
   - !<key>
     code: "KEYCODE_DEL"
     iconType: "Backspace"
@@ -38,22 +38,5 @@ rows:
     iconType: "Shift"
     type: "Modifier"
 - keys:
-  - !<key>
-    code: "KEYCODE_SYM"
-    label: "?12"
-    width: 1.5
-    type: "Modifier"
-  - !<key>
-    code: "KEYCODE_LANGUAGE_SWITCH"
-    iconType: "Language"
-    type: "ModifierAlt"
-  - !<key>
-    code: "KEYCODE_SPACE"
-    label: ""
-    width: 8.0
-    type: "Space"
-  - !<key>
-    code: "KEYCODE_SYM"
-    label: "?12"
-    width: 1.5
-    type: "Modifier"
+  - !<include>
+    name: "common/row_tablet_bottom.yaml"
