@@ -51,7 +51,7 @@ data class InputEnginePreset(
                 .map { it.inflate(context, preset, disableTouch) }
                 .filterIsInstance<KeyboardComponent>()
                 .sumOf { it.keyboard.rows.size }
-            val rowHeight = if(rows == 0) size.rowHeight else size.rowHeight * 4 / rows
+            val rowHeight = if(this.size.unifyHeight && rows != 0) size.rowHeight * 4 / rows else size.rowHeight
             return this.components
                 .map { it.inflate(context, preset.copy(size = preset.size.copy(rowHeight = rowHeight)), disableTouch) }
         }
