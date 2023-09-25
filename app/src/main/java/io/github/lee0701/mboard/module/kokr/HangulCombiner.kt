@@ -124,7 +124,7 @@ class HangulCombiner(
         private val ordinalJong: Int? = jong?.and(0xffff)?.minus(0x11a7)
 
         val nfc: Char? =
-            if(ordinalCho != null && ordinalJung != null && listOfNotNull(cho, jung, jong).all { Hangul.isModernJamo(it) })
+            if(ordinalCho != null && ordinalJung != null && listOfNotNull(cho, jung, jong).all { Hangul.isModernJamo(it.and(0xffff)) })
                 Hangul.combineNFC(ordinalCho, ordinalJung, ordinalJong)
             else null
         val nfd: CharSequence =
