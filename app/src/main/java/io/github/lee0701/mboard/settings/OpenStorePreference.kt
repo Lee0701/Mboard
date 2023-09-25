@@ -22,7 +22,7 @@ class OpenStorePreference(
             data = Uri.parse(uri)
             setPackage("com.android.vending")
         }
-        context.startActivity(intent)
+        kotlin.runCatching { context.startActivity(intent) }
         super.onClick()
     }
 
