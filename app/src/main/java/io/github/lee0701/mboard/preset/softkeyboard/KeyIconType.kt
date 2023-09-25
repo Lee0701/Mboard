@@ -7,6 +7,7 @@ enum class KeyIconType {
     Shift,
     ShiftLock,
     Caps,
+    Option,
     Tab,
     Backspace,
     Language,
