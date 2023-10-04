@@ -8,7 +8,7 @@ import kotlinx.serialization.encoding.Encoder
 
 object HexIntSerializer: KSerializer<Int> {
     private const val prefix = "0x"
-    override val descriptor = PrimitiveSerialDescriptor("Hexadecimal", PrimitiveKind.INT)
+    override val descriptor = PrimitiveSerialDescriptor("HexInt", PrimitiveKind.INT)
 
     override fun serialize(encoder: Encoder, value: Int) {
         val string = prefix + value.toString(16).padStart(4, '0')

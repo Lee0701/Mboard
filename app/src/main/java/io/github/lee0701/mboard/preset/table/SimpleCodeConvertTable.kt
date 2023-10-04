@@ -1,6 +1,6 @@
 package io.github.lee0701.mboard.preset.table
 
-import io.github.lee0701.mboard.preset.serialization.HangulJamoSerializer
+import io.github.lee0701.mboard.preset.serialization.CompoundKeyOutputSerializer
 import io.github.lee0701.mboard.preset.serialization.KeyCodeSerializer
 import io.github.lee0701.mboard.service.KeyboardState
 import kotlinx.serialization.SerialName
@@ -51,11 +51,11 @@ class SimpleCodeConvertTable(
 
     @Serializable
     data class Entry(
-        @Serializable(with = HangulJamoSerializer::class) val base: Int? = null,
-        @Serializable(with = HangulJamoSerializer::class) val shift: Int? = base,
-        @Serializable(with = HangulJamoSerializer::class) val capsLock: Int? = shift,
-        @Serializable(with = HangulJamoSerializer::class) val alt: Int? = base,
-        @Serializable(with = HangulJamoSerializer::class) val altShift: Int? = shift,
+        @Serializable(with = CompoundKeyOutputSerializer::class) val base: Int? = null,
+        @Serializable(with = CompoundKeyOutputSerializer::class) val shift: Int? = base,
+        @Serializable(with = CompoundKeyOutputSerializer::class) val capsLock: Int? = shift,
+        @Serializable(with = CompoundKeyOutputSerializer::class) val alt: Int? = base,
+        @Serializable(with = CompoundKeyOutputSerializer::class) val altShift: Int? = shift,
     ) {
         fun withKeyboardState(keyboardState: KeyboardState): Int? {
             val shiftPressed = keyboardState.shiftState.pressed || keyboardState.shiftState.pressing

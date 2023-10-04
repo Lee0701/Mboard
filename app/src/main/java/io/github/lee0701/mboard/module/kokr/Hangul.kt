@@ -38,10 +38,12 @@ object Hangul {
     fun isJung(code: Int) = code in 0x1160..0x11a7 || code in 0xd7b0..0xd7ca
     fun isJong(code: Int) = code in 0x11a8..0x11ff || code in 0xd7cb..0xd7ff
     fun isModernJamo(code: Int) = code in 0x1100 ..0x1112 || code in 0x1161..0x1175 || code in 0x11a8..0x11c2
+    fun isJamo(code: Int) = isCho(code) || isJung(code) || isJong(code)
 
     fun isConsonant(code: Int) = code in 0x3131..0x314e || code in 0x3165..0x3186
     fun isVowel(code: Int) = code in 0x314f..0x3163 || code in 0x3187..0x318e
     fun isModernCompatJamo(code: Int) = code in 0x3131..0x314e || code in 0x314f..0x3163
+    fun isCompatJamo(code: Int) = isConsonant(code) || isVowel(code)
 
     fun choToCompatConsonant(char: Char): Char = (CONVERT_CHO.indexOf(char.code) + 0x3131).toChar()
     fun jungToCompatVowel(char: Char): Char = (char - 0x1161 + 0x314f)

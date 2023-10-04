@@ -1,80 +1,61 @@
 !<simple>
 map:
-  "KEYCODE_Q":
-    base: 0x3142
-    shift: 0x3143
-  "KEYCODE_W":
-    base: 0x3148
-    shift: 0x3149
-  "KEYCODE_E":
-    base: 0x3137
-    shift: 0x3138
-  "KEYCODE_R":
-    base: 0x3131
-    shift: 0x3132
-  "KEYCODE_T":
-    base: 0x3145
-    shift: 0x3146
-  "KEYCODE_Y":
-    base: 0x315b
-    shift: 0x315b
-  "KEYCODE_U":
-    base: 0x3155
-    shift: 0x3155
-  "KEYCODE_I":
-    base: 0x3151
-    shift: 0x3151
-  "KEYCODE_O":
-    base: 0x3150
-    shift: 0x3152
-  "KEYCODE_P":
-    base: 0x3154
-    shift: 0x3156
-  "KEYCODE_A":
-    base: 0x3141
-    shift: 0x3141
-  "KEYCODE_S":
-    base: 0x3134
-    shift: 0x3134
-  "KEYCODE_D":
-    base: 0x3147
-    shift: 0x3147
-  "KEYCODE_F":
-    base: 0x3139
-    shift: 0x3139
-  "KEYCODE_G":
-    base: 0x314e
-    shift: 0x314e
-  "KEYCODE_H":
-    base: 0x3157
-    shift: 0x3157
-  "KEYCODE_J":
-    base: 0x3153
-    shift: 0x3153
-  "KEYCODE_K":
-    base: 0x314f
-    shift: 0x314f
-  "KEYCODE_L":
-    base: 0x3163
-    shift: 0x3163
-  "KEYCODE_Z":
-    base: 0x314b
-    shift: 0x314b
-  "KEYCODE_X":
-    base: 0x314c
-    shift: 0x314c
-  "KEYCODE_C":
-    base: 0x314a
-    shift: 0x314a
-  "KEYCODE_V":
-    base: 0x314d
-    shift: 0x314d
-  "KEYCODE_B":
-    base: 0x3160
-    shift: 0x3160
-  "KEYCODE_N":
-    base: 0x315c
-    shift: 0x315c
-  "KEYCODE_M":
-    base: 0x3161
-    shift: 0x3161
+  KEYCODE_Q:
+    base: ㅂ
+    shift: ㅃ
+  KEYCODE_W:
+    base: ㅈ
+    shift: ㅉ
+  KEYCODE_E:
+    base: ㄷ
+    shift: ㄸ
+  KEYCODE_R:
+    base: ㄱ
+    shift: ㄲ
+  KEYCODE_T:
+    base: ㅅ
+    shift: ㅆ
+  KEYCODE_Y:
+    base: ㅛ
+  KEYCODE_U:
+    base: ㅕ
+  KEYCODE_I:
+    base: ㅑ
+  KEYCODE_O:
+    base: ㅐ
+    shift: ㅒ
+  KEYCODE_P:
+    base: ㅔ
+    shift: ㅖ
+  KEYCODE_A:
+    base: ㅁ
+  KEYCODE_S:
+    base: ㄴ
+  KEYCODE_D:
+    base: ㅇ
+  KEYCODE_F:
+    base: ㄹ
+  KEYCODE_G:
+    base: ㅎ
+  KEYCODE_H:
+    base: ㅗ
+  KEYCODE_J:
+    base: ㅓ
+  KEYCODE_K:
+    base: ㅏ
+  KEYCODE_L:
+    base: ㅣ
+  KEYCODE_Z:
+    base: ㅋ
+  KEYCODE_X:
+    base: ㅌ
+  KEYCODE_C:
+    base: ㅊ
+  KEYCODE_V:
+    base: ㅍ
+  KEYCODE_B:
+    base: ㅠ
+  KEYCODE_N:
+    base: ㅜ
+  KEYCODE_M:
+    base: ㅡ
