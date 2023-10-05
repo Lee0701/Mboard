@@ -1,6 +1,6 @@
 
 const fs = require('fs')
-const yaml = require('yaml')
+const yaml = require('js-yaml')
 
 const COMPAT_CHO = 'ㄱㄲㄳㄴㄵㄶㄷㄸㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅃㅄㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'
 const COMPAT_JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'
@@ -23,11 +23,20 @@ const convert = (code) => {
     }
 }
 
-const input = yaml.parse(fs.readFileSync(process.argv[2] || 'input.yaml', 'utf8'))
+const content = fs.readFileSync(process.argv[2] || 'input.yaml', 'utf8').split('\n')
+const topRow = content.slice(0, 1)
+const input = yaml.load(content.slice(1).join('\n'))
 const data = Object.entries(input.map).map(([code, item]) => {
     const base = convert(item.base)
     const shift = convert(item.shift)
     return [code, {base, shift}]
 })
-const output = yaml.stringify(Object.fromEntries(data), {indent: 2})
+const result = {
+    map: Object.fromEntries(data)
+}
+const options = {
+    indent: 2,
+    forceQuotes: true,
+}
+const output = topRow.join('\n') + '\n' + yaml.dump(result, options)
 fs.writeFileSync(process.argv[3] || 'output.yaml', output)

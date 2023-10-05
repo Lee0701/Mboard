@@ -14,6 +14,7 @@ object HexIntKeyOutputSerializer: KeyOutputSerializer {
     }
 
     override fun deserialize(value: String): Int? {
+        if(!value.startsWith(prefix)) return null
         return value.replaceFirst(prefix, "").toIntOrNull(16)
     }
 }

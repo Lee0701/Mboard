@@ -3,11 +3,12 @@ package io.github.lee0701.mboard.preset.serialization
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object CompoundKeyOutputSerializer: KSerializer<Int> {
-    override val descriptor = PrimitiveSerialDescriptor("KeyOutput", PrimitiveKind.INT)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("KeyOutput", PrimitiveKind.INT)
 
     private val serializers: List<KeyOutputSerializer> = listOf(
         HangulJamoSerializer,

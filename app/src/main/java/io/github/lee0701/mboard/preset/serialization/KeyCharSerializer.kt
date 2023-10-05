@@ -7,6 +7,7 @@ object KeyCharSerializer: KeyOutputSerializer {
     }
 
     override fun deserialize(value: String): Int? {
-        return value.toIntOrNull()
+        if(value.length != 1) return null
+        return value.codePointAt(0)
     }
 }
