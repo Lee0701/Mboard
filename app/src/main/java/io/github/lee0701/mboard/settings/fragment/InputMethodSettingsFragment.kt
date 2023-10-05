@@ -6,6 +6,6 @@ import io.github.lee0701.mboard.R
 
 class InputMethodSettingsFragment: PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preference_appearance, rootKey)
+        setPreferencesFromResource(R.xml.preference_input_method, rootKey)
     }
 }
