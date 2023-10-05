@@ -120,6 +120,7 @@
         <item>@string/layout_3set_shin_edit</item>
         <item>@string/layout_2set_old_hangul</item>
         <item>@string/layout_3set_393_old_hangul</item>
+        <item>Danmoeum Experimental Original</item>
     </string-array>
 
     <string-array name="preset_hangul_values">
@@ -131,6 +132,7 @@
         <item>preset/preset_3set_shin_edit.yaml</item>
         <item>preset/preset_2set_old_hangul.yaml</item>
         <item>preset/preset_3set_393_old_hangul.yaml</item>
+        <item>preset/preset_3set_dan_original.yaml</item>
     </string-array>
 
     <string-array name="preset_latin_entries">

@@ -1,0 +1,13 @@
+type: "Hangul"
+layout:
+  softKeyboard:
+  - "common/soft_%s_qwerty.yaml"
+  codeConvertTable:
+  - "symbol/table_custom_keys.yaml"
+  - "hangul_3set_exp/table_3set_dan_original.yaml"
+  combinationTable:
+  - "hangul_3set/comb_3set_cho.yaml"
+  - "hangul_3set/comb_3set_jung.yaml"
+  - "hangul_3set/comb_3set_jong.yaml"
+components:
+- "MainKeyboard"

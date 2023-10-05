@@ -1,0 +1,80 @@
+!<simple>
+map:
+  KEYCODE_Q:
+    base: '_ㅅ'
+    shift: '_ㅍ'
+  KEYCODE_W:
+    base: '_ㄹ'
+    shift: '_ㅌ'
+  KEYCODE_E:
+    base: '_ㅂ'
+    shift: '_ㅈ'
+  KEYCODE_R:
+    base: '_ㅐ_'
+    shift: '#'
+  KEYCODE_T:
+    base: '_ㅓ_'
+    shift: '<'
+  KEYCODE_Y:
+    base: 'ㄹ_'
+    shift: '>'
+  KEYCODE_U:
+    base: 'ㄷ_'
+    shift: 'ㅌ_'
+  KEYCODE_I:
+    base: 'ㅁ_'
+    shift: '·'
+  KEYCODE_O:
+    base: 'ㅂ_'
+    shift: 'ㅍ_'
+  KEYCODE_P:
+    base: '_ㅜ_'
+    shift: ''''
+  KEYCODE_A:
+    base: '_ㅇ'
+    shift: '_ㄷ'
+  KEYCODE_S:
+    base: '_ㄴ'
+    shift: '_ㄶ'
+  KEYCODE_D:
+    base: '_ㅣ_'
+    shift: '_ㄵ'
+  KEYCODE_F:
+    base: '_ㅏ_'
+    shift: '_ㄻ'
+  KEYCODE_G:
+    base: '_ㅡ_'
+    shift: '%'
+  KEYCODE_H:
+    base: 'ㄴ_'
+    shift: '^'
+  KEYCODE_J:
+    base: 'ㅇ_'
+    shift: '&'
+  KEYCODE_K:
+    base: 'ㄱ_'
+    shift: 'ㅋ_'
+  KEYCODE_L:
+    base: 'ㅈ_'
+    shift: 'ㅊ_'
+  KEYCODE_Z:
+    base: '_ㅁ'
+    shift: '_ㅊ'
+  KEYCODE_X:
+    base: '_ㄱ'
+    shift: '_ㅄ'
+  KEYCODE_C:
+    base: '_ㅔ_'
+    shift: '_ㅋ'
+  KEYCODE_V:
+    base: '_ㅗ_'
+    shift: '_ㅎ'
+  KEYCODE_B:
+    base: '_ㅜ_'
+    shift: '?'
+  KEYCODE_N:
+    base: 'ㅅ_'
+    shift: '-'
+  KEYCODE_M:
+    base: 'ㅎ_'
+    shift: '"'
