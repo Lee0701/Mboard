@@ -58,7 +58,7 @@ class KeyboardLayoutSettingsFragment(
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.keyboard_layout_preferences, rootKey)
+        setPreferencesFromResource(R.xml.preference_keyboard_layout, rootKey)
         val context = context ?: return
         val loader = PresetLoader(context)
         val rootPreferences = PreferenceManager.getDefaultSharedPreferences(context)

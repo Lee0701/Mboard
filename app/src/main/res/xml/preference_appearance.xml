@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.PreferenceCategory
+        app:title="@string/pref_header_appearance_title">
+
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="appearance_theme"
+            app:defaultValue="@string/pref_appearance_theme_default"
+            app:entries="@array/appearance_themes"
+            app:entryValues="@array/appearance_theme_values"
+            app:title="@string/pref_appearance_theme_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.SliderPreference
+            app:key="appearance_keyboard_height"
+            app:valueFrom="30.0"
+            app:valueTo="100.0"
+            app:stepSize="5.0"
+            app:defaultValue="@string/pref_appearance_keyboard_height_default"
+            app:title="@string/pref_appearance_keyboard_height_title"
+            app:useSimpleSummaryProvider="true"/>
+
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="appearance_unify_height"
+            app:defaultValue="false"
+            app:title="@string/pref_appearance_unify_height_title"
+            app:summary="@string/pref_appearance_unify_height_summary" />
+
+        <io.github.lee0701.mboard.settings.ListPreference
+            app:key="appearance_keyboard_view_type"
+            app:defaultValue="canvas"
+            app:entries="@array/appearance_keyboard_view_types"
+            app:entryValues="@array/appearance_keyboard_view_type_values"
+            app:title="@string/pref_appearance_keyboard_view_type_title"
+            app:summary="@string/pref_appearance_keyboard_view_type_summary" />
+
+    </io.github.lee0701.mboard.settings.PreferenceCategory>
+
+    <io.github.lee0701.mboard.settings.PreferenceCategory
+        app:title="@string/pref_header_feedback_title">
+
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="appearance_haptic_feedback"
+            app:defaultValue="true"
+            app:title="@string/pref_appearance_haptic_feedback_title" />
+
+        <io.github.lee0701.mboard.settings.SwitchPreference
+            app:key="appearance_sound_feedback"
+            app:defaultValue="true"
+            app:title="@string/pref_appearance_sound_feedback_title" />
+
+    </io.github.lee0701.mboard.settings.PreferenceCategory>
+
+</PreferenceScreen>

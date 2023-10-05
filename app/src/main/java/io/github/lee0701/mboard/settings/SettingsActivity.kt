@@ -14,21 +14,15 @@ class SettingsActivity: AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, SettingsFragment())
+            .replace(R.id.settings, RootSettingsFragment())
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
+        PreferenceManager.setDefaultValues(this, R.xml.preference_root, false)
     }
 
     override fun onStop() {
         super.onStop()
         MBoardIME.sendReloadIntent(this)
-    }
-
-    class SettingsFragment: PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey)
-        }
     }
 }

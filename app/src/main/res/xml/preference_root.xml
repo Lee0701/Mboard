@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.Preference
+        app:fragment="io.github.lee0701.mboard.settings.InputMethodSettingsFragment"
+        app:title="@string/pref_header_method_title" />
+
+    <io.github.lee0701.mboard.settings.Preference
+        app:fragment="io.github.lee0701.mboard.settings.AppearanceSettingsFragment"
+        app:title="@string/pref_header_appearance_title" />
+
+    <io.github.lee0701.mboard.settings.Preference
+        app:fragment="io.github.lee0701.mboard.settings.KeyboardLayoutListSettingsFragment"
+        app:title="@string/pref_header_layout_title" />
+
+    <io.github.lee0701.mboard.settings.Preference
+        app:fragment="io.github.lee0701.mboard.settings.BehaviourSettingsFragment"
+        app:title="@string/pref_header_behaviour_title" />
+
+    <io.github.lee0701.mboard.settings.Preference
+        app:fragment="io.github.lee0701.mboard.settings.AboutSettingsFragment"
+        app:title="@string/pref_header_about_title" />
+
+</PreferenceScreen>

@@ -15,7 +15,7 @@
         app:title="@string/pref_soft_keyboard_header_title">
 
         <io.github.lee0701.mboard.settings.SwitchPreference
-            app:key="soft_keyboard_default_height"
+            app:key="preference_keyboard_layout"
             app:defaultValue="false"
             app:title="@string/pref_appearance_default_height_title"
             app:summary="@string/pref_appearance_default_height_summary" />
@@ -49,19 +49,19 @@
             app:key="input_hanja_conversion"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_conversion_title"
-            android:summary="@string/pref_input_hanja_conversion_summary" />
+            app:summary="@string/pref_input_hanja_conversion_summary" />
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="input_hanja_prediction"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_prediction_title"
-            android:summary="@string/pref_input_hanja_prediction_summary" />
+            app:summary="@string/pref_input_hanja_prediction_summary" />
 
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="input_hanja_sort_by_context"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_sort_by_context_title"
-            android:summary="@string/pref_input_hanja_sort_by_context_summary" />
+            app:summary="@string/pref_input_hanja_sort_by_context_summary" />
 
         <io.github.lee0701.mboard.settings.MultiSelectListPreference
             app:key="input_hanja_additional_dictionaries"
