@@ -12,7 +12,7 @@
         <io.github.lee0701.mboard.settings.preference.OpenStorePreference
             app:title="@string/pref_about_more_apps_title"
             app:summary="@string/pref_about_more_apps_summary"
-            uri="https://play.google.com/store/search?q=pub:%E6%9D%8E%EF%BC%81&amp;c=apps"/>
+            app:uri="https://play.google.com/store/search?q=pub:%E6%9D%8E%EF%BC%81&amp;c=apps"/>
 
         <io.github.lee0701.mboard.settings.preference.OssLicensesMenuPreference
             app:title="@string/pref_about_oss_licenses_title" />
