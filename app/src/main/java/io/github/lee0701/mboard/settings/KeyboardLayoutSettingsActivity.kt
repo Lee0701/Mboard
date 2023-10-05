@@ -9,6 +9,7 @@ import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.module.keyboardview.FlickDirection
 import io.github.lee0701.mboard.module.keyboardview.KeyboardListener
 import io.github.lee0701.mboard.service.MBoardIME
+import io.github.lee0701.mboard.settings.fragment.KeyboardLayoutSettingsFragment
 
 class KeyboardLayoutSettingsActivity: AppCompatActivity() {
 

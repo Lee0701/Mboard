@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <io.github.lee0701.mboard.settings.ListPreference
+    <io.github.lee0701.mboard.settings.preference.ListPreference
         app:key="input_layout_preset"
         app:entries="@array/empty"
         app:entryValues="@array/empty"
@@ -11,16 +11,16 @@
         app:title="@string/pref_layout_preset_title"
         app:summary="@string/pref_layout_preset_summary" />
 
-    <io.github.lee0701.mboard.settings.PreferenceCategory
+    <io.github.lee0701.mboard.settings.preference.PreferenceCategory
         app:title="@string/pref_soft_keyboard_header_title">
 
-        <io.github.lee0701.mboard.settings.SwitchPreference
+        <io.github.lee0701.mboard.settings.preference.SwitchPreference
             app:key="preference_keyboard_layout"
             app:defaultValue="false"
             app:title="@string/pref_appearance_default_height_title"
             app:summary="@string/pref_appearance_default_height_summary" />
 
-        <io.github.lee0701.mboard.settings.SliderPreference
+        <io.github.lee0701.mboard.settings.preference.SliderPreference
             app:key="soft_keyboard_row_height"
             app:valueFrom="30.0"
             app:valueTo="100.0"
@@ -29,13 +29,13 @@
             app:title="@string/pref_appearance_keyboard_height_title"
             app:useSimpleSummaryProvider="true"/>
 
-    </io.github.lee0701.mboard.settings.PreferenceCategory>
+    </io.github.lee0701.mboard.settings.preference.PreferenceCategory>
 
-    <io.github.lee0701.mboard.settings.PreferenceCategory
+    <io.github.lee0701.mboard.settings.preference.PreferenceCategory
         app:key="input_layer"
         app:title="@string/pref_input_header_title">
 
-        <io.github.lee0701.mboard.settings.ListPreference
+        <io.github.lee0701.mboard.settings.preference.ListPreference
             app:key="input_engine_type"
             app:defaultValue="Latin"
             app:entries="@array/input_engine_type_entries"
@@ -45,31 +45,31 @@
 
 <!--        TODO: Add 'Add Candidates View' shortcut?-->
 
-        <io.github.lee0701.mboard.settings.SwitchPreference
+        <io.github.lee0701.mboard.settings.preference.SwitchPreference
             app:key="input_hanja_conversion"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_conversion_title"
             app:summary="@string/pref_input_hanja_conversion_summary" />
 
-        <io.github.lee0701.mboard.settings.SwitchPreference
+        <io.github.lee0701.mboard.settings.preference.SwitchPreference
             app:key="input_hanja_prediction"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_prediction_title"
             app:summary="@string/pref_input_hanja_prediction_summary" />
 
-        <io.github.lee0701.mboard.settings.SwitchPreference
+        <io.github.lee0701.mboard.settings.preference.SwitchPreference
             app:key="input_hanja_sort_by_context"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_sort_by_context_title"
             app:summary="@string/pref_input_hanja_sort_by_context_summary" />
 
-        <io.github.lee0701.mboard.settings.MultiSelectListPreference
+        <io.github.lee0701.mboard.settings.preference.MultiSelectListPreference
             app:key="input_hanja_additional_dictionaries"
             app:entries="@array/additional_dictionaries"
             app:entryValues="@array/additional_dictionary_values"
             app:defaultValue="@array/additional_dictionary_defaults"
             app:title="@string/pref_input_hanja_additional_dictionaries_title" />
 
-    </io.github.lee0701.mboard.settings.PreferenceCategory>
+    </io.github.lee0701.mboard.settings.preference.PreferenceCategory>
 
 </PreferenceScreen>

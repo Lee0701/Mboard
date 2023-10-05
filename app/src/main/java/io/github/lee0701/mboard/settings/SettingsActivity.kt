@@ -2,10 +2,10 @@ package io.github.lee0701.mboard.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.service.MBoardIME
+import io.github.lee0701.mboard.settings.fragment.RootSettingsFragment
 
 class SettingsActivity: AppCompatActivity() {
 

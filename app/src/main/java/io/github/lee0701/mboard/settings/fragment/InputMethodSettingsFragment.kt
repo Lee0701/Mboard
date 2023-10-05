@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.fragment
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

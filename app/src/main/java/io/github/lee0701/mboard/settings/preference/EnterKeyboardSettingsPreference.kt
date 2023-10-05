@@ -1,10 +1,11 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.preference
 
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import androidx.preference.Preference
 import io.github.lee0701.mboard.R
+import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity
 
 class EnterKeyboardSettingsPreference(
     context: Context,

@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,6 +22,9 @@ import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.InputViewComponentType
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.service.MBoardIME
+import io.github.lee0701.mboard.settings.ChooseNewComponentBottomSheetFragment
+import io.github.lee0701.mboard.settings.KeyboardComponentsAdapter
+import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_DEFAULT_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ENGINE_TYPE
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_HANJA_ADDITIONAL_DICTIONARIES
@@ -32,6 +35,11 @@ import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Compa
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_LAYOUT_PRESET
 import io.github.lee0701.mboard.settings.KeyboardLayoutPreferenceDataStore.Companion.KEY_ROW_HEIGHT
 import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsActivity.Companion.emptyInputEngineListener
+import io.github.lee0701.mboard.settings.preference.ListPreference
+import io.github.lee0701.mboard.settings.preference.MultiSelectListPreference
+import io.github.lee0701.mboard.settings.preference.PreferenceCategory
+import io.github.lee0701.mboard.settings.preference.SliderPreference
+import io.github.lee0701.mboard.settings.preference.SwitchPreference
 import java.io.File
 
 class KeyboardLayoutSettingsFragment(

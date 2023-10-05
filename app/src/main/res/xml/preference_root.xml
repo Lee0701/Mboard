@@ -2,24 +2,24 @@
 <PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <io.github.lee0701.mboard.settings.Preference
-        app:fragment="io.github.lee0701.mboard.settings.InputMethodSettingsFragment"
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.InputMethodSettingsFragment"
         app:title="@string/pref_header_method_title" />
 
-    <io.github.lee0701.mboard.settings.Preference
-        app:fragment="io.github.lee0701.mboard.settings.AppearanceSettingsFragment"
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.AppearanceSettingsFragment"
         app:title="@string/pref_header_appearance_title" />
 
-    <io.github.lee0701.mboard.settings.Preference
-        app:fragment="io.github.lee0701.mboard.settings.KeyboardLayoutListSettingsFragment"
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.KeyboardLayoutListSettingsFragment"
         app:title="@string/pref_header_layout_title" />
 
-    <io.github.lee0701.mboard.settings.Preference
-        app:fragment="io.github.lee0701.mboard.settings.BehaviourSettingsFragment"
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.BehaviourSettingsFragment"
         app:title="@string/pref_header_behaviour_title" />
 
-    <io.github.lee0701.mboard.settings.Preference
-        app:fragment="io.github.lee0701.mboard.settings.AboutSettingsFragment"
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.AboutSettingsFragment"
         app:title="@string/pref_header_about_title" />
 
 </PreferenceScreen>

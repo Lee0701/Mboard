@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.preference
 
 import android.content.Context
 import android.content.Intent

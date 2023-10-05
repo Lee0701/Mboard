@@ -1,13 +1,12 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.preference
 
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import android.util.AttributeSet
+import android.view.inputmethod.InputMethodManager
 import androidx.preference.Preference
 import io.github.lee0701.mboard.R
 
-class EnableInputMethodPreference(
+class ChooseInputMethodPreference(
     context: Context,
     attrs: AttributeSet?,
 ): Preference(context, attrs) {
@@ -15,6 +14,8 @@ class EnableInputMethodPreference(
         layoutResource = R.layout.preference_inline
     }
     override fun onClick() {
-        context.startActivity(Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showInputMethodPicker()
     }
 }
