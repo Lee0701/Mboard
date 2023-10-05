@@ -15,8 +15,8 @@
         app:title="@string/pref_soft_keyboard_header_title">
 
         <io.github.lee0701.mboard.settings.preference.SwitchPreference
-            app:key="preference_keyboard_layout"
-            app:defaultValue="false"
+            app:key="soft_keyboard_default_height"
+            app:defaultValue="true"
             app:title="@string/pref_appearance_default_height_title"
             app:summary="@string/pref_appearance_default_height_summary" />
 

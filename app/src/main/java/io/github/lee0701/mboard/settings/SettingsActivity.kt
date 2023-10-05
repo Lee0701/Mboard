@@ -27,14 +27,6 @@ class SettingsActivity: AppCompatActivity() {
             .replace(R.id.settings, RootSettingsFragment())
             .commit()
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        val hasSetDefaultValues = PreferenceManager.getDefaultSharedPreferences(this)
-            .getBoolean(PreferenceManager.KEY_HAS_SET_DEFAULT_VALUES, false)
-        if(!hasSetDefaultValues) {
-            preferenceList.forEach { xml ->
-                PreferenceManager.setDefaultValues(this, xml, true)
-            }
-        }
     }
 
     override fun onStop() {
