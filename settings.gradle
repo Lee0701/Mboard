@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "mBoard"
 include ':app'
-include ':Converter:library'
