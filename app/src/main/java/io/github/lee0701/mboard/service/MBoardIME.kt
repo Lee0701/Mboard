@@ -1,14 +1,17 @@
 package io.github.lee0701.mboard.service
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -17,12 +20,12 @@ import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
-import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
@@ -30,11 +33,16 @@ import io.github.lee0701.mboard.preset.table.CustomKeycode
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
+    private val handler: Handler = Handler(Looper.getMainLooper())
+
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
+    private var externalConversionResultBroadcastReceiver: ExternalConversionResultBroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
+        externalConversionResultBroadcastReceiver = ExternalConversionResultBroadcastReceiver(this)
+        registerExternalConversionReceiver()
         reload()
     }
 
@@ -85,8 +93,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     }
 
     override fun onCandidates(list: List<Candidate>) {
-        val sorted = list.sortedByDescending { it.score }
-        inputEngineSwitcher?.showCandidates(sorted)
+//        val sorted = list.sortedByDescending { it.score }
+        inputEngineSwitcher?.showCandidates(list)
     }
 
     override fun onItemClicked(candidate: Candidate) {
@@ -270,6 +278,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterExternalConversionReceiver()
+        externalConversionResultBroadcastReceiver = null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -285,6 +295,38 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     override fun onEvaluateInputViewShown(): Boolean {
         return super.onEvaluateInputViewShown()
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private fun registerExternalConversionReceiver() {
+        val receiver = externalConversionResultBroadcastReceiver ?: return
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                receiver,
+                IntentFilter(ExternalConversionResultBroadcastReceiver.ACTION_CONVERT_TEXT_RESULT),
+                ExternalConversionResultBroadcastReceiver.PERMISSION_RECEIVE_CONVERTED_TEXT,
+                handler,
+                RECEIVER_EXPORTED
+            )
+        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(
+                receiver,
+                IntentFilter(ExternalConversionResultBroadcastReceiver.ACTION_CONVERT_TEXT_RESULT),
+                ExternalConversionResultBroadcastReceiver.PERMISSION_RECEIVE_CONVERTED_TEXT,
+                handler,
+                0
+            )
+        } else {
+            registerReceiver(
+                receiver,
+                IntentFilter(ExternalConversionResultBroadcastReceiver.ACTION_CONVERT_TEXT_RESULT)
+            )
+        }
+    }
+
+    private fun unregisterExternalConversionReceiver() {
+        val receiver = externalConversionResultBroadcastReceiver ?: return
+        unregisterReceiver(receiver)
     }
 
     companion object {

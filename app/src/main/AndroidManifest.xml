@@ -3,6 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <permission
+        android:name="io.github.lee0701.mboard.permission.CONVERT_TEXT" />
+    <permission
+        android:name="io.github.lee0701.mboard.permission.RECEIVE_CONVERTED_TEXT" />
+
+    <uses-permission android:name="io.github.lee0701.mboard.permission.CONVERT_TEXT" />
+    <uses-permission android:name="io.github.lee0701.mboard.permission.RECEIVE_CONVERTED_TEXT" />
+
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-sdk tools:overrideLibrary="org.tensorflow.lite, org.tensorflow.lite.support" />
 
