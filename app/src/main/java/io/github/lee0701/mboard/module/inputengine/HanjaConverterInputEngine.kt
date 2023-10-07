@@ -13,7 +13,7 @@ class HanjaConverterInputEngine(
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, CandidateListener {
 
-    private val inputEngine = getInputEngine(this)
+    private val inputEngine: InputEngine = getInputEngine(this)
 
     override var components: List<InputViewComponent> = inputEngine.components
     override var alternativeInputEngine: InputEngine? = inputEngine.alternativeInputEngine
@@ -40,21 +40,21 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onFinishComposing() {
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onCommitText(text: CharSequence) {
         if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -85,7 +85,7 @@ class HanjaConverterInputEngine(
         }
         listener.onComposingText(newComposingText)
         updateView()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onSystemKey(code: Int): Boolean {
@@ -100,8 +100,12 @@ class HanjaConverterInputEngine(
         listener.onEditorAction(code)
     }
 
-    private fun convert() {
-        hanjaConverter.convert(currentComposing)
+    fun convert(text: String) {
+        hanjaConverter.convert(text)
+    }
+
+    private fun convertCurrentComposing() {
+        this.convert(currentComposing)
     }
 
     private fun updateView() {

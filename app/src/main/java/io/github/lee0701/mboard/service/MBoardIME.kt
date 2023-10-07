@@ -25,6 +25,7 @@ import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
 import io.github.lee0701.mboard.module.candidates.DefaultCandidate
+import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
@@ -35,6 +36,7 @@ import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     private val handler: Handler = Handler(Looper.getMainLooper())
+    private var composingText: CharSequence = ""
 
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
@@ -100,10 +102,17 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     }
 
     override fun onItemClicked(candidate: Candidate) {
+        val newComposingText = composingText.drop(candidate.text.length)
         onComposingText(candidate.text)
         onFinishComposing()
         resetCurrentEngine()
         onCandidates(listOf())
+        onComposingText(newComposingText)
+
+        val currentEngine = inputEngineSwitcher?.getCurrentEngine()
+        if(currentEngine is HanjaConverterInputEngine) {
+            currentEngine.convert(newComposingText.toString())
+        }
     }
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
@@ -190,11 +199,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     override fun onComposingText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
         if(text.isEmpty() && inputConnection.getSelectedText(0)?.isNotEmpty() == true) return
+        composingText = text
         inputConnection.setComposingText(text, 1)
     }
 
     override fun onFinishComposing() {
         val inputConnection = currentInputConnection ?: return
+        composingText = ""
         inputConnection.finishComposingText()
         updateTextAroundCursor()
     }
