@@ -1,29 +1,19 @@
 package io.github.lee0701.mboard.module.inputengine
 
 import android.graphics.drawable.Drawable
-import io.github.lee0701.converter.library.engine.ComposingText
-import io.github.lee0701.converter.library.engine.HanjaConverter
-import io.github.lee0701.converter.library.engine.Predictor
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
-import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.service.KeyboardState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class HanjaConverterInputEngine(
     getInputEngine: (InputEngine.Listener) -> InputEngine,
-    private val hanjaConverter: HanjaConverter?,
-    private val predictor: Predictor?,
+    private val hanjaConverter: HanjaConverter,
     override val listener: InputEngine.Listener,
 ): InputEngine, InputEngine.Listener, CandidateListener {
 
-    private var job: Job? = null
-    private val inputEngine = getInputEngine(this)
+    private val inputEngine: InputEngine = getInputEngine(this)
 
     override var components: List<InputViewComponent> = inputEngine.components
     override var alternativeInputEngine: InputEngine? = inputEngine.alternativeInputEngine
@@ -50,21 +40,21 @@ class HanjaConverterInputEngine(
     override fun onComposingText(text: CharSequence) {
         composingChar = text.toString()
         updateView()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onFinishComposing() {
         listener.onFinishComposing()
         composingChar = ""
         composingWordStack.clear()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onCommitText(text: CharSequence) {
         if(text.isEmpty()) return
         composingWordStack += composingWordStack.lastOrNull().orEmpty() + text.toString()
         updateView()
-        convert()
+        convertCurrentComposing()
     }
 
     override fun onDeleteText(beforeLength: Int, afterLength: Int) {
@@ -83,21 +73,19 @@ class HanjaConverterInputEngine(
     }
 
     override fun onItemClicked(candidate: Candidate) {
-        if(candidate is DefaultHanjaCandidate) {
-            listener.onCommitText(candidate.text)
-            composingWordStack += currentComposing
-            composingChar = ""
-            if(inputEngine is HangulInputEngine) inputEngine.clearStack()
+        listener.onCommitText(candidate.text)
+        composingWordStack += currentComposing
+        composingChar = ""
+        if(inputEngine is HangulInputEngine) inputEngine.clearStack()
 
-            val newComposingText = currentComposing.drop(candidate.text.length)
-            composingWordStack.clear()
-            newComposingText.indices.forEach { i ->
-                composingWordStack += newComposingText.take(i + 1)
-            }
-            listener.onComposingText(newComposingText)
-            updateView()
-            convert()
+        val newComposingText = currentComposing.drop(candidate.text.length)
+        composingWordStack.clear()
+        newComposingText.indices.forEach { i ->
+            composingWordStack += newComposingText.take(i + 1)
         }
+        listener.onComposingText(newComposingText)
+        updateView()
+        convertCurrentComposing()
     }
 
     override fun onSystemKey(code: Int): Boolean {
@@ -112,30 +100,12 @@ class HanjaConverterInputEngine(
         listener.onEditorAction(code)
     }
 
-    private fun convert() {
-        val job = job
-        if(job != null && job.isActive) return
-        this.job = CoroutineScope(Dispatchers.IO).launch {
-            val text = beforeText + currentComposing
-            val from = beforeText.length
-            val to = text.length
-            val composingText = ComposingText(text = text, from = from, to = to)
-            val candidates = if(currentComposing.isNotBlank()) {
-                val extraCandidates =
-                    listOf(composingText.composing.substring(0, 1), composingText.composing)
-                        .map { DefaultHanjaCandidate(it.toString(), it.toString(), "") }
-                extraCandidates + hanjaConverter?.convertPrefix(composingText)
-                    ?.flatten().orEmpty()
-                    .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
-            } else {
-                predictor?.predict(composingText)
-                    ?.top(10).orEmpty()
-                    .map { DefaultHanjaCandidate(it.hanja, it.hangul, it.extra) }
-            }
-            launch(Dispatchers.Main) {
-                onCandidates(candidates)
-            }
-        }
+    fun convert(text: String) {
+        hanjaConverter.convert(text)
+    }
+
+    private fun convertCurrentComposing() {
+        this.convert(currentComposing)
     }
 
     private fun updateView() {

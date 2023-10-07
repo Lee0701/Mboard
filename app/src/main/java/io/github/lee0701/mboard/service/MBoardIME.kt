@@ -5,10 +5,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -17,24 +19,34 @@ import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
-import androidx.preference.PreferenceManager
+import androidx.core.content.ContextCompat
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
-import io.github.lee0701.mboard.module.candidates.DefaultHanjaCandidate
+import io.github.lee0701.mboard.module.candidates.DefaultCandidate
+import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.preset.table.CustomKeycode
+import io.github.lee0701.mboard_lib.conversion.Constants
+import io.github.lee0701.mboard_lib.conversion.ExternalConversionResultBroadcastReceiver
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private var composingText: CharSequence = ""
+
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
+    private var externalConversionResultBroadcastReceiver: ExternalConversionResultBroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
+        val externalConversionListener = ExternalConversionResultAdaptingListener(this)
+        externalConversionResultBroadcastReceiver = ExternalConversionResultBroadcastReceiver(externalConversionListener)
+        registerExternalConversionReceiver()
         reload()
     }
 
@@ -85,21 +97,21 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     }
 
     override fun onCandidates(list: List<Candidate>) {
-        val sorted = list.sortedByDescending { it.score }
-        inputEngineSwitcher?.showCandidates(sorted)
+//        val sorted = list.sortedByDescending { it.score }
+        inputEngineSwitcher?.showCandidates(list)
     }
 
     override fun onItemClicked(candidate: Candidate) {
-        if(candidate is DefaultHanjaCandidate) {
-            val inputEngine = inputEngineSwitcher?.getCurrentEngine()
-            if(inputEngine is CandidateListener) {
-                inputEngine.onItemClicked(candidate)
-            }
-        } else {
-            onComposingText(candidate.text)
-            onFinishComposing()
-            resetCurrentEngine()
-            onCandidates(listOf())
+        val newComposingText = composingText.drop(candidate.text.length)
+        onComposingText(candidate.text)
+        onFinishComposing()
+        resetCurrentEngine()
+        onCandidates(listOf())
+        onComposingText(newComposingText)
+
+        val currentEngine = inputEngineSwitcher?.getCurrentEngine()
+        if(currentEngine is HanjaConverterInputEngine) {
+            currentEngine.convert(newComposingText.toString())
         }
     }
 
@@ -187,11 +199,13 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     override fun onComposingText(text: CharSequence) {
         val inputConnection = currentInputConnection ?: return
         if(text.isEmpty() && inputConnection.getSelectedText(0)?.isNotEmpty() == true) return
+        composingText = text
         inputConnection.setComposingText(text, 1)
     }
 
     override fun onFinishComposing() {
         val inputConnection = currentInputConnection ?: return
+        composingText = ""
         inputConnection.finishComposingText()
         updateTextAroundCursor()
     }
@@ -270,6 +284,8 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterExternalConversionReceiver()
+        externalConversionResultBroadcastReceiver = null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -285,6 +301,34 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     override fun onEvaluateInputViewShown(): Boolean {
         return super.onEvaluateInputViewShown()
+    }
+
+    private fun registerExternalConversionReceiver() {
+        val receiver = externalConversionResultBroadcastReceiver ?: return
+        ContextCompat.registerReceiver(
+            this,
+            receiver,
+            IntentFilter(Constants.ACTION_CONVERT_TEXT_RESULT),
+            Constants.PERMISSION_RECEIVE_CONVERTED_TEXT,
+            handler,
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                ContextCompat.RECEIVER_EXPORTED
+            else ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    private fun unregisterExternalConversionReceiver() {
+        val receiver = externalConversionResultBroadcastReceiver ?: return
+        unregisterReceiver(receiver)
+    }
+
+    class ExternalConversionResultAdaptingListener(
+        val listener: InputEngine.Listener
+    ): ExternalConversionResultBroadcastReceiver.Listener {
+        override fun onCandidates(candidates: List<List<String>>) {
+            val adaptedCandidates = candidates.map { (hangul, hanja, extra) -> DefaultCandidate(hanja) }
+            listener.onCandidates(adaptedCandidates)
+        }
     }
 
     companion object {
