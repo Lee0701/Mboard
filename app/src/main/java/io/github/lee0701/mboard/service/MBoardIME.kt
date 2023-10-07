@@ -5,7 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Build
@@ -17,7 +16,6 @@ import android.view.inputmethod.InputConnection
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
-import androidx.preference.PreferenceManager
 import com.charleskorn.kaml.decodeFromStream
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
