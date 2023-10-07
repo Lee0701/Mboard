@@ -43,32 +43,11 @@
             app:title="@string/pref_input_engine_type_title"
             app:useSimpleSummaryProvider="true" />
 
-<!--        TODO: Add 'Add Candidates View' shortcut?-->
-
         <io.github.lee0701.mboard.settings.SwitchPreference
             app:key="input_hanja_conversion"
             app:defaultValue="false"
             app:title="@string/pref_input_hanja_conversion_title"
             android:summary="@string/pref_input_hanja_conversion_summary" />
-
-        <io.github.lee0701.mboard.settings.SwitchPreference
-            app:key="input_hanja_prediction"
-            app:defaultValue="false"
-            app:title="@string/pref_input_hanja_prediction_title"
-            android:summary="@string/pref_input_hanja_prediction_summary" />
-
-        <io.github.lee0701.mboard.settings.SwitchPreference
-            app:key="input_hanja_sort_by_context"
-            app:defaultValue="false"
-            app:title="@string/pref_input_hanja_sort_by_context_title"
-            android:summary="@string/pref_input_hanja_sort_by_context_summary" />
-
-        <io.github.lee0701.mboard.settings.MultiSelectListPreference
-            app:key="input_hanja_additional_dictionaries"
-            app:entries="@array/additional_dictionaries"
-            app:entryValues="@array/additional_dictionary_values"
-            app:defaultValue="@array/additional_dictionary_defaults"
-            app:title="@string/pref_input_hanja_additional_dictionaries_title" />
 
     </io.github.lee0701.mboard.settings.PreferenceCategory>
 
