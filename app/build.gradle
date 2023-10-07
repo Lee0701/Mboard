@@ -45,6 +45,8 @@ android {
 }
 
 dependencies {
+    implementation project(':mboard-lib:lib')
+
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
     implementation 'com.charleskorn.kaml:kaml:0.55.0'
