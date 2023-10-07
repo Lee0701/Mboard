@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.InputMethodSettingsFragment"
+        app:icon="@drawable/baseline_checklist_24"
+        app:title="@string/pref_header_method_title" />
+
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.AppearanceSettingsFragment"
+        app:icon="@drawable/baseline_remove_red_eye_24"
+        app:title="@string/pref_header_appearance_title" />
+
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.KeyboardLayoutListSettingsFragment"
+        app:icon="@drawable/baseline_keyboard_24"
+        app:title="@string/pref_header_layout_title" />
+
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.BehaviourSettingsFragment"
+        app:icon="@drawable/baseline_settings_24"
+        app:title="@string/pref_header_behaviour_title" />
+
+    <io.github.lee0701.mboard.settings.preference.Preference
+        app:fragment="io.github.lee0701.mboard.settings.fragment.AboutSettingsFragment"
+        app:icon="@drawable/baseline_info_24"
+        app:title="@string/pref_header_about_title" />
+
+</PreferenceScreen>

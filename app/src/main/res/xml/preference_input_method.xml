@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.preference.PreferenceCategory
+        app:title="@string/pref_header_method_title">
+
+        <io.github.lee0701.mboard.settings.preference.EnableInputMethodPreference
+            app:title="@string/pref_method_enable_title"
+            app:summary="@string/pref_method_enable_summary" />
+
+        <io.github.lee0701.mboard.settings.preference.ChooseInputMethodPreference
+            app:title="@string/pref_method_choose_title"
+            app:summary="@string/pref_method_choose_summary" />
+    </io.github.lee0701.mboard.settings.preference.PreferenceCategory>
+
+</PreferenceScreen>

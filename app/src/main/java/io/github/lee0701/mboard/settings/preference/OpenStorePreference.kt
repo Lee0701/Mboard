@@ -1,4 +1,4 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.preference
 
 import android.content.Context
 import android.content.Intent
@@ -15,7 +15,8 @@ class OpenStorePreference(
         layoutResource = R.layout.preference_inline
     }
 
-    private val uri: String? = attrs?.getAttributeValue(null, "uri")
+    private val uri: String = context.obtainStyledAttributes(attrs, R.styleable.OpenStorePreference)
+        .getString(R.styleable.OpenStorePreference_uri).toString()
 
     override fun onClick() {
         val intent = Intent(Intent.ACTION_VIEW).apply {

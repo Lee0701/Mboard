@@ -1,14 +1,14 @@
-package io.github.lee0701.mboard.settings
+package io.github.lee0701.mboard.settings.preference
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.preference.Preference
+import androidx.preference.ListPreference
 import io.github.lee0701.mboard.R
 
-class Preference(
+class ListPreference(
     context: Context,
-    atts: AttributeSet?,
-): Preference(context, atts) {
+    attrs: AttributeSet?,
+): ListPreference(context, attrs) {
     init {
         layoutResource = R.layout.preference_inline
     }

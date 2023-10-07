@@ -42,4 +42,9 @@
     <declare-styleable name="TouchInterceptingFrameLayout">
         <attr name="intercept" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="OpenStorePreference">
+        <attr name="uri" format="string" />
+    </declare-styleable>
+
 </resources>
