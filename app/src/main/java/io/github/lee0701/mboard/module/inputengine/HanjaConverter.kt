@@ -1,12 +1,12 @@
 package io.github.lee0701.mboard.module.inputengine
 
 import android.content.Context
-import io.github.lee0701.mboard_lib.conversion.ExternalConversionRequestBroadcaster
+import ee.oyatl.ime.f.fusion.ConversionRequestBroadcaster
 
 class HanjaConverter(
     private val context: Context,
 ) {
     fun convert(text: String) {
-        ExternalConversionRequestBroadcaster.broadcast(context, text)
+        ConversionRequestBroadcaster.broadcast(context, text)
     }
 }
