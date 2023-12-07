@@ -14,4 +14,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "mBoard"
-include ':app'
+include(":app")
