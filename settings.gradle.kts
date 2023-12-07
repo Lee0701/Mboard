@@ -10,8 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 rootProject.name = "mBoard"
-include ':app'
-include ':mboard-lib:lib'
+include(":app")

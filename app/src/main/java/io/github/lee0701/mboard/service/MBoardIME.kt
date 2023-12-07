@@ -21,6 +21,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.charleskorn.kaml.decodeFromStream
+import ee.oyatl.ime.f.fusion.Constants
+import ee.oyatl.ime.f.fusion.ConversionResultBroadcastReceiver
 import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.candidates.Candidate
 import io.github.lee0701.mboard.module.candidates.CandidateListener
@@ -30,8 +32,6 @@ import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.InputEnginePreset
 import io.github.lee0701.mboard.preset.PresetLoader
 import io.github.lee0701.mboard.preset.table.CustomKeycode
-import io.github.lee0701.mboard_lib.conversion.Constants
-import io.github.lee0701.mboard_lib.conversion.ConversionResultBroadcastReceiver
 import java.io.File
 
 class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
@@ -40,12 +40,12 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
 
     private val clipboard: ClipboardManager by lazy { getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private var inputEngineSwitcher: InputEngineSwitcher? = null
-    private var conversionResultBroadcastReceiver: ConversionResultBroadcastReceiver? = null
+    private var externalConversionResultBroadcastReceiver: ConversionResultBroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
         val externalConversionListener = ExternalConversionResultAdaptingListener(this)
-        conversionResultBroadcastReceiver = ConversionResultBroadcastReceiver(externalConversionListener)
+        externalConversionResultBroadcastReceiver = ConversionResultBroadcastReceiver(externalConversionListener)
         registerExternalConversionReceiver()
         reload()
     }
@@ -285,7 +285,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     override fun onDestroy() {
         super.onDestroy()
         unregisterExternalConversionReceiver()
-        conversionResultBroadcastReceiver = null
+        externalConversionResultBroadcastReceiver = null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -304,7 +304,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     }
 
     private fun registerExternalConversionReceiver() {
-        val receiver = conversionResultBroadcastReceiver ?: return
+        val receiver = externalConversionResultBroadcastReceiver ?: return
         ContextCompat.registerReceiver(
             this,
             receiver,
@@ -318,7 +318,7 @@ class MBoardIME: InputMethodService(), InputEngine.Listener, CandidateListener {
     }
 
     private fun unregisterExternalConversionReceiver() {
-        val receiver = conversionResultBroadcastReceiver ?: return
+        val receiver = externalConversionResultBroadcastReceiver ?: return
         unregisterReceiver(receiver)
     }
 
