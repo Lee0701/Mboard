@@ -48,7 +48,7 @@ dependencies {
     implementation 'ee.oyatl.ime.f.fusion:hyper:0.0.1'
 
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2'
     implementation 'com.charleskorn.kaml:kaml:0.55.0'
     implementation 'org.snakeyaml:snakeyaml-engine:2.7'
     implementation 'androidx.core:core-ktx:1.12.0'

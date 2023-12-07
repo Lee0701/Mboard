@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "mBoard"
 include ':app'
-include ':mboard-lib:lib'
