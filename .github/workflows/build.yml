@@ -1,0 +1,17 @@
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/setup.yml
+
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Build with Gradle
+        run: ./gradlew buildRelease
+
+      - name: Build Release AAB
+        id: buildBundle
+        run: ./gradlew bundleRelease

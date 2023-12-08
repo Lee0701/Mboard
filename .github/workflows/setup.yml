@@ -1,0 +1,29 @@
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: set up JDK 17
+        uses: actions/setup-java@v3.6.0
+        with:
+          distribution: 'adopt' # See 'Supported distributions' for available options
+          java-version: '17'
+
+      - name: Set timezone
+        uses: szenius/set-timezone@v1.2
+        with:
+          timezoneMacos: "Asia/Seoul"
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: ADD LOCAL PROPERTIES
+        run: echo '${{ secrets.LOCAL_PROPERTIES }}' > ./local.properties

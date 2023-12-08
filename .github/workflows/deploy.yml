@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/setup.yml
+    secrets: inherit
+
+  version:
+    name: Version
+    needs: setup
+    uses: ./.github/workflows/version.yml
+    secrets: inherit
+
+  build:
+    name: Build
+    needs: version
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+
+  google-play:
+    name: Google Play
+    needs: build
+    uses:./.github/workflows/google-play.yml
+    secrets: inherit
