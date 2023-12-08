@@ -1,3 +1,7 @@
+name: Google Play
+
+on:
+  workflow_call:
 
 jobs:
   deploy:
