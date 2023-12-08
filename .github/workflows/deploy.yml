@@ -26,5 +26,5 @@ jobs:
   google-play:
     name: Google Play
     needs: build
-    uses:./.github/workflows/google-play.yml
+    uses: ./.github/workflows/google-play.yml
     secrets: inherit
