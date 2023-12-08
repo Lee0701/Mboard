@@ -6,11 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup:
-    name: Setup
-    uses: ./.github/workflows/setup.yml
-    secrets: inherit
-
   version:
     name: Version
     needs: setup

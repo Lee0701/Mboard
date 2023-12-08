@@ -4,8 +4,13 @@ on:
   workflow_call:
 
 jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/setup.yml
+
   version:
     name: Increment Version
+
     runs-on: ubuntu-20.04
 
     steps:
