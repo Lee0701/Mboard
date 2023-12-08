@@ -55,13 +55,13 @@ class CanvasKeyboardView(
         keyMarginHorizontal = resources.getDimension(R.dimen.key_margin_horizontal)
         keyMarginVertical = resources.getDimension(R.dimen.key_margin_vertical)
 
-        val keyboardContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground).let {
+        val backgroundContext = DynamicColors.wrapContextIfAvailable(context, theme.keyboardBackground).let {
             if(it == context) ContextThemeWrapper(context, theme.keyboardBackground) else it
         }
-        keyboardContext.theme.resolveAttribute(R.attr.background, typedValue, true)
-        val background = ContextCompat.getDrawable(keyboardContext, typedValue.resourceId) ?: ColorDrawable(Color.WHITE)
-        keyboardContext.theme.resolveAttribute(R.attr.backgroundTint, typedValue, true)
-        val backgroundTint = ContextCompat.getColor(keyboardContext, typedValue.resourceId)
+        backgroundContext.theme.resolveAttribute(R.attr.background, typedValue, true)
+        val background = ContextCompat.getDrawable(backgroundContext, typedValue.resourceId) ?: ColorDrawable(Color.WHITE)
+        backgroundContext.theme.resolveAttribute(R.attr.backgroundTint, typedValue, true)
+        val backgroundTint = ContextCompat.getColor(backgroundContext, typedValue.resourceId)
         DrawableCompat.setTint(background, backgroundTint)
         this.keyboardBackground = background
 

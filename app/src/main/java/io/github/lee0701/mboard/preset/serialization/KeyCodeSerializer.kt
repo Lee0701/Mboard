@@ -9,7 +9,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 object KeyCodeSerializer: KSerializer<Int> {
-    override val descriptor = PrimitiveSerialDescriptor("Hexadecimal", PrimitiveKind.INT)
+    override val descriptor = PrimitiveSerialDescriptor("KeyCode", PrimitiveKind.INT)
 
     override fun serialize(encoder: Encoder, value: Int) {
         val string = keyCodeToString(value)

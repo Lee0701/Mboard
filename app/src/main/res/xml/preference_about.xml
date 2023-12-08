@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.preference.PreferenceCategory
+        app:title="@string/pref_header_about_title">
+
+        <io.github.lee0701.mboard.settings.preference.StartActivityPreference
+            app:title="@string/pref_about_app_info_title"
+            app:summary="@string/pref_about_app_info_summary" />
+
+        <io.github.lee0701.mboard.settings.preference.OpenStorePreference
+            app:title="@string/pref_about_more_apps_title"
+            app:summary="@string/pref_about_more_apps_summary"
+            app:uri="https://play.google.com/store/search?q=pub:%E6%9D%8E%EF%BC%81&amp;c=apps"/>
+
+        <io.github.lee0701.mboard.settings.preference.OssLicensesMenuPreference
+            app:title="@string/pref_about_oss_licenses_title" />
+
+    </io.github.lee0701.mboard.settings.preference.PreferenceCategory>
+
+</PreferenceScreen>

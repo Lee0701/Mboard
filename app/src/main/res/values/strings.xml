@@ -13,6 +13,8 @@
 
     <string name="title_activity_settings">mBoard Settings</string>
 
+    <string name="pref_fragment_method_title">Input Method</string>
+
     <string name="pref_header_method_title">Input Method</string>
     <string name="pref_method_enable_title">Enable Input Method</string>
     <string name="pref_method_enable_summary">Select \'mBoard\' to enable.</string>
@@ -32,6 +34,8 @@
     <string name="pref_appearance_keyboard_view_type_summary">Try changing this if you have performance issues.</string>
     <string name="keybaord_view_type_canvas">Canvas</string>
     <string name="keybaord_view_type_stacked_view">Stacked View</string>
+
+    <string name="pref_header_feedback_title">Feedback</string>
     <string name="pref_appearance_haptic_feedback_title">Haptic Feedback</string>
     <string name="pref_appearance_sound_feedback_title">Sound Feedback</string>
 
@@ -63,7 +67,7 @@
 
     <string name="pref_header_input_title">Input</string>
     <string name="pref_input_hanja_conversion_title">Hanja Conversion</string>
-    <string name="pref_input_hanja_conversion_summary">requires Hanja Converter installed.</string>
+    <string name="pref_input_hanja_conversion_summary">requires Hanja Converter installed and enabled.</string>
     <string name="pref_input_hanja_prediction_title">Hanja Prediction</string>
     <string name="pref_input_hanja_prediction_summary">requires Hanja Converter Donation Version installed.</string>
     <string name="pref_input_hanja_sort_by_context_title">Sort Hanja by Context</string>

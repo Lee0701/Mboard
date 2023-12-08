@@ -9,7 +9,7 @@ import io.github.lee0701.mboard.module.component.CandidatesComponent
 import io.github.lee0701.mboard.module.component.EmptyComponent
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
-import io.github.lee0701.mboard.settings.KeyboardLayoutSettingsFragment
+import io.github.lee0701.mboard.settings.fragment.KeyboardLayoutSettingsFragment
 
 enum class InputViewComponentType(
     @DrawableRes val iconRes: Int,

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <io.github.lee0701.mboard.settings.preference.PreferenceCategory
+        app:title="@string/pref_header_layout_title">
+
+        <io.github.lee0701.mboard.settings.preference.ListPreference
+            app:key="layout_screen_mode"
+            app:defaultValue="@string/pref_layout_screen_mode_default"
+            app:entries="@array/layout_screen_modes"
+            app:entryValues="@array/layout_screen_mode_values"
+            app:title="@string/pref_layout_screen_mode_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <io.github.lee0701.mboard.settings.preference.EnterKeyboardSettingsPreference
+            app:fileName="preset_hangul.yaml"
+            app:template="preset/preset_3set_390.yaml"
+            app:title="@string/pref_layout_hangul_settings_title" />
+
+        <io.github.lee0701.mboard.settings.preference.EnterKeyboardSettingsPreference
+            app:fileName="preset_latin.yaml"
+            app:template="preset/preset_latin_qwerty.yaml"
+            app:title="@string/pref_layout_latin_settings_title" />
+
+        <io.github.lee0701.mboard.settings.preference.EnterKeyboardSettingsPreference
+            app:fileName="preset_symbol.yaml"
+            app:template="preset/preset_symbol_g.yaml"
+            app:title="@string/pref_layout_symbol_settings_title" />
+
+    </io.github.lee0701.mboard.settings.preference.PreferenceCategory>
+
+</PreferenceScreen>

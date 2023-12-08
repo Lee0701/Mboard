@@ -1,20 +1,16 @@
 package io.github.lee0701.mboard.preset
 
 import android.content.Context
-import android.widget.Toast
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.charleskorn.kaml.decodeFromStream
-import io.github.lee0701.converter.library.engine.HanjaConverter
-import io.github.lee0701.converter.library.engine.Predictor
-import io.github.lee0701.mboard.R
 import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
+import io.github.lee0701.mboard.module.inputengine.HanjaConverter
 import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
-import io.github.lee0701.mboard.module.kokr.HanjaConverterBuilder
 import io.github.lee0701.mboard.preset.softkeyboard.Include
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
 import io.github.lee0701.mboard.preset.softkeyboard.Row
@@ -57,31 +53,20 @@ data class InputEnginePreset(
         }
 
         fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
-            return if(hanja.conversion) {
-                // TODO: Temporary workaround
-                val (converter, predictor) = if(context is MBoardIME) {
-                    createHanjaConverter(
-                        context,
-                        prediction = hanja.prediction,
-                        sortByContext = hanja.sortByContext,
-                    )
-                } else {
-                    (null to null)
-                }
+            return if(hanja.conversion && context is MBoardIME) {
                 HanjaConverterInputEngine(
                     { l -> HangulInputEngine(
                         convertTable = convertTable,
-                        overrideTable = overrideTable,
                         moreKeysTable = moreKeysTable,
+                        overrideTable = overrideTable,
                         jamoCombinationTable = combinationTable,
                         listener = l,
                     ) },
-                    converter,
-                    predictor,
-                    listener,
+                    HanjaConverter(context),
+                    listener = listener,
                 )
             } else {
-                HangulInputEngine(
+                return HangulInputEngine(
                     convertTable = convertTable,
                     moreKeysTable = moreKeysTable,
                     overrideTable = overrideTable,
@@ -255,20 +240,6 @@ data class InputEnginePreset(
     companion object {
         private val yamlConfig = YamlConfiguration(encodeDefaults = false)
         val yaml = Yaml(EmptySerializersModule(), yamlConfig)
-
-        fun createHanjaConverter(ime: MBoardIME, prediction: Boolean, sortByContext: Boolean): Pair<HanjaConverter?, Predictor?> {
-            if(prediction) {
-                val (converter, predictor) = HanjaConverterBuilder.build(ime, true, sortByContext)
-                if(converter != null && predictor != null) return converter to predictor
-                else Toast.makeText(ime, R.string.msg_hanja_converter_donation_not_found, Toast.LENGTH_LONG).show()
-            }
-
-            val (converter, _) = HanjaConverterBuilder.build(ime, false, sortByContext)
-            if(converter != null) return converter to null
-            else Toast.makeText(ime, R.string.msg_hanja_converter_not_found, Toast.LENGTH_LONG).show()
-
-            return null to null
-        }
 
         fun resolveSoftKeyIncludes(context: Context, row: Row): List<RowItem> {
             return row.keys.flatMap { rowItem ->

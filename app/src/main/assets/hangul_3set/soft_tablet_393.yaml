@@ -47,7 +47,7 @@ rows:
 - keys:
   - !<key>
     code: "KEYCODE_SYM"
-    label: "?12"
+    iconType: "Option"
     width: 1.5
     type: "Modifier"
   - !<key>
@@ -67,6 +67,6 @@ rows:
     output: "'"
   - !<key>
     code: "KEYCODE_SYM"
-    label: "?12"
+    iconType: "Option"
     width: 1.5
     type: "Modifier"

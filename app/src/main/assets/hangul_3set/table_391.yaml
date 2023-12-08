@@ -1,143 +1,143 @@
 !<simple>
 map:
-  "KEYCODE_1":
-    base: 0x11c2
-    shift: 0x11a9
-  "KEYCODE_2":
-    base: 0x11bb
-    shift: 0x11b0
-  "KEYCODE_3":
-    base: 0x11b8
-    shift: 0x11bd
-  "KEYCODE_4":
-    base: 0x116d
-    shift: 0x11b5
-  "KEYCODE_5":
-    base: 0x1172
-    shift: 0x11b4
-  "KEYCODE_6":
-    base: 0x1163
-    shift: 0x003d
-  "KEYCODE_7":
-    base: 0x1168
-    shift: 0x201c
-  "KEYCODE_8":
-    base: 0x1174
-    shift: 0x201d
-  "KEYCODE_9":
-    base: 0x116e
-    shift: 0x0027
-  "KEYCODE_0":
-    base: 0x110f
-    shift: 0x007e
-  "KEYCODE_Q":
-    base: 0x11ba
-    shift: 0x11c1
-  "KEYCODE_W":
-    base: 0x11af
-    shift: 0x11c0
-  "KEYCODE_E":
-    base: 0x1167
-    shift: 0x11ac
-  "KEYCODE_R":
-    base: 0x1162
-    shift: 0x11b6
-  "KEYCODE_T":
-    base: 0x1165
-    shift: 0x11b3
-  "KEYCODE_Y":
-    base: 0x1105
-    shift: 0x0035
-  "KEYCODE_U":
-    base: 0x1103
-    shift: 0x0036
-  "KEYCODE_I":
-    base: 0x1106
-    shift: 0x0037
-  "KEYCODE_O":
-    base: 0x110e
-    shift: 0x0038
-  "KEYCODE_P":
-    base: 0x1111
-    shift: 0x0039
-  "KEYCODE_A":
-    base: 0x11bc
-    shift: 0x11ae
-  "KEYCODE_S":
-    base: 0x11ab
-    shift: 0x11ad
-  "KEYCODE_D":
-    base: 0x1175
-    shift: 0x11b2
-  "KEYCODE_F":
-    base: 0x1161
-    shift: 0x11b1
-  "KEYCODE_G":
-    base: 0x1173
-    shift: 0x1164
-  "KEYCODE_H":
-    base: 0x1102
-    shift: 0x0030
-  "KEYCODE_J":
-    base: 0x110b
-    shift: 0x0031
-  "KEYCODE_K":
-    base: 0x1100
-    shift: 0x0032
-  "KEYCODE_L":
-    base: 0x110c
-    shift: 0x0033
-  "KEYCODE_SEMICOLON":
-    base: 0x1107
-    shift: 0x0034
-  "KEYCODE_APOSTROPHE":
-    base: 0x1110
-    shift: 0x00b7
-  "KEYCODE_Z":
-    base: 0x11b7
-    shift: 0x11be
-  "KEYCODE_X":
-    base: 0x11a8
-    shift: 0x11b9
-  "KEYCODE_C":
-    base: 0x1166
-    shift: 0x11bf
-  "KEYCODE_V":
-    base: 0x1169
-    shift: 0x11aa
-  "KEYCODE_B":
-    base: 0x116e
-    shift: 0x003f
-  "KEYCODE_N":
-    base: 0x1109
-    shift: 0x002d
-  "KEYCODE_M":
-    base: 0x1112
-    shift: 0x0022
-  "KEYCODE_COMMA":
-    base: 0x002c
-    shift: 0x002c
-  "KEYCODE_PERIOD":
-    base: 0x002e
-    shift: 0x002e
-  "KEYCODE_SLASH":
-    base: 0x1169
-    shift: 0x0021
-  "KEYCODE_MINUS":
-    base: 0x0029
-    shift: 0x003b
-  "KEYCODE_NUM":
-    base: 0x003e
-    shift: 0x002b
-  "KEYCODE_LEFT_BRACKET":
-    base: 0x0028
-    shift: 0x0025
-  "KEYCODE_RIGHT_BRACKET":
-    base: 0x003c
-    shift: 0x002f
-  "KEYCODE_BACKSLASH":
-    base: 0x003a
-    shift: 0x005c
-  "KEYCODE_GRAVE":
-    base: 0x002a
-    shift: 0x203b
+  KEYCODE_1:
+    base: '_ㅎ'
+    shift: '_ㄲ'
+  KEYCODE_2:
+    base: '_ㅆ'
+    shift: '_ㄺ'
+  KEYCODE_3:
+    base: '_ㅂ'
+    shift: '_ㅈ'
+  KEYCODE_4:
+    base: '_ㅛ_'
+    shift: '_ㄿ'
+  KEYCODE_5:
+    base: '_ㅠ_'
+    shift: '_ㄾ'
+  KEYCODE_6:
+    base: '_ㅑ_'
+    shift: '='
+  KEYCODE_7:
+    base: '_ㅖ_'
+    shift: '“'
+  KEYCODE_8:
+    base: '_ㅢ_'
+    shift: '”'
+  KEYCODE_9:
+    base: '_ㅜ_'
+    shift: ''''
+  KEYCODE_0:
+    base: 'ㅋ_'
+    shift: '~'
+  KEYCODE_Q:
+    base: '_ㅅ'
+    shift: '_ㅍ'
+  KEYCODE_W:
+    base: '_ㄹ'
+    shift: '_ㅌ'
+  KEYCODE_E:
+    base: '_ㅕ_'
+    shift: '_ㄵ'
+  KEYCODE_R:
+    base: '_ㅐ_'
+    shift: '_ㅀ'
+  KEYCODE_T:
+    base: '_ㅓ_'
+    shift: '_ㄽ'
+  KEYCODE_Y:
+    base: 'ㄹ_'
+    shift: '5'
+  KEYCODE_U:
+    base: 'ㄷ_'
+    shift: '6'
+  KEYCODE_I:
+    base: 'ㅁ_'
+    shift: '7'
+  KEYCODE_O:
+    base: 'ㅊ_'
+    shift: '8'
+  KEYCODE_P:
+    base: 'ㅍ_'
+    shift: '9'
+  KEYCODE_A:
+    base: '_ㅇ'
+    shift: '_ㄷ'
+  KEYCODE_S:
+    base: '_ㄴ'
+    shift: '_ㄶ'
+  KEYCODE_D:
+    base: '_ㅣ_'
+    shift: '_ㄼ'
+  KEYCODE_F:
+    base: '_ㅏ_'
+    shift: '_ㄻ'
+  KEYCODE_G:
+    base: '_ㅡ_'
+    shift: '_ㅒ_'
+  KEYCODE_H:
+    base: 'ㄴ_'
+    shift: '0'
+  KEYCODE_J:
+    base: 'ㅇ_'
+    shift: '1'
+  KEYCODE_K:
+    base: 'ㄱ_'
+    shift: '2'
+  KEYCODE_L:
+    base: 'ㅈ_'
+    shift: '3'
+  KEYCODE_SEMICOLON:
+    base: 'ㅂ_'
+    shift: '4'
+  KEYCODE_APOSTROPHE:
+    base: 'ㅌ_'
+    shift: '·'
+  KEYCODE_Z:
+    base: '_ㅁ'
+    shift: '_ㅊ'
+  KEYCODE_X:
+    base: '_ㄱ'
+    shift: '_ㅄ'
+  KEYCODE_C:
+    base: '_ㅔ_'
+    shift: '_ㅋ'
+  KEYCODE_V:
+    base: '_ㅗ_'
+    shift: '_ㄳ'
+  KEYCODE_B:
+    base: '_ㅜ_'
+    shift: '?'
+  KEYCODE_N:
+    base: 'ㅅ_'
+    shift: '-'
+  KEYCODE_M:
+    base: 'ㅎ_'
+    shift: '"'
+  KEYCODE_COMMA:
+    base: ','
+    shift: ','
+  KEYCODE_PERIOD:
+    base: '.'
+    shift: '.'
+  KEYCODE_SLASH:
+    base: '_ㅗ_'
+    shift: '!'
+  KEYCODE_MINUS:
+    base: ')'
+    shift: ';'
+  KEYCODE_NUM:
+    base: '>'
+    shift: '+'
+  KEYCODE_LEFT_BRACKET:
+    base: '('
+    shift: '%'
+  KEYCODE_RIGHT_BRACKET:
+    base: '<'
+    shift: '/'
+  KEYCODE_BACKSLASH:
+    base: ':'
+    shift: '\'
+  KEYCODE_GRAVE:
+    base: '*'
+    shift: '※'

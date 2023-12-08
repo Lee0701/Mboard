@@ -63,7 +63,7 @@
 
     <string name="pref_header_input_title">입력</string>
     <string name="pref_input_hanja_conversion_title">한자 변환</string>
-    <string name="pref_input_hanja_conversion_summary">사용하려면 漢字變換器를 설치해 주세요.</string>
+    <string name="pref_input_hanja_conversion_summary">사용하려면 漢字變換器를 설치 및 활성화해 주세요.</string>
     <string name="pref_input_hanja_prediction_title">한자 예측</string>
     <string name="pref_input_hanja_prediction_summary">사용하려면 漢字變換器 후원판이 필요합니다.</string>
     <string name="pref_input_hanja_sort_by_context_title">문맥 기반 한자 변환</string>

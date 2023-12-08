@@ -3,13 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-sdk tools:overrideLibrary="org.tensorflow.lite, org.tensorflow.lite.support" />
-
     <queries>
         <package android:name="io.github.lee0701.converter" />
         <package android:name="io.github.lee0701.converter.donation" />
     </queries>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="ee.oyatl.ime.f.fusion.permission.CONVERT_TEXT" />
+    <uses-permission android:name="ee.oyatl.ime.f.fusion.permission.RECEIVE_CONVERTED_TEXT" />
 
     <application
         android:allowBackup="true"
