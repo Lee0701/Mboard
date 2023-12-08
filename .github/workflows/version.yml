@@ -4,17 +4,15 @@ on:
   workflow_call:
 
 jobs:
-  setup:
-    name: Setup
-    uses: ./.github/workflows/setup.yml
-
-  version:
+  inc-version:
     name: Increment Version
-    needs: setup
 
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Setup
+        uses: ./.github/workflows/setup.yml
+
       - name: Get version code from build.gradle.kts
         run: echo "VERSION_CODE=$(${{ github.workspace }}/gradlew -q printVersionCode)" >> $GITHUB_ENV
 
