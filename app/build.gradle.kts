@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation("ee.oyatl.ime.f.fusion:hyper:0.0.1")
+    implementation("ee.oyatl.ime.f.fusion:hyper:1")
 
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
