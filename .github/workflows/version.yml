@@ -10,6 +10,7 @@ jobs:
 
   version:
     name: Increment Version
+    needs: setup
 
     runs-on: ubuntu-20.04
 

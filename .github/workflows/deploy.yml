@@ -8,7 +8,6 @@ on:
 jobs:
   version:
     name: Version
-    needs: setup
     uses: ./.github/workflows/version.yml
     secrets: inherit
 
