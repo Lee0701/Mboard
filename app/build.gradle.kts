@@ -12,8 +12,8 @@ android {
     defaultConfig {
         minSdk = 14
         targetSdk = 34
-        versionCode = 31
-        versionName = "31-20230925-b55742a"
+        versionCode = 32
+        versionName = "32-20231209-b5767a9"
 
         multiDexEnabled = true
 
