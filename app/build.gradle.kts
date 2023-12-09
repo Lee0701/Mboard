@@ -10,6 +10,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        applicationId = "io.github.lee0701.mboard"
         minSdk = 14
         targetSdk = 34
         versionCode = 32
