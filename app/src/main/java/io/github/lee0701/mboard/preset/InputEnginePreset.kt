@@ -8,8 +8,6 @@ import io.github.lee0701.mboard.module.component.InputViewComponent
 import io.github.lee0701.mboard.module.component.KeyboardComponent
 import io.github.lee0701.mboard.module.inputengine.CodeConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.HangulInputEngine
-import io.github.lee0701.mboard.module.inputengine.HanjaConverter
-import io.github.lee0701.mboard.module.inputengine.HanjaConverterInputEngine
 import io.github.lee0701.mboard.module.inputengine.InputEngine
 import io.github.lee0701.mboard.preset.softkeyboard.Include
 import io.github.lee0701.mboard.preset.softkeyboard.Keyboard
@@ -53,27 +51,13 @@ data class InputEnginePreset(
         }
 
         fun getHangulInputEngine(listener: InputEngine.Listener): InputEngine {
-            return if(hanja.conversion && context is MBoardIME) {
-                HanjaConverterInputEngine(
-                    { l -> HangulInputEngine(
-                        convertTable = convertTable,
-                        moreKeysTable = moreKeysTable,
-                        overrideTable = overrideTable,
-                        jamoCombinationTable = combinationTable,
-                        listener = l,
-                    ) },
-                    HanjaConverter(context),
-                    listener = listener,
-                )
-            } else {
-                return HangulInputEngine(
-                    convertTable = convertTable,
-                    moreKeysTable = moreKeysTable,
-                    overrideTable = overrideTable,
-                    jamoCombinationTable = combinationTable,
-                    listener = listener,
-                )
-            }
+            return HangulInputEngine(
+                convertTable = convertTable,
+                moreKeysTable = moreKeysTable,
+                overrideTable = overrideTable,
+                jamoCombinationTable = combinationTable,
+                listener = listener,
+            )
         }
 
         fun getTableInputEngine(listener: InputEngine.Listener): InputEngine {
