@@ -119,8 +119,4 @@
     <string name="pref_layout_component_language_switcher_title">Language Switcher</string>
 
     <string name="pref_soft_keyboard_header_title">On-screen Keyboard</string>
-
-    <string name="pref_input_header_title">Input</string>
-    <string name="pref_input_show_candidates_title">Show Candidates Window</string>
-    <string name="pref_input_show_candidates_summary">Required to use Hanja conversion.</string>
 </resources>
