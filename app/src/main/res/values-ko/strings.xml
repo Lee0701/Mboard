@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">mBoard</string>
+    <string name="app_name">fBoard</string>
 
     <string name="msg_hanja_candidates_component_missing">한자 변환 기능을 사용하려면 키보드에 후보 목록 구성 요소가 필요합니다.</string>
     <string name="msg_hanja_converter_not_found">한자 변환 기능을 사용하려면 사용하려면 漢字變換器를 설치해 주세요.</string>
@@ -11,13 +11,13 @@
     <string name="title_activity_import_export">불러오기 / 내보내기</string>
     <string name="title_activity_keyboard_layout">키보드 설정</string>
 
-    <string name="title_activity_settings">mBoard 설정</string>
+    <string name="title_activity_settings">fBoard 설정</string>
 
     <string name="pref_header_method_title">입력 방식</string>
     <string name="pref_method_enable_title">입력 방식 활성화</string>
-    <string name="pref_method_enable_summary">\'mBoard\'를 선택해서 활성화해 주세요.</string>
+    <string name="pref_method_enable_summary">\'fBoard\'를 선택해서 활성화해 주세요.</string>
     <string name="pref_method_choose_title">입력 방식 변경</string>
-    <string name="pref_method_choose_summary">\'mBoard\'를 선택해서 사용을 시작하세요.</string>
+    <string name="pref_method_choose_summary">\'fBoard\'를 선택해서 사용을 시작하세요.</string>
 
     <string name="pref_header_appearance_title">외관</string>
     <string name="pref_appearance_theme_title">키보드 테마</string>
@@ -101,7 +101,7 @@
     <string name="flick_action_alternative_language">타언어 입력</string>
 
     <string name="pref_header_about_title">정보</string>
-    <string name="pref_about_app_info_title">mBoard</string>
+    <string name="pref_about_app_info_title">fBoard</string>
     <string name="pref_about_app_info_summary">개발자 연락처: hgl1002@naver.com</string>
     <string name="pref_about_more_apps_title">앱 더보기</string>
     <string name="pref_about_more_apps_summary">개발자의 다른 앱을 확인해 보세요.</string>
