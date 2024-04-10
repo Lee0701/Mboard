@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="io.github.lee0701.mboard.settings.SettingsActivity">
+    android:settingsActivity="ee.oyatl.ime.f.settings.SettingsActivity">
 
 </input-method>

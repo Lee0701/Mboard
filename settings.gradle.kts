@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         mavenLocal()
     }
 }
-rootProject.name = "mBoard"
+rootProject.name = "fBoard"
 include(":app")

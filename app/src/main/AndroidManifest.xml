@@ -13,11 +13,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:name=".MBoardApplication"
+        android:name="ee.oyatl.ime.f.MBoardApplication"
         android:theme="@style/Theme.MBoard">
 
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name="ee.oyatl.ime.f.settings.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_settings">
 
@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".service.MBoardIME"
+            android:name="ee.oyatl.ime.f.service.MBoardIME"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">
@@ -42,12 +42,12 @@
         </service>
 
         <activity
-            android:name=".service.ImportExportActivity"
+            android:name="ee.oyatl.ime.f.service.ImportExportActivity"
             android:exported="false"
             android:label="@string/title_activity_import_export" />
 
         <activity
-            android:name=".settings.KeyboardLayoutSettingsActivity"
+            android:name="ee.oyatl.ime.f.settings.KeyboardLayoutSettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_keyboard_layout" />
 

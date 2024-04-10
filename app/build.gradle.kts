@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.lee0701.mboard"
+    namespace = "ee.oyatl.ime.f"
     compileSdk = 34
 
     defaultConfig {
@@ -38,7 +38,6 @@ android {
     lint {
         baseline = file("lint-baseline.xml")
     }
-    namespace = "io.github.lee0701.mboard"
     buildFeatures {
         buildConfig = true
     }
